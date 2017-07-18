@@ -1,4 +1,4 @@
-PoisonModel <- function(s, r, observedCount, n, 
+PpoissonModel <- function(s, r, observedCount, n, 
                         s0Init, frequency, numParams, 
                         lnSFactorial, sumlnFFactorial, sumFlnFFactorial) {
   ################################
@@ -6,31 +6,31 @@ PoisonModel <- function(s, r, observedCount, n,
   ################################
   fitsCheck <- 1
   s0Init <- s[r]/(1-observedCount[1]/n[r]) - s[r]
-  poisonConstant <- n[r]/s[r]
+  ppoissonConstant <- n[r]/s[r]
   momentsInit <- n[r]/(s0Init + s[r])
   
   ## find maximum likelihood estimator
   mleNonztIter <- 10000
   mleNonztTolerance <- 10^-6
-  PoisonedRootResult <- BracetRoot(poisonConstant, momentsInit)
-  if (PoisonedRootResult$conclusion == 1) {
-    if (PoisonedRootResult$f1 < 0) {
-      root <- PoisonedRootResult$x1
-      dx <- PoisonedRootResult$x2 - PoisonedRootResult$x1
+  PpoissonedRootResult <- BracetRoot(ppoissonConstant, momentsInit)
+  if (PpoissonedRootResult$conclusion == 1) {
+    if (PpoissonedRootResult$f1 < 0) {
+      root <- PpoissonedRootResult$x1
+      dx <- PpoissonedRootResult$x2 - PpoissonedRootResult$x1
     } else {
-      root <- PoisonedRootResult$x2
-      dx <- PoisonedRootResult$x1 - PoisonedRootResult$x2
+      root <- PpoissonedRootResult$x2
+      dx <- PpoissonedRootResult$x1 - PpoissonedRootResult$x2
     }
     
     i <- 0
     while (i < mleNonztIter) {
       dx <- dx/2
       xmid <- root + dx
-      f2 <- xmid/(1-exp(-xmid)) - poisonConstant
+      f2 <- xmid/(1-exp(-xmid)) - ppoissonConstant
       root <- ifelse(f2 <= 0, xmid, root)
       i <- i + 1
       if (abs(dx) < mleNonztTolerance || f2 == 0) {
-        mlesPoison <- root
+        mlesPpoisson <- root
         i <- mleNonztIter
       }
     }
@@ -40,10 +40,10 @@ PoisonModel <- function(s, r, observedCount, n,
   }
   
   if (fitsCheck == 1) {
-    mlesPoisonExponential <- exp(-mlesPoison)
+    mlesPpoissonExponential <- exp(-mlesPpoisson)
     lnFactorial <- logFactorial(frequency[r])
-    fitsCount <- log(s[r]) + log(mlesPoisonExponential) + 
-      (1:(frequency[r]))*log(mlesPoison) - log(1-mlesPoisonExponential) -
+    fitsCount <- log(s[r]) + log(mlesPpoissonExponential) + 
+      (1:(frequency[r]))*log(mlesPpoisson) - log(1-mlesPpoissonExponential) -
       lnFactorial
     
     fitsCount <- exp(fitsCount)
@@ -57,22 +57,22 @@ PoisonModel <- function(s, r, observedCount, n,
       
       
       fitsExtended[(frequency[r]+1):extendedTau] <- 
-        exp(log(s[r]) + log(mlesPoisonExponential) +
-              ((frequency[r]+1):extendedTau * log(mlesPoison)) -
-              log(1-mlesPoisonExponential) - log(factorial((frequency[r]+1):extendedTau)))
+        exp(log(s[r]) + log(mlesPpoissonExponential) +
+              ((frequency[r]+1):extendedTau * log(mlesPpoisson)) -
+              log(1-mlesPpoissonExponential) - log(factorial((frequency[r]+1):extendedTau)))
       
-      sHatSubset <- s[r]*mlesPoisonExponential/(1-mlesPoisonExponential) + s[r]
+      sHatSubset <- s[r]*mlesPpoissonExponential/(1-mlesPpoissonExponential) + s[r]
       sHatTotal <- sHatSubset + (s[maximumObservation] - s[r])
       
       part1 <- lnSFactorial[r] - sumlnFFactorial[r]
-      part2 <- (-s[r]*mlesPoison) + (n[r]*log(mlesPoison)) - sumFlnFFactorial[r] - (s[r]*log(1-mlesPoisonExponential))
+      part2 <- (-s[r]*mlesPpoisson) + (n[r]*log(mlesPpoisson)) - sumFlnFFactorial[r] - (s[r]*log(1-mlesPpoissonExponential))
       
       calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fitsCount, 
                                                                         fitsExtended, maxGoodnessOfFit, 
                                                                         s, modelNumber, frequency)  
       #print(calculate_analysis_variables_result)
       ## standard error
-      se <- sHatSubset/(exp(mlesPoison)-1-mlesPoison)
+      se <- sHatSubset/(exp(mlesPpoisson)-1-mlesPpoisson)
       standard_error_flag <- ifelse(se>0, 1, 0)
       
       ## confidence bounds

@@ -99,24 +99,35 @@ CatchAll <- function(frequency_table) {
   bestCount <- rep(NA, 4)
   
   ################################
-  ## Poisson Model
+  ## Poisson 
   ################################
   modelNumber <- 1
   if (fMinFlag[modelNumber]==1) {
-    
     frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-    
     for (r in frequencyMinimum:maximumObservation) {
-      ################################
-      ## Poisson Fits
-      ################################
-      poison_results <- PoisonModel(s, r, observedCount, n,
+      ppoisson_results <- PpoissonModel(s, r, observedCount, n,
                                    s0Init, frequency, numParameters[modelNumber],
                                    lnSFactorial, sumlnFFactorial, sumFlnFFactorial)
-      output <- rbind(output, poison_results)
-      
+      output <- rbind(output, ppoisson_results)
     }
   }
+  
+  ################################
+  ## Single Exponential 
+  ################################
+  modelNumber <- 2
+  if (fMinFlag[modelNumber]==1) {
+    frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+    for (r in frequencyMinimum:maximumObservation) {
+      # single_exponential_results <- SingleExponentialModel(s, r, observedCount, n,
+      #                               s0Init, frequency, numParameters[modelNumber],
+      #                               lnSFactorial, sumlnFFactorial, sumFlnFFactorial)
+      # output <- rbind(output, single_exponential_results)
+    }
+  }
+  ################################
+  ## TODO: the rest
+  ################################
   
   output
 }

@@ -41,8 +41,6 @@ CalculateAnalysisVariables <- function(part1, part2,
                                        fitsExtended, maxGoodnessOfFit, 
                                        s, modelNumber, frequency) {
   return_variable <- list()
-  print("numberParameters")
-  print(part2)
   return_variable$AIC <- 2 * numberParameters - 2*(part1 + part2)
   if (s[r] - numberParameters - 1 > 0) {
     return_variable$AICc <- return_variable$AIC + (2*numberParameters*(numberParameters+1)/(s[r]-numberParameters-1))
