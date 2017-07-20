@@ -38,8 +38,9 @@ BracetRoot <- function(poissonConstant, momentsInit) {
 
 CalculateAnalysisVariables <- function(part1, part2, 
                                        numberParameters, r, fitsCount, 
-                                       fitsExtended, maxGoodnessOfFit, 
+                                       fitsExtended, 
                                        s, modelNumber, frequency) {
+  maxGoodnessOfFit <- 10
   return_variable <- list()
   return_variable$AIC <- 2 * numberParameters - 2*(part1 + part2)
   if (s[r] - numberParameters - 1 > 0) {
@@ -47,7 +48,7 @@ CalculateAnalysisVariables <- function(part1, part2,
     return_variable$AICcFlag <- 1
   }
   ## calculate ChiSq, no binning
-  chiSqAll <- ChiSqFunction(r, fitsCount, modelNumber, frequency)
+  chiSqAll <- ChiSqFunction(r, fitsCount, modelNumber, frequency, observedCountNoF0, s)
   return_variable$chiSq <- chiSqAll
   
   ## calculate Goodness of Fit
@@ -55,15 +56,15 @@ CalculateAnalysisVariables <- function(part1, part2,
   test <- (chiSqAll - df)/sqrt(2*df)
   GOF0 <- list()
   if (test < maxGoodnessOfFit  & chiSqAll < BigChiSq){
-    GOF0 <- GoodnessOfFit(chiSqAll, df, flag)
+    GOF0 <- GoodnessOfFit(chiSqAll, df)
     return_variable$GOF0Check <- GOF0$flag
     return_variable$GOF0 <- GOF0$gof
   } else{
     return_variable$GOF0Check <- 0
   }
-
+  
   ## calculate ChiSq, bin 5
-  chiSq5 <- ChiSqBin(r, fitsExtended, 5, df, numberParameters, flag, frequency)
+  chiSq5 <- ChiSqBin(r, fitsExtended, 5, df, numberParameters, frequency)
   
   GOF5Check <- chiSq5$flag
   chiSq5 <- chiSq5$chiSq
@@ -79,13 +80,18 @@ CalculateAnalysisVariables <- function(part1, part2,
 }
 
 ChiSqFunction <- function(r, fitsCount, modelNumber,
-                  frequency) {
+                  frequency, observedCount, s) {
   chiSqTemporary <- 0
   sumFit <- 0
   rr <- 1
+  if (frequency[1] == 0) {
+    stop("first frequency is 0?")
+  }
+  
+  # this bizarre looking flow adjusts for non-contiguous frequencies
   for (t in 1:frequency[r]) {
     if (t == frequency[rr]) {
-      chiSqTemporary <- chiSqTemporary + (observedCount[rr] - fitsCount[t])^2/fitsCount[t]
+      chiSqTemporary <- chiSqTemporary + ((observedCount)[rr] - fitsCount[t])^2/fitsCount[t]
       rr <- rr+1
     } else {
       chiSqTemporary <- chiSqTemporary + fitsCount[t]
@@ -101,7 +107,7 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
 }
 
 ChiSqBin <- function(r, fitsExtended, bin, 
-                     df, numberParameters, flag, 
+                     df, numberParameters, 
                      frequency) {
   extendedTau <- frequency[r] * 4
   
@@ -127,6 +133,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
   }
   ## todo: fix
   check[t-1]<-0
+  
   ## check for enough data for bininng and positive df
   chiSqTemporary <- 0
   df <- df - numberParameters
@@ -157,7 +164,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
   list("chiSq"=chiSqTemporary, "flag"=flag)
 }
 
-GoodnessOfFit <- function(chiSqAll, df, flag) {
+GoodnessOfFit <- function(chiSqAll, df) {
   v <- df/2 + 1
   x <- chiSqAll/2
   g <- 1
@@ -182,6 +189,7 @@ GoodnessOfFit <- function(chiSqAll, df, flag) {
   g <- ((g-1)/(12*v)) - (v*(log(v)-1))
   f <- p*exp(g-x)*sqrt(v/(2*pi))
   
+  flag <- 1
   if (is.nan(f)) flag <- 0
   gof  <- 1-f*(chiSqAll/2)^(df/2)
   
