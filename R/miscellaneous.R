@@ -1,45 +1,7 @@
-BracetRoot <- function(poissonConstant, momentsInit) {
-  
-  ## initial guess range
-  factor <- 2.0
-  x1 <- momentsInit / factor
-  x2 <- momentsInit * factor
-  
-  f1 <- (x1 / (1.0 - exp(-x1))) - poissonConstant
-  f2 <- (x2 / (1.0 - exp(-x2))) - poissonConstant
-  
-  conclusion <- 0
-  i <- 0
-  while (conclusion == 0 & i < 20) {
-    ## one estimate is negative and the other positive
-    if ((f1 * f2) < 0.0) {
-      conclusion <- 1
-    }
-    ## move the appropriate bound
-    if (abs(f1) < abs(f2)) {
-      x1 <- x1 + factor * (x1- x2)
-      f1 <- (x1 / (1.0 - exp(-x1))) - poissonConstant
-    }
-    else
-    {
-      x2 <- x2 + factor * (x2 - x1)
-      f2 <- (x2 / (1.0 - exp(-x2))) - poissonConstant
-    }
-    i <- i + 1
-  }
-  result <- list()
-  result$conclusion <- conclusion
-  result$x1 <- x1
-  result$x2 <- x2
-  result$f1 <- f1
-  result$f2 <- f2
-  result
-}
-
 CalculateAnalysisVariables <- function(part1, part2, 
                                        numberParameters, r, fitsCount, 
                                        fitsExtended, 
-                                       s, modelNumber, frequency) {
+                                       s, modelNumber, frequency, observedCount) {
   maxGoodnessOfFit <- 10
   return_variable <- list()
   return_variable$AIC <- 2 * numberParameters - 2*(part1 + part2)
@@ -64,7 +26,7 @@ CalculateAnalysisVariables <- function(part1, part2,
   }
   
   ## calculate ChiSq, bin 5
-  chiSq5 <- ChiSqBin(r, fitsExtended, 5, df, numberParameters, frequency)
+  chiSq5 <- ChiSqBin(r, fitsExtended, 5, df, numberParameters, frequency, s, observedCount)
   
   GOF5Check <- chiSq5$flag
   chiSq5 <- chiSq5$chiSq
@@ -72,7 +34,7 @@ CalculateAnalysisVariables <- function(part1, part2,
   ## calculate goodness of fit
   test <- (chiSq5 - df)/sqrt(2*df)
   if (test < maxGoodnessOfFit & GOF5Check == 1 & chiSq5 < BigChiSq) {
-    GOF5 <- GoodnessOfFit(chiSq5, df, GOF5Check)
+    GOF5 <- GoodnessOfFit(chiSq5, df)
     return_variable$GOF5Check <- GOF5$flag
     return_variable$GOF5 <- GOF5$gof
   }
@@ -108,7 +70,7 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
 
 ChiSqBin <- function(r, fitsExtended, bin, 
                      df, numberParameters, 
-                     frequency) {
+                     frequency, s, observedCount) {
   extendedTau <- frequency[r] * 4
   
   ## find terminal indices of binned cells
@@ -213,9 +175,71 @@ GetConfidenceBounds <- function(r, se, sHatSubset, s, observationMaximum) {
 }
 
 CheckOutput  <- function(x) {
-  if (is.null(x)) {
-    "?"
-  } else {
-    x
+  ifelse(is.null(x), NA, x)
+}
+
+BracetRoot <- function(poissonConstant, momentsInit) {
+  
+  ## initial guess range
+  factor <- 2.0
+  x1 <- momentsInit / factor
+  x2 <- momentsInit * factor
+  
+  f1 <- (x1 / (1.0 - exp(-x1))) - poissonConstant
+  f2 <- (x2 / (1.0 - exp(-x2))) - poissonConstant
+  
+  conclusion <- 0
+  i <- 0
+  while (conclusion == 0 & i < 20) {
+    ## one estimate is negative and the other positive
+    if ((f1 * f2) < 0.0) {
+      conclusion <- 1
+    }
+    ## move the appropriate bound
+    if (abs(f1) < abs(f2)) {
+      x1 <- x1 + factor * (x1- x2)
+      f1 <- (x1 / (1.0 - exp(-x1))) - poissonConstant
+    }
+    else
+    {
+      x2 <- x2 + factor * (x2 - x1)
+      f2 <- (x2 / (1.0 - exp(-x2))) - poissonConstant
+    }
+    i <- i + 1
   }
+  result <- list()
+  result$conclusion <- conclusion
+  result$x1 <- x1
+  result$x2 <- x2
+  result$f1 <- f1
+  result$f2 <- f2
+  result
+}
+
+Math.Pow <- function(a, b) a^b
+
+MatrixInversion <- function(sHat, a00, a0, A) {
+  result <- list()
+  # complete the symmetric matrix
+  A <- A + t(A)
+  diag(A) <- diag(A)/2
+  
+  aInverse <- try(solve(A), silent = TRUE)
+  
+  if (class(aInverse) != "try-error") {
+    answer <- a0 %*% aInverse %*% a0
+    
+    if (a00>answer) {
+      result$answer <- sqrt(a00-answer)
+      result$se <- sqrt(sHat)/answer
+      result$flag <- 1
+    } else {
+      result$flag <- 0
+    }
+    
+  } else {
+    result$se <- 0
+    result$flag <- 0
+  }
+  result
 }

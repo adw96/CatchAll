@@ -71,7 +71,7 @@ PoissonModel <- function(s, r, observedCount, n,
       
       calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fitsCount, 
                                                                         fitsExtended,
-                                                                        s, 1, frequency)  
+                                                                        s, 1, frequency, observedCount)  
       ## standard error
       se <- sHatSubset/(exp(mlesPoisson)-1-mlesPoisson)
       standard_error_flag <- ifelse(se>0, 1, 0)
@@ -94,7 +94,13 @@ PoissonModel <- function(s, r, observedCount, n,
                            "AICc" = CheckOutput(calculate_analysis_variables_result$AICc), 
                            "GOF0" = CheckOutput(calculate_analysis_variables_result$GOF), 
                            "GOF5" = CheckOutput(calculate_analysis_variables_result$GOF5),
-                           "T1"=CheckOutput(mlesPoisson))
+                           "T1"=CheckOutput(mlesPoisson),
+                           "T2"=NA,
+                           "T3"=NA,
+                           "T4"=NA,
+                           "T5"=NA,
+                           "T6"=NA,
+                           "T7"=NA)
       
     }
   } 

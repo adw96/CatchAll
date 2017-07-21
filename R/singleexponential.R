@@ -21,7 +21,7 @@ SingleExponentialModel <- function(s, r, observedCount, n,
 
     calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
                                                                       fitsExtended, 
-                                                                      s, 2, frequency)  
+                                                                      s, 2, frequency, observedCount)  
     ## standard error
     se <- sHatSubset/sqrt(n[r]-s[r])
     bounds <- GetConfidenceBounds(r, se, sHatSubset, s, maximumObservation)
@@ -37,7 +37,13 @@ SingleExponentialModel <- function(s, r, observedCount, n,
                          "AICc" = CheckOutput(calculate_analysis_variables_result$AICc), 
                          "GOF0" = CheckOutput(calculate_analysis_variables_result$GOF), 
                          "GOF5" = CheckOutput(calculate_analysis_variables_result$GOF5),
-                         "T1"=CheckOutput(mlesSExp))
+                         "T1"=CheckOutput(mlesSExp),
+                         "T2"=NA,
+                         "T3"=NA,
+                         "T4"=NA,
+                         "T5"=NA,
+                         "T6"=NA,
+                         "T7"=NA)
     
   }
 }

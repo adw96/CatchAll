@@ -1,5 +1,3 @@
-models <- c("wlrm_transformed", "wlrm_untransformed")
-frequency_table <- test_data_set_1[test_data_set_1[,2]>0, ]
 CatchAll <- function(frequency_table) {
   
   output <- data.frame()
@@ -20,7 +18,7 @@ CatchAll <- function(frequency_table) {
   # 1=Poisson, 2=1-expl, 3=2-expl, 4=3-exp, 5=4-exp, 6=TWLRM, 7=UWLRM, 8=nonparametric
   fMin <- c(4, 4, 6, 8, 10, 5, 5)
   #numParameters <- c(1, 1, 3, 5, 7, 2, 2)
-  fMinFlag <- c(0, 0, 0, 0, 0, 0, 0)
+  fMinFlag <- rep(NA, 7)
   modelDescription <- c("Poisson", 
                         "SingleExponential", 
                         "TwoMixedExponential", 
@@ -65,6 +63,7 @@ CatchAll <- function(frequency_table) {
   fMinFlag[maximumObservation >= fMin & c(rep(TRUE, 5), rep(FALSE,2))] <- 1
   fMinFlag[frequencyMaximum >= fMin & c(rep(FALSE, 5), rep(TRUE,2))] <- 1
   
+  observedCount
   s <- cumsum(observedCount)
   n <- cumsum(frequency * observedCount)
   
@@ -127,7 +126,7 @@ CatchAll <- function(frequency_table) {
       output <- rbind(output, single_exponential_results)
     }
   }
-  
+
   ################################
   ## Double Exponential 
   ################################
@@ -137,9 +136,9 @@ CatchAll <- function(frequency_table) {
     for (r in frequencyMinimum:maximumObservation) {
       double_exponential_results <- DoubleExponentialModel(s, r, observedCount, n,
                                                            s0Init, frequency, 
-                                                           lnSFactorial, sumlnFFactorial, sumFlnFFactorial, 
+                                                           lnSFactorial, sumlnFFactorial, 
                                                            maximumObservation)
-      output <- rbind(output, single_exponential_results)
+      output <- rbind(output, double_exponential_results)
     }
   }
   
@@ -156,3 +155,4 @@ source("R/poisson.R")
 source("R/singleexponential.R")
 source("R/doubleexponential.R")
 CatchAll(test_data_set_1)
+
