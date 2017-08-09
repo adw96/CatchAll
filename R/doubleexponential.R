@@ -36,6 +36,7 @@ DoubleExponentialModel <- function(s, r, observedCount, n,
     
     ## standard error
     se <- DoubleExponentialStandardError(mle1, mle2, mle3, sHatSubset)
+    if (r == 6) print(se)
     bounds <- GetConfidenceBounds(r, se$se, sHatSubset, s, maximumObservation)
     
     output <- data.frame("Model" = "DoubleExponential", 
@@ -67,7 +68,7 @@ DoubleExponentialFits <- function(r, n, s, frequency, observedCount) {
   if (mle$flag == 1) {
     mle1 <- mle$mlesSExp1
     mle2 <- mle$mlesSExp2
-    u <- mle$u
+    u <- mle$u # 5:44 Tue: problem is with u calc
     mle3 <- (u*mle2*(1+mle1)) / (mle1 + (mle1 * mle2) + (u*mle2) - (u*mle1))
     fitsCount <- s[r] * ((u * ((1.0 / mle1) *
                                  ((mle1 / (1.0 + mle1))^(1:frequency[r])))) +
@@ -89,12 +90,12 @@ MLEDoubleExponential <- function(r, n, s, frequency, observedCount) {
   results <- list()
   u <- 0.5
   k <- round(frequency[r]*0.67)
-  r1 <- max(which(frequency <= k)) - 1
-  k1 <- max(which(frequency < frequency[r1]))
+  r1 <- max(which(frequency <= k)) 
+  k1 <- max(which(frequency < frequency[r1])) + 1
   
   k <- round(frequency[r]*0.33)
-  r2 <- max(which(frequency <= k)) - 1
-  k2 <- ifelse(sum((frequency < frequency[r2])) > 0, max(which(frequency < frequency[r2])), 1)
+  r2 <- max(which(frequency <= k)) 
+  k2 <- ifelse(sum((frequency < frequency[r2])) > 0, max(which(frequency < frequency[r2])), 1) + 1
   
   if (n[k1] != s[k1]) {
     t1 <- n[k1]/s[k1]-1
@@ -105,10 +106,12 @@ MLEDoubleExponential <- function(r, n, s, frequency, observedCount) {
     deltaPart2 <- 1.0001e-10
     part2old <- part2
     iteration <- 1
+
     while(deltaPart2 > 1e-10 & iteration < 1e6) {
       z <- (u * (1.0 / t1) * ((t1 / (1.0 + t1))^frequency[1:r])) /
         ((u * (1.0 / t1) * (t1 / (1.0 + t1))^frequency[1:r]) +
            ((1.0 - u) * (1.0 / t2) * ((t2 / (1.0 + t2))^frequency[1:r])))
+     
       u <- sum(observedCount[1:r]*z[1:r])
       t1part1 <- sum(observedCount[1:r]*frequency[1:r]*z)
       t2part1 <- sum(observedCount[1:r]*frequency[1:r]*(1-z))
@@ -266,8 +269,11 @@ DoubleExponentialStandardError <- function(t1, t2, t3, sHatSubset) {
     break
   }
   
+  print(a00)
+  print(a0)
   print(a)
   ## invert
+  print(MatrixInversion(sHatSubset, a00, a0, a))
   MatrixInversion(sHatSubset, a00, a0, a)
   
 }

@@ -133,6 +133,7 @@ CatchAll <- function(frequency_table) {
   modelNumber <- 3
   if (fMinFlag[modelNumber]==1) {
     frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+    #maximumObservation <- frequencyMinimum
     for (r in frequencyMinimum:maximumObservation) {
       double_exponential_results <- DoubleExponentialModel(s, r, observedCount, n,
                                                            s0Init, frequency, 
@@ -154,5 +155,7 @@ source("R/miscellaneous.R")
 source("R/poisson.R")
 source("R/singleexponential.R")
 source("R/doubleexponential.R")
-CatchAll(test_data_set_1)
+x <- CatchAll(test_data_set_1)
+x[19:25, 1:5]
+x[19:25, 12:14]
 
