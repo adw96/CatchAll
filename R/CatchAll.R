@@ -9,6 +9,7 @@ CatchAll <- function(frequency_table) {
   # w, y, lnW, lnY
   # WLRMSwitch, WLRMGOF0
   # GOF5Test, bestGOF0, bestAICc
+  # this is a test for github
   BigChiSq = 1000000000.0
   Criteria = 0.0000000000000001
   maxIter = 100000
