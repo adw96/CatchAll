@@ -151,6 +151,7 @@ CatchAll <- function(frequency_table) {
   
   output
 }
+
 source("R/miscellaneous.R")
 source("R/poisson.R")
 source("R/singleexponential.R")
