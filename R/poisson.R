@@ -41,6 +41,7 @@ PoissonModel <- function(s, r, observedCount, n,
     fitsCheck <- 0
   }
   
+  # this is after calling the getPoissonModel
   if (fitsCheck == 1) {
     mlesPoissonExponential <- exp(-mlesPoisson)
     lnFactorial <- mapply(logFactorial, 1:frequency[r])
