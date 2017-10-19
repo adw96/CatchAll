@@ -212,6 +212,7 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset, SE fl
   ## a22
   test <- 100
   k <- 0
+  ## missing t1p etc assignment here?
   while (test > criteria & k < maximumIteration) {
     a22 <- -t5 * t2P * (-k * k * t3P * t5 + k *
                           t3P * t4 + k * k * t4 * t1P + 2 * (t2 * t2) * t4 * t1P + 2 *
@@ -266,12 +267,25 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset, SE fl
   
   ##
   ## a23
-  test <- 1
+  test <- 100
   k <- 0
   while (test > criteria & k < maximumIteration) {
-    a23 <- Math.Pow((t2/(1+t2)),k)*(-t2+k)*Math.Pow((t1/(1+t1)),k)/(t3*Math.Pow((t1/(1+t1)),k)+t3*
-                                                                      Math.Pow((t1/(1+t1)),k)*t2-Math.Pow((t2/(1+t2)),k)*t3+Math.Pow((t2/(1+t2)),k)+
-                                                                      Math.Pow((t2/(1+t2)),k)*t1-Math.Pow((t2/(1+t2)),k)*t3*t1)/t2/(1+t2)
+    
+    t1P <- Math.Pow((t1 / (1 + t1)), k);
+    t2P <- Math.Pow((t2 / (1 + t2)), k);
+    t3P <- Math.Pow((t3 / (1 + t3)), k);
+    
+    #fix math later? formatting problems
+    a23 <- -(1 + t1) * t2P * t5 * (-t2 + k) * (-1 + t4 + t5) *
+      t3P * (-t3 + k) / t3 / (1 + t3) / t2 / (1 + t2) / (t4 * t1P + t4 *
+                                                           t1P * t3 + t4 * t1P * t2 + t4 * t1P * t2 * t3 + t5 *
+                                                           t2P * t3 + t5 * t2P * t1 * t3 + t5 * t2P + t5 *
+                                                           t2P * t1 - t3P * t4 - t3P * t4 * t2 +
+                                                           t3P + t3P * t2 + t3P * t1 +
+                                                           t3P * t1 * t2 - t3P * t4 * t1 - t3P * t4 * t1 * t2 -
+                                                           t3P * t5 - t3P * t5 * t2 - t3P * t5 * t1 -
+                                                           t3P * t5 * t1 * t2);
+    
     if (k > 0) test <- abs(a23/a[2,3])
     a[2,3] <- a[2,3] + a23
     k <- k+1
@@ -281,23 +295,40 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset, SE fl
     break
   }
   
-  ## a33
-  test <- 1
+  ## a24
+  test <- 100
   k <- 0
   while (test > criteria & k < maximumIteration) {
-    a33 <- Math.Pow(Math.Pow((t1 / (1 + t1)), k) + Math.Pow((t1 / (1 + t1)), k) * t2 - Math.Pow(t2 / (1 + t2), k) -
-                      Math.Pow(t2 / (1 + t2), k) * t1, 2) / (1 + t2) / (1 + t1) / (t3 * Math.Pow((t1 / (1 + t1)), k) + t3 *
-                                                                                     Math.Pow((t1 / (1 + t1)), k) * t2 - Math.Pow(t2 / (1 + t2), k) * t3 + Math.Pow(t2 / (1 + t2), k) + Math.Pow(t2 / (1 + t2), k) * t1 -
-                                                                                     Math.Pow(t2 / (1 + t2), k) * t3 * t1)
     
-    if (k > 0) test <- abs(a33/a[3,3])
-    a[3,3] <- a[3,3] + a33
+    t1P <- Math.Pow((t1 / (1 + t1)), k);
+    t2P <- Math.Pow((t2 / (1 + t2)), k);
+    t3P <- Math.Pow((t3 / (1 + t3)), k);
+    
+    #fix math later? formatting problems
+    a24 <- t5 * t2P * (-t2 + k) * (t1P + t1P * t3 -
+                                     t3P - t3P * t1) / (1 + t2) / (t4 * t1P + t4 *
+                                                                     t1P * t3 + t4 * t1P * t2 + t4 * t1P * t2 * t3 + t5 *
+                                                                     t2P * t3 + t5 * t2P * t1 * t3 + t5 * t2P + t5 *
+                                                                     t2P * t1 - t3P * t4 - t3P * t4 * t2 +
+                                                                     t3P + t3P * t2 + t3P * t1 +
+                                                                     t3P * t1 * t2 - t3P * t4 * t1 - t3P * t4 * t1 * t2 -
+                                                                     t3P * t5 - t3P * t5 * t2 - t3P * t5 * t1 -
+                                                                     t3P * t5 * t1 * t2) / t2;
+    
+    
+    if (k > 0) test <- abs(a24/a[2,4])
+    a[2,4] <- a[2,4] + a24
     k <- k+1
   }
   if (k == maximumIteration) {
     return(list("flag"=1))
     break
   }
+  
+  #this is a test
+  
+  
+  
   
   print(a)
   ## invert
