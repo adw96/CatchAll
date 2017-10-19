@@ -1,5 +1,5 @@
-
-TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset, SE flag to get somehow) {
+#where did the SE flag go?
+TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   
   maximumIteration <- 100000
   criteria <- 0.0000000000000001
@@ -78,14 +78,10 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset, SE fl
                           t1P * (t1 * t1) - t2 * t4 * t1P * (t1 * t1) + t4 *
                           t1P * k * t2 - 5 * k * t1 * t3P * t4 + 4 * k * (t1 * t1) *
                           t3P * t2 - (t1 * t1) * t4 * t1P * t3 - k * k *
-                          t3P - 2 * (t1 * t1) * t3P) * t1aP / (-t4 *
-                                                                 t1P - t4 * t1P * t3 - t4 * t1P * t2 - t4 *
-                                                                 t1P * t2 * t3 - t5 * t2P * t3 - t5 * t2P * t1 * t3 - t5 *
-                                                                 t2P - t5 * t2P * t1 - t3P - t3P * t2 -
-                                                                 t3P * t1 - t3P * t1 * t2 + t3P * t4 +
-                                                                 t3P * t4 * t2 + t3P * t4 * t1 + t3P * t4 * t1 * t2 +
-                                                                 t3P * t5 + t3P * t5 * t2 + t3P * t5 * t1 +
-                                                                 t3P * t5 * t1 * t2) * t1bP;
+                          t3P - 2 * (t1 * t1) * t3P) * t1aP / 
+    (-t4 * t1P - t4 * t1P * t3 - t4 * t1P * t2 - t4 * t1P * t2 * t3 - t5 * t2P * t3 - t5 * t2P * t1 * t3 - t5 *
+    t2P - t5 * t2P * t1 - t3P - t3P * t2 - t3P * t1 - t3P * t1 * t2 + t3P * t4 + t3P * t4 * t2 + t3P * t4 * t1 + t3P * t4 * t1 * t2 +
+    t3P * t5 + t3P * t5 * t2 + t3P * t5 * t1 + t3P * t5 * t1 * t2) * t1bP;
     
     if (k > 0) test <- abs(a11/a[1,1])
     a[1,1] <- a[1,1] + a11
