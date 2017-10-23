@@ -1,9 +1,5 @@
 ---
-<<<<<<< HEAD
 title: "Getting started with CatchAll"
-=======
-title: "Getting started with CatchAll""
->>>>>>> 1dc7b37aafa6bb5100587ae4f1397cda30e056c9
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -14,7 +10,6 @@ vignette: >
   
 `CatchAll` is a package for species richness estimation and modelling. It is based off the original CatchAll software program by Bunge et. al, but now coded into R and updated to reflect new use cases.
 
-<<<<<<< HEAD
 ```{r}
 ### Run the first two lines at home! ####
 # install.packages("devtools")
@@ -28,5 +23,3 @@ x <- data.frame(table(counts))
 #output <- CatchAll(x)
 #output
 ```
-=======
->>>>>>> 1dc7b37aafa6bb5100587ae4f1397cda30e056c9
