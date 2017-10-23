@@ -1,4 +1,5 @@
 Package: CatchAll
+<<<<<<< HEAD
 Title: Species Richness Estimation with CatchAll
 Version: 0.1
 Date: 2017-10-23
@@ -22,3 +23,13 @@ Suggests: knitr,
     testthat
 VignetteBuilder: knitr
 URL: https://adw96.github.io/catchall/
+=======
+Version: 0.0.0.9000
+Title: What the Package Does (one line, title case)
+Description: What the package does (one paragraph).
+Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+ByteCompile: true
+>>>>>>> 1dc7b37aafa6bb5100587ae4f1397cda30e056c9
