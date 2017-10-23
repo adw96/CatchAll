@@ -1,0 +1,24 @@
+Package: CatchAll
+Title: Species Richness Estimation with CatchAll
+Version: 0.1
+Date: 2017-10-23
+Authors@R: as.person(c(
+    "Amy Willis <adwillis@uw.edu> [aut, cre]",
+    "Teresa Zhan [aut]"
+  ))
+Description: An R package implementing the CatchAll species richness estimate. The package is currently in development mode -- use at your own risk.
+License: GPL-2
+BugReports: https://github.com/adw96/catchall/issues
+LazyData: true
+RoxygenNote: 6.0.1
+Depends:
+    R (>= 2.10)
+Imports: MASS,
+    stats,
+    utils,
+    graphics
+Suggests: knitr,
+    rmarkdown,
+    testthat
+VignetteBuilder: knitr
+URL: https://adw96.github.io/catchall/
