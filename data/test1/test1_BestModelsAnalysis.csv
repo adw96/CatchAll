@@ -1,0 +1,13 @@
+Total Number of Observed Species = 5064,Model,Tau,Observed Sp,Estimated Total Sp,SE,Lower CB,Upper CB,GOF0,GOF5
+Best Parm Model,SingleExp,12,5064,9970.1,137.9,9707.2,10247.9,0.2087,0.1986,
+Parm Model 2a  ,SingleExp,12,5064,9970.1,137.9,9707.2,10247.9,0.2087,0.1986,
+Parm Model 2b  ,SingleExp,12,5064,9970.1,137.9,9707.2,10247.9,0.2087,0.1986,
+Parm Model 2c  ,SingleExp,10,5060,10002.0,138.8,9737.3,10281.7,0.0289,0.0458,
+WLRM           ,UnTransf,12,5064,10493.7,1002.9,8856.0,12838.7,0.0372,,
+Parm Max Tau   ,SingleExp,12,5064,9970.1,137.9,9707.2,10247.9,0.2087,0.1986,
+WLRM Max Tau   ,UnTransf,12,5064,10493.7,1002.9,8856.0,12838.7,0.0372,,
+
+Total Number of Observed Species = 5064,Model,Tau,Observed Sp,Estimated Total Sp,SE,Lower CB,Upper CB,CV_rare
+Non-P 1        ,Chao1,2,5060,7715.4,139.9,7455.0,8004.0,
+Non-P 2        ,ACE,10,5060,7868.1,129.4,7625.7,8133.4,0.58,
+Non-P 3        ,ACE,10,5060,7868.1,129.4,7625.7,8133.4,0.58,

@@ -1,0 +1,12 @@
+---
+title: "Getting started with CatchAll""
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{getting-started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  
+`CatchAll` is a package for species richness estimation and modelling. It is based off the original CatchAll software program by Bunge et. al, but now coded into R and updated to reflect new use cases.
+
