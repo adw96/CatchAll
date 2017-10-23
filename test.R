@@ -15,7 +15,6 @@ require(rstudioapi)
 require(Rd2roxygen)
 devtools::install_github("hadley/pkgdown")
 library(pkgdown)
-<<<<<<< HEAD
 library(breakaway)
 
 # to run CatchAll on the apples dataset from the package breakaway
@@ -27,13 +26,11 @@ CatchAll(apples)
 
 ## another test set
 
-=======
 
 # 
 create_package("CatchAll")
 build()
 install()
->>>>>>> 1dc7b37aafa6bb5100587ae4f1397cda30e056c9
 test_data_set_1 <- read.csv("data/10000_geo_.5_2.csv", header = F)
 x <- CatchAll(test_data_set_1)
 x[19:25, 1:5]
