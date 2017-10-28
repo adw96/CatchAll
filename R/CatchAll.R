@@ -1,3 +1,20 @@
+#' Species richness estimation with CatchAll
+#' 
+#' This function implements the CatchAll species richness estimate in R. The packages currently in beta mode!
+#' 
+#' 
+#' @param frequency_table The sample frequency count table for the population of
+#' interest. The first row must correspond to the singletons. Acceptable
+#' formats include a matrix, data frame, or file path (csv or txt). The
+#' standard frequency count table format is used: two columns, the first of
+#' which contains the frequency of interest (eg. 1 for singletons, species
+#' observed once, 2 for doubletons, species observed twice, etc.) and the
+#' second of which contains the number of species observed this many times.
+#' Frequencies (first column) should be ordered least to greatest. 
+#' @return All models and their species richness estimates (beta version)
+#' @author Amy Willis
+#' @author Teresa Zhan
+#' @export CatchAll
 CatchAll <- function(frequency_table) {
   
   output <- data.frame()
@@ -134,6 +151,7 @@ CatchAll <- function(frequency_table) {
   modelNumber <- 3
   if (fMinFlag[modelNumber]==1) {
     frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+    #maximumObservation <- frequencyMinimum
     for (r in frequencyMinimum:maximumObservation) {
       double_exponential_results <- DoubleExponentialModel(s, r, observedCount, n,
                                                            s0Init, frequency, 
@@ -152,9 +170,5 @@ CatchAll <- function(frequency_table) {
   output
 }
 
-source("R/miscellaneous.R")
-source("R/poisson.R")
-source("R/singleexponential.R")
-source("R/doubleexponential.R")
-CatchAll(test_data_set_1)
+
 
