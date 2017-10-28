@@ -96,7 +96,7 @@ TripleExponentialFits <- function(r, n, s, frequency, observedCount) {
     mlesSExp4 <- ((1.0 + mlesSExp1) * u1 * mlesSExp2 * mlesSExp3) / denom
     mlesSExp5 <- ((1.0 + mlesSExp2) * u2 * mlesSExp1 * mlesSExp3) / denom
     
-    fitsCount <-  = s[r] *
+    fitsCount <- s[r] *
       ((u1 * ((1.0 / mlesSExp1) * ((mlesSExp1 / (1.0 + mlesSExp1)) ^ (1:frequency[r])))) +
          (u2 * ((1.0 / mlesSExp2) * ((mlesSExp2 / (1.0 + mlesSExp2)) ^ (1:frequency[r])))) +
          ((1.0 - u1 - u2) * ((1.0 / mlesSExp3) *
