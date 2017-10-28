@@ -69,7 +69,7 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
                        "T6"=NA,
                        "T7"=NA)
 }
-}
+
 
 
 
