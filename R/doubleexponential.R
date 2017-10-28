@@ -249,7 +249,7 @@ DoubleExponentialStandardError <- function(t1, t2, t3, sHatSubset) {
   test <- 1
   k <- 0
   while (test > criteria & k < maximumIteration) {
-    a33 <- (((t1 / (1 + t1))^ k) + ((t1 / (1 + t1)) ^ k) * t2 - (t2 / (1 + t2) ^ k) -
+    a33 <- ((((t1 / (1 + t1))^ k) + ((t1 / (1 + t1)) ^ k) * t2 - (t2 / (1 + t2) ^ k) -
                       (t2 / (1 + t2)^ k) * t1) ^ 2) / (1 + t2) / (1 + t1) / (t3 * ((t1 / (1 + t1))^ k) + t3 *
                                                                                      ((t1 / (1 + t1)) ^ k) * t2 -(t2 / (1 + t2) ^ k) * t3 + (t2 / (1 + t2) ^ k) 
                                                                            + (t2 / (1 + t2) ^ k) * t1 -

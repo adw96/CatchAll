@@ -3,7 +3,8 @@
 ## A script to enable compiling, building and testing the CatchAll R package
 
 ## Create and set the working directory
-directory <- "/Users/adwillis/software/CatchAll" ## your local copy here
+
+directory <- "/Users/teres/Documents/GitHub/Catch All REAL/CatchAll" ## your local copy here
 setwd(directory)
 
 # Download some required packages

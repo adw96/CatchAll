@@ -1,4 +1,42 @@
 
+# we don't need to pass in mlesExp1 -> 3 because we calculated it in the MLE function
+TripleExponentialFits <- function(some parameters here) {
+  mle <- MLETripleExponential(some parameters here)
+  
+  if (mle$flag == 1) {
+    #access the elements from mle
+    mle1 <- mle$mlesSExp1
+    mle2 <- mle$mlesSExp2
+    mle2 <- mle$mlesSExp3
+    u <- mle$u
+
+    denom <- (mlesSExp1 * mlesSExp2 * mlesSExp3) +
+      (u2 * mlesSExp1 * mlesSExp3) + (u1 * mlesSExp2 * mlesSExp3) -
+      (u2 * mlesSExp1 * mlesSExp2) - (u1 * mlesSExp1 * mlesSExp2) +
+      (mlesSExp1 * mlesSExp2)
+    
+    mlesSExp4 <- ((1.0 + mlesSExp1) * u1 * mlesSExp2 * mlesSExp3) / denom
+    mlesSExp5 <- ((1.0 + mlesSExp2) * u2 * mlesSExp1 * mlesSExp3) / denom
+    
+    fitsCount <-  = s[r] *
+      ((u1 * ((1.0 / mlesSExp1) * ((mlesSExp1 / (1.0 + mlesSExp1)) ^ (1:frequency[r])))) +
+         (u2 * ((1.0 / mlesSExp2) * ((mlesSExp2 / (1.0 + mlesSExp2)) ^ (1:frequency[r])))) +
+         ((1.0 - u1 - u2) * ((1.0 / mlesSExp3) *
+                               ((mlesSExp3 / (1.0 + mlesSExp3)) ^(1:frequency[r])))))
+    
+    fitsCheck <- ifelse(min(fitsCount) < 0, 0, 1) 
+    
+    list("flag" = mle$flag, 
+         "fitsCount"=fitsCount, "check"=fitsCheck,
+         "mlesSExp1"=mle1, "mlesSExp2"=mle2, "mlesSExp3"=mle3, "u"=u)
+      
+  } else {
+    
+    list("flag" = mle$Flag, "check" = 0)
+  }
+  
+}
+
 MLETripleExponential <- function(r, n, s, frequency, observedCount) {
   
   results <- list()
@@ -82,6 +120,7 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
     results$u <- u
     results$mlesSExp1 <- t1
     results$mlesSExp2 <- t2
+    results$mlesSExp3 <- t3
     results$flag <- ifelse(is.nan(part2), 0, 1)
     
   } else {
