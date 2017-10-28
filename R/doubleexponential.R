@@ -32,7 +32,7 @@ DoubleExponentialModel <- function(s, r, observedCount, n,
     
     calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
                                                                       fitsExtended, 
-                                                                      s, 2, frequency, observedCount)  
+                                                                      s, 3, frequency, observedCount)  
     
     ## standard error
     se <- DoubleExponentialStandardError(mle1, mle2, mle3, sHatSubset)
