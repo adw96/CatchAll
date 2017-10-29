@@ -32,8 +32,9 @@ CatchAll(apples)
 create_package("CatchAll")
 build()
 install()
-#rename to test.csv?
-test_data_set_1 <- read.csv("data/10000_geo_.5_2.csv", header = F)
+#rename to test.csv?2
+
+test_data_set_1 <- read.csv("test.csv", header = F)
 x <- CatchAll(test_data_set_1)
 x[19:25, 1:5]
 x[19:25, 12:14]
