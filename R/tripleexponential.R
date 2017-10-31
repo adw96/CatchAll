@@ -1,3 +1,119 @@
+#fix formatting later
+TripleExponentialModel <-  function(s, r, observedCount, n, 
+                                    s0Init, frequency, 
+                                    lnSFactorial, sumlnFFactorial, 
+                                    maximumObservation) {
+  
+  
+  ### Fits
+  numParams <- 5
+    
+  fits <- TripleExponentialFits(r, n, s, frequency, observedCount)
+  mle1 <- fits$mlesSExp1
+  mle2 <- fits$mlesSExp2
+  mle3 <- fits$mlesSExp3
+  mle4 <- fits$mlesSExp4
+  mle5 <- fits$mlesSExp5
+  u1 <- fits$u1
+  u2 <- fits$u2
+  
+  fitsExtended <- rep(NA, frequency[r]*4)
+  fitsExtended[1:frequency[r]] <- fits$fitsCount
+  fitsExtended[(frequency[r] + 1):(frequency[r]*4)] <- 
+    s[r] * ((u1 * ((1.0 / mlesSExp1) * ((mlesSExp1 / (1.0 + mlesSExp1)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
+              (u2 * ((1.0 / mlesSExp2) * ((mlesSExp2 / (1.0 + mlesSExp2)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
+              ((1.0 - u1 - u2) * ((1.0 / mlesSExp3) *
+                                    ((mlesSExp3 / (1.0 + mlesSExp3)) ^ (frequency[r] + 1):(frequency[r]*4)))))
+  
+  sHatSubset <- s[r] * (((1.0 + mlesSExp1) * (1.0 + mlesSExp2) *
+                           (1.0 + mlesSExp3)) / ((-mlesSExp5 * mlesSExp3 * mlesSExp1) +
+                                                   (mlesSExp1 * mlesSExp2 * mlesSExp3) + (mlesSExp5 * mlesSExp1 * mlesSExp2) +
+                                                   (mlesSExp4 * mlesSExp1 * mlesSExp2) + mlesSExp3 -
+                                                   (mlesSExp4 * mlesSExp3 * mlesSExp2) + (mlesSExp3 * mlesSExp1) +
+                                                   (mlesSExp3 * mlesSExp2) - (mlesSExp4 * mlesSExp3) - (mlesSExp5 * mlesSExp3) +
+                                                   (mlesSExp4 * mlesSExp1) + (mlesSExp5 * mlesSExp2)))
+  
+  sHatTotal <- sHatSubset+(s[maximumObservation]-s[r])
+  part1 <- lnSFactorial[r]-sumlnFFactorial[r]
+  
+  part2 <- (observedCount[1:r] * log(
+    (u1 * ((1.0 / mlesSExp1) * ((mlesSExp1 / (1.0 + mlesSExp1)) ^freq[1:r]))) +
+      (u2 * ((1.0 / mlesSExp2) * ((mlesSExp2 / (1.0 + mlesSExp2)) ^ freq[1:r]))) +
+      ((1.0 - u1 - u2) * ((1.0 / mlesSExp3) *
+                            ((mlesSExp3 / (1.0 + mlesSExp3)) ^ freq[1:r])))))
+  
+  # model number 4
+  calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
+                                                                    fitsExtended, 
+                                                                    s, 4, frequency, observedCount)  
+  # s is lower class bound
+  # maximumObservation is upper class bound
+  bounds <- GetConfidenceBounds(r, se$se, sHatSubset, s, maximumObservation)
+  
+  output <- data.frame("Model" = "DoubleExponential", 
+                       "Cutoff" = r, 
+                       "Estimate" = CheckOutput(sHatTotal), 
+                       "SE" = CheckOutput(se$se), 
+                       "LCB"= CheckOutput(bounds$lcb), 
+                       "UCB" = CheckOutput(bounds$ucb), 
+                       "chiSq" = CheckOutput(calculate_analysis_variables_result$chiSq),
+                       "AIC" = CheckOutput(calculate_analysis_variables_result$AIC), 
+                       "AICc" = CheckOutput(calculate_analysis_variables_result$AICc), 
+                       "GOF0" = CheckOutput(calculate_analysis_variables_result$GOF), 
+                       "GOF5" = CheckOutput(calculate_analysis_variables_result$GOF5),
+                       "T1"=CheckOutput(mle1),
+                       "T2"=CheckOutput(mle2),
+                       "T3"=CheckOutput(mle3),
+                       "T4"=CheckOutput(mle4),
+                       "T5"=CheckOutput(mle5),
+                       "T6"=NA,
+                       "T7"=NA)
+}
+
+
+
+
+
+
+#ARE THESE THE RIGHT PARAMS?? not sure, what do r and n and s mean
+# we don't need to pass in mlesExp1 -> 3 because we calculated it in the MLE function
+TripleExponentialFits <- function(r, n, s, frequency, observedCount) {
+  mle <- MLETripleExponential(r, n, s, frequency, observedCount)
+  
+  if (mle$flag == 1) {
+    #access the elements from mle
+    mle1 <- mle$mlesSExp1
+    mle2 <- mle$mlesSExp2
+    mle2 <- mle$mlesSExp3
+    u1 <- mle$u1 
+    u2 <- mle$u2
+    
+    denom <- (mlesSExp1 * mlesSExp2 * mlesSExp3) +
+      (u2 * mlesSExp1 * mlesSExp3) + (u1 * mlesSExp2 * mlesSExp3) -
+      (u2 * mlesSExp1 * mlesSExp2) - (u1 * mlesSExp1 * mlesSExp2) +
+      (mlesSExp1 * mlesSExp2)
+    
+    mlesSExp4 <- ((1.0 + mlesSExp1) * u1 * mlesSExp2 * mlesSExp3) / denom
+    mlesSExp5 <- ((1.0 + mlesSExp2) * u2 * mlesSExp1 * mlesSExp3) / denom
+    
+    fitsCount <- s[r] *
+      ((u1 * ((1.0 / mlesSExp1) * ((mlesSExp1 / (1.0 + mlesSExp1)) ^ (1:frequency[r])))) +
+         (u2 * ((1.0 / mlesSExp2) * ((mlesSExp2 / (1.0 + mlesSExp2)) ^ (1:frequency[r])))) +
+         ((1.0 - u1 - u2) * ((1.0 / mlesSExp3) *
+                               ((mlesSExp3 / (1.0 + mlesSExp3)) ^(1:frequency[r])))))
+    
+    fitsCheck <- ifelse(min(fitsCount) < 0, 0, 1) 
+    
+    list("flag" = mle$flag, 
+         "fitsCount"=fitsCount, "check"=fitsCheck,
+         "mlesSExp1"=mle1, "mlesSExp2"=mle2, "mlesSExp3"=mle3, "u"=u)
+    
+  } else {
+    
+    list("flag" = mle$Flag, "check" = 0)
+  }
+  
+}
 
 MLETripleExponential <- function(r, n, s, frequency, observedCount) {
   
@@ -27,7 +143,7 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
     part2 <- sum(observedCount[1:r] * log((u1 * ((1/t1) * (t1/1+t1)^(frequency[1:r]))) 
                                           + (u2 * ((1/t2) * (t2/1+t2)^(frequency[1:r])))
                                           + ((1 - u1 -u2) * (1/t3) * ((t3/(1 + t3))^(frequency[1:r])))
-                                          ))
+    ))
     
     deltaPart2 <- 1.0001e-10
     part2old <- part2
@@ -38,17 +154,17 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
     while(deltaPart2 > 1e-10 & iteration < 1e6) {
       
       denom <- ((u1 * (1.0 / t1) * ((t1 / (1.0 + t1))^frequency[1:r]))  +
-                        (u2 * (1.0 / t2) * ((t2 / (1.0 + t2))^ freq[1:r])) +
-                        ((1.0 - u1 - u2) * (1.0 / t3) * ((t3 / (1.0 + t3))^freq[1:r])));
+                  (u2 * (1.0 / t2) * ((t2 / (1.0 + t2))^ freq[1:r])) +
+                  ((1.0 - u1 - u2) * (1.0 / t3) * ((t3 / (1.0 + t3))^freq[1:r])));
       
-      z1[t] = (u1 * (1.0 / t1) * Math.Pow((t1 / (1.0 + t1)), freq[t])) / denom
+      z1[t] = (u1 * (1.0 / t1) * ((t1 / (1.0 + t1)) ^ freq[t])) / denom
       
-      z2[t] = (u2 * (1.0 / t2) * Math.Pow((t2 / (1.0 + t2)), freq[t])) / denom
+      z2[t] = (u2 * (1.0 / t2) * ((t2 / (1.0 + t2)) ^ freq[t])) / denom
       
       z1 <- (u1 * (1.0 / t1) * ((t1 / (1.0 + t1))^frequency[1:r])) / denom
       
       z2 <- (u2 * (1.0 / t2) * ((t2 / (1.0 + t2))^frequency[1:r])) / denom
-    
+      
       u1 <- sum(observedCount[1:r]*z1[1:r])
       u2 <- sum(observedCount[1:r]*z2[1:r])
       
@@ -68,7 +184,7 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
       t3 <- t3part1/t3part2-1
       
       part2 <-  sum(observedCount[1:r] * log((u1 * ((1.0 / t1) *
-                                                     ((t1 / (1.0 + t1))^frequency[1:r]))) +
+                                                      ((t1 / (1.0 + t1))^frequency[1:r]))) +
                                                (u2 * ((1.0 / t2) *
                                                         ((t2 / (1.0 + t2))^frequency[1:r]))) +
                                                ((1.0 - u1 -u2) * ((1.0 / t3) * ((t3 / (1.0 + t3))^frequency[1:r])))))
@@ -79,9 +195,12 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
     
     #where is 1e6 from??
     if (iteration == 1e6) warning("Triple Exp didn't converge?")
-    results$u <- u
+    results$u <- u #should this be a u1 and a u2
+    results$u1 <- u1
+    results$u2 <- u2
     results$mlesSExp1 <- t1
     results$mlesSExp2 <- t2
+    results$mlesSExp3 <- t3
     results$flag <- ifelse(is.nan(part2), 0, 1)
     
   } else {
@@ -97,7 +216,6 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   maximumIteration <- 100000
   criteria <- 0.0000000000000001
   
-  # not sure why can't do Math.pow in the console so stuck with ^ for now
   t23P <- t2^3
   t33P <- t3^3
   
@@ -137,9 +255,9 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   k <- 0
   
   while (test > criteria & k < maximumIteration) {
-    t1P <- Math.Pow((t1 / (1 + t1)), k) 
-    t2P <- Math.Pow((t2 / (1 + t2)), k) 
-    t3P <- Math.Pow((t3 / (1 + t3)), k) 
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
     
     a11 <- -t4 * t1P * (2 * t4 * t1P * k * t1 * t2 - (t1 * t1) * t4 *
                           t1P * t2 * t3 - 2 * (t1 * t1) * t5 * t2P * t3 - 2 * t13P * t5 *
@@ -172,9 +290,9 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
                           t1P * k * t2 - 5 * k * t1 * t3P * t4 + 4 * k * (t1 * t1) *
                           t3P * t2 - (t1 * t1) * t4 * t1P * t3 - k * k *
                           t3P - 2 * (t1 * t1) * t3P) * t1aP / 
-    (-t4 * t1P - t4 * t1P * t3 - t4 * t1P * t2 - t4 * t1P * t2 * t3 - t5 * t2P * t3 - t5 * t2P * t1 * t3 - t5 *
-    t2P - t5 * t2P * t1 - t3P - t3P * t2 - t3P * t1 - t3P * t1 * t2 + t3P * t4 + t3P * t4 * t2 + t3P * t4 * t1 + t3P * t4 * t1 * t2 +
-    t3P * t5 + t3P * t5 * t2 + t3P * t5 * t1 + t3P * t5 * t1 * t2) * t1bP 
+      (-t4 * t1P - t4 * t1P * t3 - t4 * t1P * t2 - t4 * t1P * t2 * t3 - t5 * t2P * t3 - t5 * t2P * t1 * t3 - t5 *
+         t2P - t5 * t2P * t1 - t3P - t3P * t2 - t3P * t1 - t3P * t1 * t2 + t3P * t4 + t3P * t4 * t2 + t3P * t4 * t1 + t3P * t4 * t1 * t2 +
+         t3P * t5 + t3P * t5 * t2 + t3P * t5 * t1 + t3P * t5 * t1 * t2) * t1bP 
     
     if (k > 0) test <- abs(a11/a[1,1])
     a[1,1] <- a[1,1] + a11
@@ -189,9 +307,9 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   ## a12
   test <- 100
   k <- 0
-  t1P <- Math.Pow((t1 / (1 + t1)), k) 
-  t2P <- Math.Pow((t2 / (1 + t2)), k) 
-  t3P <- Math.Pow((t3 / (1 + t3)), k) 
+  t1P <- ((t1 / (1 + t1))^ k) 
+  t2P <- ((t2 / (1 + t2))^ k) 
+  t3P <- ((t3 / (1 + t3))^ k) 
   while (test > criteria  &  k < maximumIteration) {
     a12 <- -(1 + t3) * t1P * t4 * (-t1 + k) * t5 *
       t2P * (-t2 + k) / t2 / (1 + t2) / t1 / (1 + t1) / (-t4 * t1P - t4 *
@@ -216,9 +334,9 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   ## a13
   test <- 100
   k <- 0
-  t1P <- Math.Pow((t1 / (1 + t1)), k) 
-  t2P <- Math.Pow((t2 / (1 + t2)), k) 
-  t3P <- Math.Pow((t3 / (1 + t3)), k) 
+  t1P <- ((t1 / (1 + t1))^ k) 
+  t2P <- ((t2 / (1 + t2))^ k) 
+  t3P <- ((t3 / (1 + t3))^ k) 
   
   while (test > criteria & k < maximumIteration) {
     a13 <- (1 + t2) * t1P * t4 * (-t1 + k) * (-1 + t4 + t5) *
@@ -246,9 +364,9 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   ## a14
   test <- 100
   k <- 0
-  t1P <- Math.Pow((t1 / (1 + t1)), k) 
-  t2P <- Math.Pow((t2 / (1 + t2)), k) 
-  t3P <- Math.Pow((t3 / (1 + t3)), k) 
+  t1P <- ((t1 / (1 + t1))^ k) 
+  t2P <- ((t2 / (1 + t2))^ k) 
+  t3P <- ((t3 / (1 + t3))^ k) 
   
   while (test > criteria & k < maximumIteration) {
     a14 <- -t1P * (-t1 + k) * (t5 * t2P * t3 + t5 * t2P +
@@ -274,9 +392,9 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   ## a15
   test <- 100
   k <- 0
-  t1P <- Math.Pow((t1 / (1 + t1)), k) 
-  t2P <- Math.Pow((t2 / (1 + t2)), k) 
-  t3P <- Math.Pow((t3 / (1 + t3)), k) 
+  t1P <- ((t1 / (1 + t1))^ k) 
+  t2P <- ((t2 / (1 + t2))^ k) 
+  t3P <- ((t3 / (1 + t3))^ k) 
   
   while (test > criteria & k < maximumIteration) {
     a15 <-  t1P * t4 * (-t1 + k) * (t2P + t2P * t3 -
@@ -342,11 +460,11 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
                                                        t3P * t4 * t2 - t3P * t4 * t1 - t3P * t4 * t1 * t2 -
                                                        t3P * t5 - t3P * t5 * t2 - t3P * t5 * t1 -
                                                        t3P * t5 * t1 * t2) * t2bP 
-
-
-if (k > 0) test <- abs(a22/a[2,2])
-a[2,2] <- a[2,2] + a22
-k <- k+1
+    
+    
+    if (k > 0) test <- abs(a22/a[2,2])
+    a[2,2] <- a[2,2] + a22
+    k <- k+1
   }
   
   if (k == maximumIteration) {
@@ -360,9 +478,9 @@ k <- k+1
   k <- 0
   while (test > criteria & k < maximumIteration) {
     
-    t1P <- Math.Pow((t1 / (1 + t1)), k) 
-    t2P <- Math.Pow((t2 / (1 + t2)), k) 
-    t3P <- Math.Pow((t3 / (1 + t3)), k) 
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
     
     #fix math later? formatting problems
     a23 <- -(1 + t1) * t2P * t5 * (-t2 + k) * (-1 + t4 + t5) *
@@ -389,9 +507,9 @@ k <- k+1
   k <- 0
   while (test > criteria & k < maximumIteration) {
     
-    t1P <- Math.Pow((t1 / (1 + t1)), k) 
-    t2P <- Math.Pow((t2 / (1 + t2)), k) 
-    t3P <- Math.Pow((t3 / (1 + t3)), k) 
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
     
     #fix math later? formatting problems
     a24 <- t5 * t2P * (-t2 + k) * (t1P + t1P * t3 -
@@ -419,9 +537,9 @@ k <- k+1
   k <- 0
   while (test > criteria & k < maximumIteration) {
     
-    t1P <- Math.Pow((t1 / (1 + t1)), k) 
-    t2P <- Math.Pow((t2 / (1 + t2)), k) 
-    t3P <- Math.Pow((t3 / (1 + t3)), k) 
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
     
     #fix math later? formatting problems
     a25 <-  -t2P * (-t2 + k) * (t3P - t3P * t4 + t4 *
@@ -434,7 +552,7 @@ k <- k+1
                                                       t3P * t4 * t1 - t3P * t4 * t1 * t2 - t3P * t5 -
                                                       t3P * t5 * t2 - t3P * t5 * t1 -
                                                       t3P * t5 * t1 * t2) / t2 / (1 + t2) 
-  
+    
     if (k > 0) test <- abs(a25/a[2,5])
     a[2,5] <- a[2,5] + a25
     k <- k+1
@@ -450,9 +568,9 @@ k <- k+1
   k <- 0
   while (test > criteria & k < maximumIteration) {
     
-    t1P <- Math.Pow((t1 / (1 + t1)), k) 
-    t2P <- Math.Pow((t2 / (1 + t2)), k) 
-    t3P <- Math.Pow((t3 / (1 + t3)), k) 
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
     
     #fix math later? formatting problems
     a33 <-  (-1 + t4 + t5) * t3P * (k * k * t5 * t2P * t1 + k * k * t4 *
@@ -493,11 +611,11 @@ k <- k+1
                                                                                                 t3P * t4 * t1 * t2 - t3P * t5 - t3P * t5 * t2 -
                                                                                                 t3P * t5 * t1 - t3P * t5 * t1 * t2) * t3bP * t3aP 
     
-
-
-if (k > 0) test <- abs(a33/a[3,3])
-a[3,3] <- a[3,3] + a33
-k <- k+1
+    
+    
+    if (k > 0) test <- abs(a33/a[3,3])
+    a[3,3] <- a[3,3] + a33
+    k <- k+1
   }
   if (k == maximumIteration) {
     return(list("flag"=1))
@@ -510,9 +628,9 @@ k <- k+1
   k <- 0
   while (test > criteria & k < maximumIteration) {
     
-    t1P <- Math.Pow((t1 / (1 + t1)), k) 
-    t2P <- Math.Pow((t2 / (1 + t2)), k) 
-    t3P <- Math.Pow((t3 / (1 + t3)), k) 
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
     
     #fix math later? formatting problems
     a34 <-  -t3P * (-t3 + k) * (t5 * t1P - t1P - t2 *
@@ -542,9 +660,9 @@ k <- k+1
   k <- 0
   while (test > criteria & k < maximumIteration) {
     
-    t1P <- Math.Pow((t1 / (1 + t1)), k) 
-    t2P <- Math.Pow((t2 / (1 + t2)), k) 
-    t3P <- Math.Pow((t3 / (1 + t3)), k) 
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
     
     #fix math later? formatting problems
     a35 <-  t3P * (-t3 + k) * (-t4 * t2P + t1 * t2P + t4 *
@@ -577,19 +695,19 @@ k <- k+1
   k <- 0
   while (test > criteria & k < maximumIteration) {
     
-    t1P <- Math.Pow((t1 / (1 + t1)), k)
-    t2P <- Math.Pow((t2 / (1 + t2)), k)
-    t3P <- Math.Pow((t3 / (1 + t3)), k)
+    t1P <- ((t1 / (1 + t1))^ k)
+    t2P <- ((t2 / (1 + t2))^ k)
+    t3P <- ((t3 / (1 + t3))^ k)
     
     #fix math later? formatting problems
-    a44 <-   (1 + t2) * Math.Pow(t1P + t1P * t3 - t3P -
-                                   t3P * t1, 2) / (1 + t3) / (1 + t1) / (t4 * t1P + t4 *
-                                                                           t1P * t3 + t4 * t1P * t2 + t4 * t1P * t2 * t3 + t5 *
-                                                                           t2P * t3 + t5 * t2P * t1 * t3 + t5 * t2P + t5 *
-                                                                           t2P * t1 - t3P * t4 - t3P * t4 * t2 +
-                                                                           t3P + t3P * t2 + t3P * t1 + t3P * t1 * t2 -
-                                                                           t3P * t4 * t1 - t3P * t4 * t1 * t2 - t3P * t5 -
-                                                                           t3P * t5 * t2 - t3P * t5 * t1 - t3P * t5 * t1 * t2)
+    a44 <-   (1 + t2) * (t1P + t1P * t3 - t3P -
+                           t3P * t1 ^ 2) / (1 + t3) / (1 + t1) / (t4 * t1P + t4 *
+                                                                    t1P * t3 + t4 * t1P * t2 + t4 * t1P * t2 * t3 + t5 *
+                                                                    t2P * t3 + t5 * t2P * t1 * t3 + t5 * t2P + t5 *
+                                                                    t2P * t1 - t3P * t4 - t3P * t4 * t2 +
+                                                                    t3P + t3P * t2 + t3P * t1 + t3P * t1 * t2 -
+                                                                    t3P * t4 * t1 - t3P * t4 * t1 * t2 - t3P * t5 -
+                                                                    t3P * t5 * t2 - t3P * t5 * t1 - t3P * t5 * t1 * t2)
     
     
     
@@ -608,9 +726,9 @@ k <- k+1
   k <- 0
   while (test > criteria & k < maximumIteration) {
     
-    t1P <- Math.Pow((t1 / (1 + t1)), k) 
-    t2P <- Math.Pow((t2 / (1 + t2)), k) 
-    t3P <- Math.Pow((t3 / (1 + t3)), k) 
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
     
     #fix math later? formatting problems
     a45 <-  (t1P + t1P * t3 - t3P -
@@ -634,25 +752,25 @@ k <- k+1
     break
   }
   
-
+  
   ## a55
   test <- 100
   k <- 0
   while (test > criteria & k < maximumIteration) {
     
-    t1P <- Math.Pow((t1 / (1 + t1)), k) 
-    t2P <- Math.Pow((t2 / (1 + t2)), k) 
-    t3P <- Math.Pow((t3 / (1 + t3)), k) 
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
     
     #fix math later? formatting problems
-    a55 <-  (1 + t1) * Math.Pow(t2P + t2P * t3 - t3P -
-                                  t3P * t2, 2) / (1 + t3) / (1 + t2) / (t4 * t1P + t4 *
-                                                                          t1P * t3 + t4 * t1P * t2 + t4 * t1P * t2 * t3 + t5 *
-                                                                          t2P * t3 + t5 * t2P * t1 * t3 + t5 * t2P + t5 *
-                                                                          t2P * t1 - t3P * t4 - t3P * t4 * t2 +
-                                                                          t3P + t3P * t2 + t3P * t1 + t3P * t1 * t2 -
-                                                                          t3P * t4 * t1 - t3P * t4 * t1 * t2 - t3P * t5 -
-                                                                          t3P * t5 * t2 - t3P * t5 * t1 - t3P * t5 * t1 * t2) 
+    a55 <-  (1 + t1) * (t2P + t2P * t3 - t3P -
+                          t3P * t2 ^ 2) / (1 + t3) / (1 + t2) / (t4 * t1P + t4 *
+                                                                   t1P * t3 + t4 * t1P * t2 + t4 * t1P * t2 * t3 + t5 *
+                                                                   t2P * t3 + t5 * t2P * t1 * t3 + t5 * t2P + t5 *
+                                                                   t2P * t1 - t3P * t4 - t3P * t4 * t2 +
+                                                                   t3P + t3P * t2 + t3P * t1 + t3P * t1 * t2 -
+                                                                   t3P * t4 * t1 - t3P * t4 * t1 * t2 - t3P * t5 -
+                                                                   t3P * t5 * t2 - t3P * t5 * t1 - t3P * t5 * t1 * t2) 
     
     
     
