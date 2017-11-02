@@ -68,7 +68,7 @@ FourExponentialStandardError <- function(t1, t2, t3, t4, t5, t6, t7, sHatSubset)
 
 
 # i don't think it needs an array param cuz we make a matrix
-FourExponentialStandardErrorA5_A7 <- function(t1, t2, t3, t4, t5, t6, t7, arrayPassedIn?) {
+FourExponentialStandardErrorA5_A7 <- function(t1, t2, t3, t4, t5, t6, t7) {
   a <- matrix(0, nrow = 7, ncol = 7) # not sure these numbers are correct
   
   # global variables in C#

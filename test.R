@@ -17,6 +17,9 @@ require(Rd2roxygen)
 devtools::install_github("hadley/pkgdown")
 library(pkgdown)
 library(breakaway)
+library(tidyverse)
+
+rm(list = ls(all = T))
 
 # to run CatchAll on the apples dataset from the package breakaway
 build()
@@ -26,8 +29,11 @@ CatchAll(apples)
 
 
 ## another test set
+for (file in list.files("R/", full.names = T)) source(file)
+CatchAll(apples)
 
 
+#CatchAll:CatchAll(apples)
 # 
 create_package("CatchAll")
 build()

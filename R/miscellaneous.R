@@ -218,6 +218,12 @@ BracetRoot <- function(poissonConstant, momentsInit) {
 
 Math.Pow <- function(a, b) a^b
 
+# x should be an array
+# is this correct?? 
+logFactorial <- function(x) {
+  cumsum(log(x))
+}
+
 MatrixInversion <- function(sHat, a00, a0, A) {
   result <- list()
   # complete the symmetric matrix
