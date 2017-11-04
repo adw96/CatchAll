@@ -2,6 +2,8 @@ CalculateAnalysisVariables <- function(part1, part2,
                                        numberParameters, r, fitsCount, 
                                        fitsExtended, 
                                        s, modelNumber, frequency, observedCount) {
+  # is it better to pass this in?
+  BigChiSq <- 1000000000.0
   maxGoodnessOfFit <- 10
   return_variable <- list()
   return_variable$AIC <- 2 * numberParameters - 2*(part1 + part2)
@@ -9,14 +11,18 @@ CalculateAnalysisVariables <- function(part1, part2,
     return_variable$AICc <- return_variable$AIC + (2*numberParameters*(numberParameters+1)/(s[r]-numberParameters-1))
     return_variable$AICcFlag <- 1
   }
+  
   ## calculate ChiSq, no binning
-  chiSqAll <- ChiSqFunction(r, fitsCount, modelNumber, frequency, observedCountNoF0, s)
+  
+  # removed observedCountNoF0 ? not sure what that is
+  chiSqAll <- ChiSqFunction(r, fitsCount, modelNumber, frequency, observedCount, s)
   return_variable$chiSq <- chiSqAll
   
   ## calculate Goodness of Fit
   df <- frequency[r] - numberParameters
   test <- (chiSqAll - df)/sqrt(2*df)
   GOF0 <- list()
+  #bigChisq is a global variable
   if (test < maxGoodnessOfFit  & chiSqAll < BigChiSq){
     GOF0 <- GoodnessOfFit(chiSqAll, df)
     return_variable$GOF0Check <- GOF0$flag
@@ -110,6 +116,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
       } 
       cellFit <- cellFit + fitsExtended[t]
       
+      print(check[t]) # null value here?
       if (check[t] == 1) {
         chiSqTemporary <- chiSqTemporary + (cellObservation-cellFit)^2/cellFit
         cellObservation <- 0

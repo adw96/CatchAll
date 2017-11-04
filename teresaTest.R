@@ -1,6 +1,7 @@
 ### Amy Willis, October 2017
 
 ## A script to enable compiling, building and testing the CatchAll R package
+## (locally)
 
 ## Create and set the working directory
 
@@ -19,18 +20,28 @@ library(pkgdown)
 library(breakaway)
 library(tidyverse)
 
+
 rm(list = ls(all = T))
 
 # to run CatchAll on the apples dataset from the package breakaway
 build()
+4+4
 install()
+5+5
 library(CatchAll)
+
+#how to run it on test.csv? maybe i'm getting confused on workflow
+#test_simple <- read.csv("test.csv", header = F)
+#simple <- CatchAll(test_simple)
+#CatchAll(apples) 
 CatchAll(apples) 
 
 
 ## another test set
 for (file in list.files("R/", full.names = T)) source(file)
+print(file)
 CatchAll(apples)
+#CatchAll(simple)
 
 
 #CatchAll:CatchAll(apples)

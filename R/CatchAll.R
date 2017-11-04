@@ -51,7 +51,11 @@ CatchAll <- function(frequency_table) {
   ################################
   ## Create input data
   ################################
+  print("frequency table")
+  print(frequency_table)
   positive_frequency_table <- frequency_table[frequency_table[,2]>0, ]
+  print("positive frequency table")
+  print(positive_frequency_table)
   numberOfRows <- dim(positive_frequency_table)[1]
   if (numberOfRows < 2) {
     stop("Not enough rows?")

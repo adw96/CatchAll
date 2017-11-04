@@ -79,6 +79,7 @@ PoissonModel <- function(s, r, observedCount, n,
       part1 <- lnSFactorial[r] - sumlnFFactorial[r]
       part2 <- (-s[r]*mlesPoisson) + (n[r]*log(mlesPoisson)) - sumFlnFFactorial[r] - (s[r]*log(1-mlesPoissonExponential))
       
+      #paste("part1: ", part1)
       calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fitsCount, 
                                                                         fitsExtended,
                                                                         s, 1, frequency, observedCount)  
