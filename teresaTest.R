@@ -33,15 +33,18 @@ library(CatchAll)
 #how to run it on test.csv? maybe i'm getting confused on workflow
 #test_simple <- read.csv("test.csv", header = F)
 #simple <- CatchAll(test_simple)
+
 #CatchAll(apples) 
 CatchAll(apples) 
 
 
 ## another test set
+
 for (file in list.files("R/", full.names = T)) source(file)
 print(file)
 CatchAll(apples)
 #CatchAll(simple)
+2+2
 
 
 #CatchAll:CatchAll(apples)

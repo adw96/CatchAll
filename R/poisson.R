@@ -5,8 +5,8 @@ PoissonModel <- function(s, r, observedCount, n,
   ################################
   ## Poisson Fits
   ################################
-  print("s")
-  print(s)
+  #print("s")
+  #print(s)
   numParams <- 1 
   fitsCheck <- 1
   s0Init <- s[r]/(1-observedCount[1]/n[r]) - s[r]
