@@ -117,12 +117,14 @@ ChiSqBin <- function(r, fitsExtended, bin,
     # breaking at s[r] - condition, does not reset accumulatedFit back to 0
     # since s[r] is 716 and accumulatedFit is 847.1435 which is not greater
     # than 5
+    # what is it SUPPOSED to be?? need to run C# code
     print("r")
     print(r)
     print("s[r]")
     print(s[r])
     print("accumulatedFit")
     print(accumulatedFit)
+    #added abs value here but it's WRONG
     if (accumulatedFit >= bin  & abs((s[r] - accumulatedFit)) >= bin) {
       check[t] <- 1
       df <- df + 1
