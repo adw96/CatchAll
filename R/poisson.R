@@ -5,6 +5,8 @@ PoissonModel <- function(s, r, observedCount, n,
   ################################
   ## Poisson Fits
   ################################
+  #print("s")
+  #print(s)
   numParams <- 1 
   fitsCheck <- 1
   s0Init <- s[r]/(1-observedCount[1]/n[r]) - s[r]
@@ -44,6 +46,13 @@ PoissonModel <- function(s, r, observedCount, n,
   # this is after calling the getPoissonModel
   if (fitsCheck == 1) {
     mlesPoissonExponential <- exp(-mlesPoisson)
+    # can't find logFactorial
+    #			lnFactorial = 0.0;
+    # C#: for (int t = 1; t <= freq[r]; t++)
+    #{
+    #  lnFactorial = lnFactorial + Math.Log(t);
+    #
+    #
     lnFactorial <- mapply(logFactorial, 1:frequency[r])
     fitsCount <- log(s[r]) + log(mlesPoissonExponential) + 
       (1:(frequency[r]))*log(mlesPoisson) - log(1-mlesPoissonExponential) -
@@ -70,6 +79,7 @@ PoissonModel <- function(s, r, observedCount, n,
       part1 <- lnSFactorial[r] - sumlnFFactorial[r]
       part2 <- (-s[r]*mlesPoisson) + (n[r]*log(mlesPoisson)) - sumFlnFFactorial[r] - (s[r]*log(1-mlesPoissonExponential))
       
+      #paste("part1: ", part1)
       calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fitsCount, 
                                                                         fitsExtended,
                                                                         s, 1, frequency, observedCount)  

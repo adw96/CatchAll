@@ -26,7 +26,6 @@ CatchAll <- function(frequency_table) {
   # w, y, lnW, lnY
   # WLRMSwitch, WLRMGOF0
   # GOF5Test, bestGOF0, bestAICc
-  # this is a test for github
   BigChiSq = 1000000000.0
   Criteria = 0.0000000000000001
   maxIter = 100000
@@ -52,6 +51,7 @@ CatchAll <- function(frequency_table) {
   ## Create input data
   ################################
   positive_frequency_table <- frequency_table[frequency_table[,2]>0, ]
+
   numberOfRows <- dim(positive_frequency_table)[1]
   if (numberOfRows < 2) {
     stop("Not enough rows?")
@@ -82,7 +82,7 @@ CatchAll <- function(frequency_table) {
   fMinFlag[frequencyMaximum >= fMin & c(rep(FALSE, 5), rep(TRUE,2))] <- 1
   
   observedCount
-  s <- cumsum(observedCount)
+  s <- cumsum(observedCount) #could be src? or maybe observedCount
   n <- cumsum(frequency * observedCount)
   
   logFactorial <- function(x) ifelse(x == 0, 0, sum(log(1:x)))
