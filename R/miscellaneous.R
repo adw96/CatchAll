@@ -83,8 +83,8 @@ ChiSqBin <- function(r, fitsExtended, bin,
   check <- rep(NA, extendedTau) #don't understand why this
   # makes 3 different tables?? I thought it was only called
   # once
-  print("print check")
-  print(check)
+  # print("print check")
+  # print(check)
   accumulatedFit <- 0
   df <- 0
   stop <- 0
@@ -97,18 +97,18 @@ ChiSqBin <- function(r, fitsExtended, bin,
   # counter is 5, but it should also be 24
   # so problem is in the while loop condition?
   
-  print("extendedTau")
-  print(extendedTau)
-  print("t NOW")
-  print(t)
+  #print("extendedTau")
+  #print(extendedTau)
+  #print("t NOW")
+  #print(t)
  
   #is s incorrect??
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
-    print("t IN LOOP")
-    print(t)
+    #print("t IN LOOP")
+    #print(t)
     check[t] <- 0
-    print("fitsExtended")
-    print(fitsExtended[t])
+    #print("fitsExtended")
+    #print(fitsExtended[t])
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
     
     #breaking at 
@@ -118,14 +118,14 @@ ChiSqBin <- function(r, fitsExtended, bin,
     # since s[r] is 716 and accumulatedFit is 847.1435 which is not greater
     # than 5
     # what is it SUPPOSED to be?? need to run C# code
-    print("r")
-    print(r)
-    print("s[r]")
-    print(s[r])
-    print("accumulatedFit")
-    print(accumulatedFit)
+    #print("r")
+    #print(r)
+    #print("s[r]")
+    #print(s[r])
+    #print("accumulatedFit")
+    #print(accumulatedFit)
     #added abs value here but it's WRONG
-    if (accumulatedFit >= bin  & abs((s[r] - accumulatedFit)) >= bin) {
+    if (accumulatedFit >= bin  & (s[r] - accumulatedFit) >= bin) {
       check[t] <- 1
       df <- df + 1
       stop <- t
@@ -133,21 +133,21 @@ ChiSqBin <- function(r, fitsExtended, bin,
     }
     counter <- counter + 1;
     t <- t + 1
-    print("accumulatedFit")
-    print(accumulatedFit)
-    print("bin")
-    print(bin)
-    print("accumulatedFit < bin") #BREAKS BUT WHY
+    #print("accumulatedFit")
+    #print(accumulatedFit)
+    #print("bin")
+    #print(bin)
+    #print("accumulatedFit < bin") #BREAKS BUT WHY
     #accumulated fit randomly goes from 0 -> 847.1435, could
     # it be fitsExtended?
-    print(accumulatedFit < bin)
+    # print(accumulatedFit < bin)
   }
   
-  print("DONE")
-  print("counter")
-  print(counter)
-  print("extendedTau")
-  print(extendedTau)
+  #print("DONE")
+  #print("counter")
+  #print(counter)
+  #print("extendedTau")
+  #print(extendedTau)
  
   ## todo: fix
  # check[t-1]<-0
@@ -166,9 +166,9 @@ ChiSqBin <- function(r, fitsExtended, bin,
         rr <- rr + 1
       } 
       cellFit <- cellFit + fitsExtended[t]
-      print("t")
-      print(t)
-      print(check[t]) # null value here?
+      #print("t")
+      #print(t)
+      #print(check[t]) # null value here?
       if (check[t] == 1) {
         chiSqTemporary <- chiSqTemporary + (cellObservation-cellFit)^2/cellFit
         cellObservation <- 0

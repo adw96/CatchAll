@@ -37,10 +37,10 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   part1 <- lnSFactorial[r]-sumlnFFactorial[r]
   
   part2 <- (observedCount[1:r] * log(
-    (u1 * ((1.0 / mlesSExp1) * ((mlesSExp1 / (1.0 + mlesSExp1)) ^freq[1:r]))) +
-      (u2 * ((1.0 / mlesSExp2) * ((mlesSExp2 / (1.0 + mlesSExp2)) ^ freq[1:r]))) +
+    (u1 * ((1.0 / mlesSExp1) * ((mlesSExp1 / (1.0 + mlesSExp1)) ^frequency[1:r]))) +
+      (u2 * ((1.0 / mlesSExp2) * ((mlesSExp2 / (1.0 + mlesSExp2)) ^ frequency[1:r]))) +
       ((1.0 - u1 - u2) * ((1.0 / mlesSExp3) *
-                            ((mlesSExp3 / (1.0 + mlesSExp3)) ^ freq[1:r])))))
+                            ((mlesSExp3 / (1.0 + mlesSExp3)) ^ frequency[1:r])))))
   
   # model number 4
   calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
@@ -154,16 +154,14 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
     while(deltaPart2 > 1e-10 & iteration < 1e6) {
       
       denom <- ((u1 * (1.0 / t1) * ((t1 / (1.0 + t1))^frequency[1:r]))  +
-                  (u2 * (1.0 / t2) * ((t2 / (1.0 + t2))^ freq[1:r])) +
-                  ((1.0 - u1 - u2) * (1.0 / t3) * ((t3 / (1.0 + t3))^freq[1:r])));
+                  (u2 * (1.0 / t2) * ((t2 / (1.0 + t2)) ^ frequency[1:r])) +
+                  ((1.0 - u1 - u2) * (1.0 / t3) * ((t3 / (1.0 + t3))^frequency[1:r])));
       
-      z1[t] = (u1 * (1.0 / t1) * ((t1 / (1.0 + t1)) ^ freq[t])) / denom
       
-      z2[t] = (u2 * (1.0 / t2) * ((t2 / (1.0 + t2)) ^ freq[t])) / denom
       
-      z1 <- (u1 * (1.0 / t1) * ((t1 / (1.0 + t1))^frequency[1:r])) / denom
+      z1 <- (u1 * (1.0 / t1) * ((t1 / (1.0 + t1)) ^ frequency[1:r])) / denom
       
-      z2 <- (u2 * (1.0 / t2) * ((t2 / (1.0 + t2))^frequency[1:r])) / denom
+      z2 <- (u2 * (1.0 / t2) * ((t2 / (1.0 + t2)) ^ frequency[1:r])) / denom
       
       u1 <- sum(observedCount[1:r]*z1[1:r])
       u2 <- sum(observedCount[1:r]*z2[1:r])
@@ -195,7 +193,6 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
     
     #where is 1e6 from??
     if (iteration == 1e6) warning("Triple Exp didn't converge?")
-    results$u <- u #should this be a u1 and a u2
     results$u1 <- u1
     results$u2 <- u2
     results$mlesSExp1 <- t1
