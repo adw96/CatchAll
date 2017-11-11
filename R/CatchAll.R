@@ -170,8 +170,8 @@ CatchAll <- function(frequency_table) {
     #maximumObservation <- frequencyMinimum
     for (r in frequencyMinimum:maximumObservation) {
       double_exponential_results <- TripleExponentialModel(s, r, observedCount, n,
-                                                           s0Init, frequency, 
-                                                           lnSFactorial, sumlnFFactorial, 
+                                                           s0Init, frequency,
+                                                           lnSFactorial, sumlnFFactorial,
                                                            maximumObservation)
       output <- rbind(output, double_exponential_results)
     }

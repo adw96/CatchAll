@@ -9,6 +9,7 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   numParams <- 5
     
   fits <- TripleExponentialFits(r, n, s, frequency, observedCount)
+  print("cats")
   mle1 <- fits$mlesSExp1
   mle2 <- fits$mlesSExp2
   mle3 <- fits$mlesSExp3
@@ -17,30 +18,31 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   u1 <- fits$u1
   u2 <- fits$u2
   
+  #need to fix all references to mle1...mle5 below
   fitsExtended <- rep(NA, frequency[r]*4)
   fitsExtended[1:frequency[r]] <- fits$fitsCount
   fitsExtended[(frequency[r] + 1):(frequency[r]*4)] <- 
-    s[r] * ((u1 * ((1.0 / mlesSExp1) * ((mlesSExp1 / (1.0 + mlesSExp1)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
-              (u2 * ((1.0 / mlesSExp2) * ((mlesSExp2 / (1.0 + mlesSExp2)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
-              ((1.0 - u1 - u2) * ((1.0 / mlesSExp3) *
-                                    ((mlesSExp3 / (1.0 + mlesSExp3)) ^ (frequency[r] + 1):(frequency[r]*4)))))
+    s[r] * ((u1 * ((1.0 / mle1) * ((mle1 / (1.0 + mle1)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
+              (u2 * ((1.0 / mle2) * ((mle2 / (1.0 + mle2)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
+              ((1.0 - u1 - u2) * ((1.0 / mle3) *
+                                    ((mle3 / (1.0 + mle3)) ^ (frequency[r] + 1):(frequency[r]*4)))))
   
-  sHatSubset <- s[r] * (((1.0 + mlesSExp1) * (1.0 + mlesSExp2) *
-                           (1.0 + mlesSExp3)) / ((-mlesSExp5 * mlesSExp3 * mlesSExp1) +
-                                                   (mlesSExp1 * mlesSExp2 * mlesSExp3) + (mlesSExp5 * mlesSExp1 * mlesSExp2) +
-                                                   (mlesSExp4 * mlesSExp1 * mlesSExp2) + mlesSExp3 -
-                                                   (mlesSExp4 * mlesSExp3 * mlesSExp2) + (mlesSExp3 * mlesSExp1) +
-                                                   (mlesSExp3 * mlesSExp2) - (mlesSExp4 * mlesSExp3) - (mlesSExp5 * mlesSExp3) +
-                                                   (mlesSExp4 * mlesSExp1) + (mlesSExp5 * mlesSExp2)))
+  sHatSubset <- s[r] * (((1.0 + mle1) * (1.0 + mle2) *
+                           (1.0 + mle3)) / ((-mle5 * mle3 * mle1) +
+                                                   (mle1 * mle2 * mle3) + (mle5 * mle1 * mle2) +
+                                                   (mle4 * mle1 * mle2) + mle3 -
+                                                   (mle4 * mle3 * mle2) + (mle3 * mle1) +
+                                                   (mle3 * mle2) - (mle4 * mle3) - (mle5 * mle3) +
+                                                   (mle4 * mle1) + (mle5 * mle2)))
   
   sHatTotal <- sHatSubset+(s[maximumObservation]-s[r])
   part1 <- lnSFactorial[r]-sumlnFFactorial[r]
   
   part2 <- (observedCount[1:r] * log(
-    (u1 * ((1.0 / mlesSExp1) * ((mlesSExp1 / (1.0 + mlesSExp1)) ^frequency[1:r]))) +
-      (u2 * ((1.0 / mlesSExp2) * ((mlesSExp2 / (1.0 + mlesSExp2)) ^ frequency[1:r]))) +
-      ((1.0 - u1 - u2) * ((1.0 / mlesSExp3) *
-                            ((mlesSExp3 / (1.0 + mlesSExp3)) ^ frequency[1:r])))))
+    (u1 * ((1.0 / mle1) * ((mle1 / (1.0 + mle1)) ^frequency[1:r]))) +
+      (u2 * ((1.0 / mle2) * ((mle2 / (1.0 + mle2)) ^ frequency[1:r]))) +
+      ((1.0 - u1 - u2) * ((1.0 / mle3) *
+                            ((mle3 / (1.0 + mle3)) ^ frequency[1:r])))))
   
   # model number 4
   calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
@@ -80,33 +82,37 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
 TripleExponentialFits <- function(r, n, s, frequency, observedCount) {
   mle <- MLETripleExponential(r, n, s, frequency, observedCount)
   
+  print("mle from MLETripleExponential")
+  print(mle)
   if (mle$flag == 1) {
     #access the elements from mle
+    print("hey there!")
+    print(mle$mlesSExp1)
     mle1 <- mle$mlesSExp1
     mle2 <- mle$mlesSExp2
-    mle2 <- mle$mlesSExp3
+    mle3 <- mle$mlesSExp3
     u1 <- mle$u1 
     u2 <- mle$u2
     
-    denom <- (mlesSExp1 * mlesSExp2 * mlesSExp3) +
-      (u2 * mlesSExp1 * mlesSExp3) + (u1 * mlesSExp2 * mlesSExp3) -
-      (u2 * mlesSExp1 * mlesSExp2) - (u1 * mlesSExp1 * mlesSExp2) +
-      (mlesSExp1 * mlesSExp2)
+    denom <- (mle1  *  mle2 * mle3) +
+      (u2 * mle1  * mle3) + (u1 *  mle2 * mle3) -
+      (u2 * mle1  *  mle2) - (u1 * mle1  *  mle2) +
+      (mle1  *  mle2)
     
-    mlesSExp4 <- ((1.0 + mlesSExp1) * u1 * mlesSExp2 * mlesSExp3) / denom
-    mlesSExp5 <- ((1.0 + mlesSExp2) * u2 * mlesSExp1 * mlesSExp3) / denom
+    mle4 <- ((1.0 + mle1 ) * u1 *  mle2 *  mle3) / denom #do these even get used anywhere...
+    mle5 <- ((1.0 + mle2) * u2 * mle1  *  mle3) / denom
     
     fitsCount <- s[r] *
-      ((u1 * ((1.0 / mlesSExp1) * ((mlesSExp1 / (1.0 + mlesSExp1)) ^ (1:frequency[r])))) +
-         (u2 * ((1.0 / mlesSExp2) * ((mlesSExp2 / (1.0 + mlesSExp2)) ^ (1:frequency[r])))) +
-         ((1.0 - u1 - u2) * ((1.0 / mlesSExp3) *
-                               ((mlesSExp3 / (1.0 + mlesSExp3)) ^(1:frequency[r])))))
+      ((u1 * ((1.0 / mle1 ) * ((mle1 / (1.0 + mle1)) ^ (1:frequency[r])))) +
+         (u2 * ((1.0 /  mle2) * (( mle2 / (1.0 +  mle2)) ^ (1:frequency[r])))) +
+         ((1.0 - u1 - u2) * ((1.0 /  mle3) *
+                               ((mle3 / (1.0 + mle3)) ^(1:frequency[r])))))
     
     fitsCheck <- ifelse(min(fitsCount) < 0, 0, 1) 
     
     list("flag" = mle$flag, 
          "fitsCount"=fitsCount, "check"=fitsCheck,
-         "mlesSExp1"=mle1, "mlesSExp2"=mle2, "mlesSExp3"=mle3, "u"=u)
+         "mlesSExp1"=mle1, "mlesSExp2"=mle2, "mlesSExp3"=mle3, "mlesSExp4"=mle4, "mlesSExp5"=mle5, "u1"=u1, "u2"=u2)
     
   } else {
     
