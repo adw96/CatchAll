@@ -118,17 +118,17 @@ CatchAll <- function(frequency_table) {
   ################################
   ## Poisson 
   ################################
-  modelNumber <- 1
-  if (fMinFlag[modelNumber]==1) {
-    frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-    for (r in frequencyMinimum:maximumObservation) {
-      poisson_results <- PoissonModel(s, r, observedCount, n,
-                                   s0Init, frequency, 
-                                   lnSFactorial, sumlnFFactorial, sumFlnFFactorial, 
-                                   maximumObservation)
-      output <- rbind(output, poisson_results)
-    }
-  }
+  # modelNumber <- 1
+  # if (fMinFlag[modelNumber]==1) {
+  #   frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+  #   for (r in frequencyMinimum:maximumObservation) {
+  #     poisson_results <- PoissonModel(s, r, observedCount, n,
+  #                                  s0Init, frequency, 
+  #                                  lnSFactorial, sumlnFFactorial, sumFlnFFactorial, 
+  #                                  maximumObservation)
+  #     output <- rbind(output, poisson_results)
+  #   }
+  # }
   
   ################################
   ## Single Exponential 
@@ -138,8 +138,8 @@ CatchAll <- function(frequency_table) {
       frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
     for (r in frequencyMinimum:maximumObservation) {
       single_exponential_results <- SingleExponentialModel(s, r, observedCount, n,
-                                    s0Init, frequency, 
-                                    lnSFactorial, sumlnFFactorial, 
+                                    s0Init, frequency,
+                                    lnSFactorial, sumlnFFactorial,
                                     maximumObservation)
       output <- rbind(output, single_exponential_results)
     }
@@ -148,35 +148,35 @@ CatchAll <- function(frequency_table) {
   ################################
   ## Double Exponential 
   ################################
-  modelNumber <- 3
-  if (fMinFlag[modelNumber]==1) {
-    frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-    #maximumObservation <- frequencyMinimum
-    for (r in frequencyMinimum:maximumObservation) {
-      double_exponential_results <- DoubleExponentialModel(s, r, observedCount, n,
-                                                           s0Init, frequency, 
-                                                           lnSFactorial, sumlnFFactorial, 
-                                                           maximumObservation)
-      output <- rbind(output, double_exponential_results)
-    }
-  }
+  # modelNumber <- 3
+  # if (fMinFlag[modelNumber]==1) {
+  #   frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+  #   maximumObservation <- frequencyMinimum
+  #   for (r in frequencyMinimum:maximumObservation) {
+  #     double_exponential_results <- DoubleExponentialModel(s, r, observedCount, n,
+  #                                                          s0Init, frequency, 
+  #                                                          lnSFactorial, sumlnFFactorial, 
+  #                                                          maximumObservation)
+  #     output <- rbind(output, double_exponential_results)
+  #   }
+  # }
   
   ################################
   ## Triple Exponential 
   ################################
-  modelNumber <- 4
-  if (fMinFlag[modelNumber]==1) {
-    frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-    #maximumObservation <- frequencyMinimum
-    for (r in frequencyMinimum:maximumObservation) {
-      double_exponential_results <- TripleExponentialModel(s, r, observedCount, n,
-                                                           s0Init, frequency, 
-                                                           lnSFactorial, sumlnFFactorial, 
-                                                           maximumObservation)
-      output <- rbind(output, double_exponential_results)
-    }
-  }
-  
+  # modelNumber <- 4
+  # if (fMinFlag[modelNumber]==1) {
+  #   frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+  #   #maximumObservation <- frequencyMinimum
+  # for (r in frequencyMinimum:maximumObservation) {
+  #     double_exponential_results <- TripleExponentialModel(s, r, observedCount, n,
+  #                                                          s0Init, frequency,
+  #                                                          lnSFactorial, sumlnFFactorial,
+  #                                                          maximumObservation)
+  #     output <- rbind(output, double_exponential_results)
+  #   }
+  # }
+  # 
   
   ################################
   ## TODO: the rest
