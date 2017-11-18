@@ -60,7 +60,15 @@ PoissonModel <- function(s, r, observedCount, n,
       fitsExtended <- rep(NA, extendedTau)
       fitsExtended[1:(frequency[r])] <- fitsCount[1:(frequency[r])] 
       
-      
+      #redo fits extended?
+      # for (int t = (freq[r] + 1); t <= extendedTau; t++)
+      #   fitsExtended[t] = s[r] *
+      #   ((u1 * ((1.0 / mlesSExp1) * Math.Pow((mlesSExp1 / (1.0 + mlesSExp1)), t))) +
+      #      (u2 * ((1.0 / mlesSExp2) * Math.Pow((mlesSExp2 / (1.0 + mlesSExp2)), t))) +
+      #      (u3 * ((1.0 / mlesSExp3) * Math.Pow((mlesSExp3 / (1.0 + mlesSExp3)), t))) +
+      #      ((1.0 - u1 - u2 - u3) * ((1.0 / mlesSExp4) *
+      #                                 Math.Pow((mlesSExp4 / (1.0 + mlesSExp4)), t))));
+      # 
       fitsExtended[(frequency[r]+1):extendedTau] <- 
         exp(log(s[r]) + log(mlesPoissonExponential) +
               ((frequency[r]+1):extendedTau * log(mlesPoisson)) -
