@@ -79,7 +79,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
                      frequency, s, observedCount) {
   extendedTau <- frequency[r] * 4
   
-  if (r == 6) {
+  if (r == 6 || r == 5) {
     print("FITSEXTENDED")
     print(fitsExtended)
   }
