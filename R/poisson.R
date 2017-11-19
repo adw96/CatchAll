@@ -46,6 +46,7 @@ PoissonModel <- function(s, r, observedCount, n,
   # this is after calling the getPoissonModel
   if (fitsCheck == 1) {
     mlesPoissonExponential <- exp(-mlesPoisson)
+    #made in PoissonFits
     lnFactorial <- mapply(logFactorial, 1:frequency[r])
     fitsCount <- log(s[r]) + log(mlesPoissonExponential) + 
       (1:(frequency[r]))*log(mlesPoisson) - log(1-mlesPoissonExponential) -
@@ -60,11 +61,53 @@ PoissonModel <- function(s, r, observedCount, n,
       fitsExtended <- rep(NA, extendedTau)
       fitsExtended[1:(frequency[r])] <- fitsCount[1:(frequency[r])] 
       
+      #redo fits extended?
+      #could it be fits extended or something else?
+      # 
+      # for (int t = (freq[r] + 1); t <= extendedTau; t++)
+      # {
+      #   lnFactorial = lnFactorial + Math.Log(t);
+      #   
+      #   fitsExtended[t] = Math.Log(s[r]) + Math.Log(mlesPoissonExp) +
+      #     (t * Math.Log(mlesPoisson)) - Math.Log(1.0 - mlesPoissonExp) -
+      #     lnFactorial;
+      #   
+      #   fitsExtended[t] = Math.Exp(fitsExtended[t]);
+      # }
       
-      fitsExtended[(frequency[r]+1):extendedTau] <- 
+      print(frequency[r]+1)
+      print("mlesPoisson")
+      print(mlesPoisson)
+      
+      print("mlesPoissonExponential")
+      print(mlesPoissonExponential)
+      #should be exactly the same...
+      # for (i in frequency[r]+1:extendedTau) {
+      #   fitsExtended[i] <- log(s[r]) + log(mlesPoissonExponential)
+      #   + (i * log(mlesPoisson)) - log(1-mlesPoissonExponential) 
+      #   - lnFactorial
+      #   
+      #   fitsExtended[i] <- exp(fitsExtended[i])
+      #   print("fitsExtended[i]")
+      #   print(fitsExtended[i])
+      #   
+      # }
+      
+      #it seems to be right...
+      #other possible things:
+      # s[r]
+      
+      # mlesPoissonExponential
+      #mlesPoisson
+      # maybe lnFactorial?
+      fitsExtended[(frequency[r]+1):extendedTau] <-
         exp(log(s[r]) + log(mlesPoissonExponential) +
               ((frequency[r]+1):extendedTau * log(mlesPoisson)) -
               log(1-mlesPoissonExponential) - log(factorial((frequency[r]+1):extendedTau)))
+      
+      #check frequency
+      # print("FREQUENCY")
+      # print(frequency)
       
       sHatSubset <- s[r]*mlesPoissonExponential/(1-mlesPoissonExponential) + s[r]
       sHatTotal <- sHatSubset + (s[maximumObservation] - s[r])

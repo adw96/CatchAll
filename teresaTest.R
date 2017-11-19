@@ -41,7 +41,9 @@ CatchAll(apples)
 ## another test set
 
 for (file in list.files("R/", full.names = T)) source(file)
+
 print(file)
+print("hi")
 CatchAll(apples)
 #CatchAll(simple)
 2+2

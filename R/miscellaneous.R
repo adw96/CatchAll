@@ -79,6 +79,15 @@ ChiSqBin <- function(r, fitsExtended, bin,
                      frequency, s, observedCount) {
   extendedTau <- frequency[r] * 4
   
+  if (r == 6 || r == 5) {
+    print("FITSEXTENDED")
+    print(fitsExtended)
+  }
+  # fits extended breaks here
+  # actual supposed fitsExtended[t] is 1/2
+  # expected:  155.5416317008
+  # actual: 311.0833
+  
   ## find terminal indices of binned cells
   check <- rep(NA, extendedTau) #don't understand why this
   # makes 3 different tables?? I thought it was only called
@@ -89,10 +98,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
   df <- 0
   stop <- 0
   t <- 1
- 
-  #test variable, delete later
-  counter <- 0
-  
+
   #something wrong in this loop when extendedTau is 24
   # counter is 5, but it should also be 24
   # so problem is in the while loop condition?
@@ -104,11 +110,11 @@ ChiSqBin <- function(r, fitsExtended, bin,
  
   #is s incorrect??
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
-    #print("t IN LOOP")
-    #print(t)
     check[t] <- 0
-    #print("fitsExtended")
-    #print(fitsExtended[t])
+    if (r == 6) {
+      print("fitsExtended[t]")
+      print(fitsExtended[t])
+    }
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
     
     #breaking at 
@@ -118,20 +124,31 @@ ChiSqBin <- function(r, fitsExtended, bin,
     # since s[r] is 716 and accumulatedFit is 847.1435 which is not greater
     # than 5
     # what is it SUPPOSED to be?? need to run C# code
-    #print("r")
-    #print(r)
-    #print("s[r]")
-    #print(s[r])
-    #print("accumulatedFit")
-    #print(accumulatedFit)
-    #added abs value here but it's WRONG
+    if (r == 6) { #why only 6 does it break
+      print("r")
+      print(r)
+      print("s[r]")
+      print(s[r])
+      print("accumulatedFit")
+      print(accumulatedFit)
+      print("bin")
+      print(bin)
+      print("s[r] - accumulatedFit")
+      print(s[r]-accumulatedFit)
+      print("t")
+      print(t)
+      print("extended tau")
+      print(extendedTau)
+      print("+------------------------------+")
+    }
+
+    
     if (accumulatedFit >= bin  & (s[r] - accumulatedFit) >= bin) {
       check[t] <- 1
       df <- df + 1
       stop <- t
       accumulatedFit <- 0
     }
-    counter <- counter + 1;
     t <- t + 1
     #print("accumulatedFit")
     #print(accumulatedFit)
@@ -142,6 +159,9 @@ ChiSqBin <- function(r, fitsExtended, bin,
     # it be fitsExtended?
     # print(accumulatedFit < bin)
   }
+  
+  print("t")
+  print(t)
   
   #print("DONE")
   #print("counter")

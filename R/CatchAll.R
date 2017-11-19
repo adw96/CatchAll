@@ -50,6 +50,9 @@ CatchAll <- function(frequency_table) {
   ################################
   ## Create input data
   ################################
+  
+  # ohh i see, in the C# give the observed count already
+  # must calculate on own in R
   positive_frequency_table <- frequency_table[frequency_table[,2]>0, ]
 
   numberOfRows <- dim(positive_frequency_table)[1]
@@ -63,8 +66,14 @@ CatchAll <- function(frequency_table) {
   bestAICc <- array(dim = c(4, 9, maximumObservation))
   GOFTest <- array(dim = c(9, maximumObservation))
   
+  # should be 2 columns??
   frequency <- positive_frequency_table[, 1]
   observedCount <- positive_frequency_table[, 2]
+  print("frequency")
+  print(frequency)
+  
+  print("POSITIVE FRQUENCY TABLE")
+  print(positive_frequency_table)
   
   frequencyTau10 <- max(which(frequency <= 10 & observedCount > 0))+1
   
@@ -82,7 +91,25 @@ CatchAll <- function(frequency_table) {
   fMinFlag[frequencyMaximum >= fMin & c(rep(FALSE, 5), rep(TRUE,2))] <- 1
   
   observedCount
-  s <- cumsum(observedCount) #could be src? or maybe observedCount
+  print("OBSERVED COUNT")
+  # observed count should be: ?? i guess this is diff data set
+  # 1	2532
+  # 2	1209
+  # 3	654
+  # 4	331
+  # 5	163
+  # 6	76
+  # 7	47
+  # 8	26
+  # 9	19
+  # 10	3
+  # 11	2
+  # 12	2
+  
+  print(observedCount) 
+  s <- cumsum(observedCount) 
+  print("s");
+  print(s);
   n <- cumsum(frequency * observedCount)
   
   logFactorial <- function(x) ifelse(x == 0, 0, sum(log(1:x)))
@@ -118,32 +145,32 @@ CatchAll <- function(frequency_table) {
   ################################
   ## Poisson 
   ################################
-  # modelNumber <- 1
-  # if (fMinFlag[modelNumber]==1) {
-  #   frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-  #   for (r in frequencyMinimum:maximumObservation) {
-  #     poisson_results <- PoissonModel(s, r, observedCount, n,
-  #                                  s0Init, frequency, 
-  #                                  lnSFactorial, sumlnFFactorial, sumFlnFFactorial, 
-  #                                  maximumObservation)
-  #     output <- rbind(output, poisson_results)
-  #   }
-  # }
+  modelNumber <- 1
+  if (fMinFlag[modelNumber]==1) {
+    frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+    for (r in frequencyMinimum:maximumObservation) {
+      poisson_results <- PoissonModel(s, r, observedCount, n,
+                                   s0Init, frequency,
+                                   lnSFactorial, sumlnFFactorial, sumFlnFFactorial,
+                                   maximumObservation)
+      output <- rbind(output, poisson_results)
+    }
+  }
   
   ################################
   ## Single Exponential 
   ################################
-  modelNumber <- 2
-  if (fMinFlag[modelNumber]==1) {
-      frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-    for (r in frequencyMinimum:maximumObservation) {
-      single_exponential_results <- SingleExponentialModel(s, r, observedCount, n,
-                                    s0Init, frequency,
-                                    lnSFactorial, sumlnFFactorial,
-                                    maximumObservation)
-      output <- rbind(output, single_exponential_results)
-    }
-  }
+  # modelNumber <- 2
+  # if (fMinFlag[modelNumber]==1) {
+  #     frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+  #   for (r in frequencyMinimum:maximumObservation) {
+  #     single_exponential_results <- SingleExponentialModel(s, r, observedCount, n,
+  #                                   s0Init, frequency,
+  #                                   lnSFactorial, sumlnFFactorial,
+  #                                   maximumObservation)
+  #     output <- rbind(output, single_exponential_results)
+  #   }
+  # }
 
   ################################
   ## Double Exponential 
