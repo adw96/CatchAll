@@ -9,12 +9,12 @@ directory <- "/Users/teres/Documents/GitHub/Catch All REAL/CatchAll" ## your loc
 setwd(directory)
 
 # Download some required packages
-require(devtools)
-require(roxygen2)
-require(testthat)
-require(knitr)
-require(rstudioapi)
-require(Rd2roxygen)
+library(devtools)
+library(roxygen2)
+library(testthat)
+library(knitr)
+library(rstudioapi)
+library(Rd2roxygen)
 devtools::install_github("hadley/pkgdown")
 library(pkgdown)
 library(breakaway)
@@ -33,6 +33,14 @@ library(CatchAll)
 #how to run it on test.csv? maybe i'm getting confused on workflow
 #test_simple <- read.csv("test.csv", header = F)
 #simple <- CatchAll(test_simple)
+
+# Amy 17/11/23:
+test1 <- read.csv("tests/test_data.csv", header = F)
+CatchAll(test1)
+apples1 <- read.csv("tests/apples.csv", header = F)
+CatchAll(apples1)
+butterfly1 <- read.csv("tests/butterfly.csv", header = F)
+CatchAll(butterfly1)
 
 #CatchAll(apples) 
 CatchAll(apples) 
