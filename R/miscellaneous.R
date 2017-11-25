@@ -15,6 +15,7 @@ CalculateAnalysisVariables <- function(part1, part2,
   ## calculate ChiSq, no binning
   
   # removed observedCountNoF0 ? not sure what that is
+  # incorrect chiSq return >:(
   chiSqAll <- ChiSqFunction(r, fitsCount, modelNumber, frequency, observedCount, s)
   return_variable$chiSq <- chiSqAll
   
@@ -47,6 +48,7 @@ CalculateAnalysisVariables <- function(part1, part2,
   return_variable
 }
 
+#line 1201 in C#
 ChiSqFunction <- function(r, fitsCount, modelNumber,
                   frequency, observedCount, s) {
   chiSqTemporary <- 0
@@ -56,6 +58,11 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     stop("first frequency is 0?")
   }
   
+  print("frequency")
+  print(frequency)
+  
+  print("fitsCount")
+  print(fitsCount)
   # this bizarre looking flow adjusts for non-contiguous frequencies
   for (t in 1:frequency[r]) {
     if (t == frequency[rr]) {
@@ -64,13 +71,21 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     } else {
       chiSqTemporary <- chiSqTemporary + fitsCount[t]
     }
+    # print("chiSqTemporary NOW")
+    # print(chiSqTemporary)
+    # sumFit <- sumFit + fitsCount[t]
+    # print("sumFit")
+    # print(sumFit)
   }
-  sumFit <- sum(fitsCount)
+ # sumFit <- sum(fitsCount)
   
   if(modelNumber<6) {
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
   }
+  
   #list("chiSq"=chiSqTemporary, "sumFit"=sumFit)
+  print("chiSqTemporary")
+  print(chiSqTemporary)
   chiSqTemporary
 }
 
@@ -97,21 +112,17 @@ ChiSqBin <- function(r, fitsExtended, bin,
   #is s incorrect??
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
     check[t] <- 0
-    # if (r == 6) {
-    #   print("fitsExtended[t]")
-    #   print(fitsExtended[t])
-    # }
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
     
-    print("t")
-    print(t)
-    print("fitsExtended[t]")
-    print(fitsExtended[t])
-    print("accumulatedFit")
-    print(accumulatedFit)
-    print("extended tau")
-    print(extendedTau)
-    print("+------------------------------+")
+    # print("t")
+    # print(t)
+    # print("fitsExtended[t]")
+    # print(fitsExtended[t])
+    # print("accumulatedFit")
+    # print(accumulatedFit)
+    # print("extended tau")
+    # print(extendedTau)
+    # print("+------------------------------+")
     if (accumulatedFit >= bin  & (s[r] - accumulatedFit) >= bin) {
       check[t] <- 1
       df <- df + 1
@@ -119,25 +130,8 @@ ChiSqBin <- function(r, fitsExtended, bin,
       accumulatedFit <- 0
     }
     t <- t + 1
-    #print("accumulatedFit")
-    #print(accumulatedFit)
-    #print("bin")
-    #print(bin)
-    #print("accumulatedFit < bin") #BREAKS BUT WHY
-    #accumulated fit randomly goes from 0 -> 847.1435, could
-    # it be fitsExtended?
-    # print(accumulatedFit < bin)
   }
   
-  print("t")
-  print(t)
-  
-  print("DONE")
-  #print("counter")
-  #print(counter)
-  #print("extendedTau")
-  #print(extendedTau)
- 
   ## todo: fix
  # check[t-1]<-0
   
@@ -155,9 +149,6 @@ ChiSqBin <- function(r, fitsExtended, bin,
         rr <- rr + 1
       } 
       cellFit <- cellFit + fitsExtended[t]
-      #print("t")
-      #print(t)
-      #print(check[t]) # null value here?
       if (check[t] == 1) {
         chiSqTemporary <- chiSqTemporary + (cellObservation-cellFit)^2/cellFit
         cellObservation <- 0

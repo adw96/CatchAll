@@ -100,13 +100,6 @@ PoissonModel <- function(s, r, observedCount, n,
       #   
       # }
 
-      print("mlesPoissonExponential")
-      print(mlesPoissonExponential)
-      print("mlesPoisson")
-      print(mlesPoisson)
-      print("s[r]")
-      print(s[r])
-      
       fitsExtended[(frequency[r]+1):extendedTau] <-
         exp(log(s[r]) + log(mlesPoissonExponential) +
               ((frequency[r]+1):extendedTau * log(mlesPoisson)) -
