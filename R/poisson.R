@@ -74,13 +74,13 @@ PoissonModel <- function(s, r, observedCount, n,
       #   
       #   fitsExtended[t] = Math.Exp(fitsExtended[t]);
       # }
-      
-      print(frequency[r]+1)
-      print("mlesPoisson")
-      print(mlesPoisson)
-      
-      print("mlesPoissonExponential")
-      print(mlesPoissonExponential)
+      # 
+      # print(frequency[r]+1)
+      # print("mlesPoisson")
+      # print(mlesPoisson)
+      # 
+      # print("mlesPoissonExponential")
+      # print(mlesPoissonExponential)
       #should be exactly the same...
       # for (i in frequency[r]+1:extendedTau) {
       #   fitsExtended[i] <- log(s[r]) + log(mlesPoissonExponential)
@@ -109,6 +109,7 @@ PoissonModel <- function(s, r, observedCount, n,
       # print("FREQUENCY")
       # print(frequency)
       
+      print("THIS IS A TEST")
       sHatSubset <- s[r]*mlesPoissonExponential/(1-mlesPoissonExponential) + s[r]
       sHatTotal <- sHatSubset + (s[maximumObservation] - s[r])
       

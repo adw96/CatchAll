@@ -78,22 +78,11 @@ ChiSqBin <- function(r, fitsExtended, bin,
                      df, numberParameters, 
                      frequency, s, observedCount) {
   extendedTau <- frequency[r] * 4
-  
-  if (r == 6 || r == 5) {
-    print("FITSEXTENDED")
-    print(fitsExtended)
-  }
-  # fits extended breaks here
-  # actual supposed fitsExtended[t] is 1/2
-  # expected:  155.5416317008
-  # actual: 311.0833
-  
+
+  print("extendedTau")
+  print(extendedTau)
   ## find terminal indices of binned cells
-  check <- rep(NA, extendedTau) #don't understand why this
-  # makes 3 different tables?? I thought it was only called
-  # once
-  # print("print check")
-  # print(check)
+  check <- rep(NA, extendedTau) 
   accumulatedFit <- 0
   df <- 0
   stop <- 0
@@ -111,12 +100,17 @@ ChiSqBin <- function(r, fitsExtended, bin,
   #is s incorrect??
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
     check[t] <- 0
-    if (r == 6) {
-      print("fitsExtended[t]")
-      print(fitsExtended[t])
-    }
+    # if (r == 6) {
+    #   print("fitsExtended[t]")
+    #   print(fitsExtended[t])
+    # }
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
     
+    print("accumulatedFit")
+    print(accumulatedFit)
+    print("extended tau")
+    print(extendedTau)
+    print("+------------------------------+")
     #breaking at 
     # is it r?? or s? r doesn't seem to change
     # Ok I undersand where it's breaking but not sure how to fix it'
@@ -124,23 +118,23 @@ ChiSqBin <- function(r, fitsExtended, bin,
     # since s[r] is 716 and accumulatedFit is 847.1435 which is not greater
     # than 5
     # what is it SUPPOSED to be?? need to run C# code
-    if (r == 6) { #why only 6 does it break
-      print("r")
-      print(r)
-      print("s[r]")
-      print(s[r])
-      print("accumulatedFit")
-      print(accumulatedFit)
-      print("bin")
-      print(bin)
-      print("s[r] - accumulatedFit")
-      print(s[r]-accumulatedFit)
-      print("t")
-      print(t)
-      print("extended tau")
-      print(extendedTau)
-      print("+------------------------------+")
-    }
+    # if (r == 6) { #why only 6 does it break
+    #   print("r")
+    #   print(r)
+    #   print("s[r]")
+    #   print(s[r])
+    #   print("accumulatedFit")
+    #   print(accumulatedFit)
+    #   print("bin")
+    #   print(bin)
+    #   print("s[r] - accumulatedFit")
+    #   print(s[r]-accumulatedFit)
+    #   print("t")
+    #   print(t)
+    #   print("extended tau")
+    #   print(extendedTau)
+    #   print("+------------------------------+")
+    # }
 
     
     if (accumulatedFit >= bin  & (s[r] - accumulatedFit) >= bin) {
@@ -163,7 +157,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
   print("t")
   print(t)
   
-  #print("DONE")
+  print("DONE")
   #print("counter")
   #print(counter)
   #print("extendedTau")
