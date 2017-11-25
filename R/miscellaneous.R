@@ -88,10 +88,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
   stop <- 0
   t <- 1
 
-  #something wrong in this loop when extendedTau is 24
-  # counter is 5, but it should also be 24
-  # so problem is in the while loop condition?
-  
+
   #print("extendedTau")
   #print(extendedTau)
   #print("t NOW")
@@ -106,37 +103,15 @@ ChiSqBin <- function(r, fitsExtended, bin,
     # }
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
     
+    print("t")
+    print(t)
+    print("fitsExtended[t]")
+    print(fitsExtended[t])
     print("accumulatedFit")
     print(accumulatedFit)
     print("extended tau")
     print(extendedTau)
     print("+------------------------------+")
-    #breaking at 
-    # is it r?? or s? r doesn't seem to change
-    # Ok I undersand where it's breaking but not sure how to fix it'
-    # breaking at s[r] - condition, does not reset accumulatedFit back to 0
-    # since s[r] is 716 and accumulatedFit is 847.1435 which is not greater
-    # than 5
-    # what is it SUPPOSED to be?? need to run C# code
-    # if (r == 6) { #why only 6 does it break
-    #   print("r")
-    #   print(r)
-    #   print("s[r]")
-    #   print(s[r])
-    #   print("accumulatedFit")
-    #   print(accumulatedFit)
-    #   print("bin")
-    #   print(bin)
-    #   print("s[r] - accumulatedFit")
-    #   print(s[r]-accumulatedFit)
-    #   print("t")
-    #   print(t)
-    #   print("extended tau")
-    #   print(extendedTau)
-    #   print("+------------------------------+")
-    # }
-
-    
     if (accumulatedFit >= bin  & (s[r] - accumulatedFit) >= bin) {
       check[t] <- 1
       df <- df + 1
@@ -291,8 +266,7 @@ BracetRoot <- function(poissonConstant, momentsInit) {
 
 Math.Pow <- function(a, b) a^b
 
-# x should be an array
-# is this correct?? 
+# DOESN'T WORK FOR LNFACTORIAL 
 logFactorial <- function(x) {
   cumsum(log(x))
 }

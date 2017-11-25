@@ -7,7 +7,8 @@
 
 #C:\Users\teres\OneDrive\CatchAll
 #"/Users/teres/Documents/GitHub/Catch All REAL/CatchAll
-directory <- "/Users/teres/OneDrive/CatchAll" ## your local copy here
+# directory <- "/Users/teres/OneDrive/CatchAll" ## your local copy here
+directory <- "/Users/teres/Documents/GitHub/Catch All REAL/CatchAll"
 setwd(directory)
 
 # Download some required packages
@@ -16,7 +17,7 @@ require(roxygen2)
 require(testthat)
 require(knitr)
 require(rstudioapi)
-require(Rd2roxygen)
+library(Rd2roxygen)
 devtools::install_github("hadley/pkgdown")
 library(pkgdown)
 library(breakaway)
