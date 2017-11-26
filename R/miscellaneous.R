@@ -73,11 +73,13 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     }
     # print("chiSqTemporary NOW")
     # print(chiSqTemporary)
-    # sumFit <- sumFit + fitsCount[t]
+    sumFit <- sumFit + fitsCount[t]
     # print("sumFit")
     # print(sumFit)
   }
  # sumFit <- sum(fitsCount)
+  print("sumFit")
+  print(sumFit)
   
   if(modelNumber<6) {
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit

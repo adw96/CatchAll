@@ -53,6 +53,7 @@ PoissonModel <- function(s, r, observedCount, n,
     lnFactorial <- 0.0
     #sanity check to make lnFactorial again
     
+    #bad for loop but lnFactorial and fitsCount now work
     for (t in 1:frequency[r]) {
       lnFactorial <- lnFactorial + log(t)
       fitsCount[t] <- log(s[r]) + log(mlesPoissonExponential) +
