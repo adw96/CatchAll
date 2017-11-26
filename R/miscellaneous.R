@@ -58,11 +58,11 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     stop("first frequency is 0?")
   }
   
-  print("frequency")
-  print(frequency)
-  
-  print("fitsCount")
-  print(fitsCount)
+  # print("frequency")
+  # print(frequency)
+  # 
+  # print("fitsCount")
+  # print(fitsCount)
   # this bizarre looking flow adjusts for non-contiguous frequencies
   for (t in 1:frequency[r]) {
     if (t == frequency[rr]) {
@@ -71,13 +71,8 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     } else {
       chiSqTemporary <- chiSqTemporary + fitsCount[t]
     }
-    # print("chiSqTemporary NOW")
-    # print(chiSqTemporary)
-    sumFit <- sumFit + fitsCount[t]
-    # print("sumFit")
-    # print(sumFit)
   }
- # sumFit <- sum(fitsCount)
+  sumFit <- sum(fitsCount)
   print("sumFit")
   print(sumFit)
   
@@ -86,8 +81,8 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
   }
   
   #list("chiSq"=chiSqTemporary, "sumFit"=sumFit)
-  print("chiSqTemporary")
-  print(chiSqTemporary)
+  # print("chiSqTemporary")
+  # print(chiSqTemporary)
   chiSqTemporary
 }
 

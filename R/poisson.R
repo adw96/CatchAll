@@ -5,8 +5,6 @@ PoissonModel <- function(s, r, observedCount, n,
   ################################
   ## Poisson Fits
   ################################
-  #print("s")
-  #print(s)
   numParams <- 1 
   fitsCheck <- 1
   s0Init <- s[r]/(1-observedCount[1]/n[r]) - s[r]
@@ -80,39 +78,6 @@ PoissonModel <- function(s, r, observedCount, n,
       fitsExtended <- rep(NA, extendedTau)
       fitsExtended[1:(frequency[r])] <- fitsCount[1:(frequency[r])] 
       
-      #redo fits extended?
-      #could it be fits extended or something else?
-      # 
-      # for (t in frequency[r]+1:extendedTau)
-      # {
-      #   lnFactorial = lnFactorial + log(t);
-      #   print(lnFactorial)
-      # 
-      #   fitsExtended[t] = log(s[r]) + log(mlesPoissonExponential) +
-      #     (t * log(mlesPoisson)) - log(1.0 - mlesPoissonExponential) -
-      #     lnFactorial;
-      # 
-      #   fitsExtended[t] = exp(fitsExtended[t]);
-      # }
-      # 
-      # print(frequency[r]+1)
-      # print("mlesPoisson")
-      # print(mlesPoisson)
-      # 
-      # print("mlesPoissonExponential")
-      # print(mlesPoissonExponential)
-      #should be exactly the same...
-      # for (i in frequency[r]+1:extendedTau) {
-      #   fitsExtended[i] <- log(s[r]) + log(mlesPoissonExponential)
-      #   + (i * log(mlesPoisson)) - log(1-mlesPoissonExponential) 
-      #   - lnFactorial
-      #   
-      #   fitsExtended[i] <- exp(fitsExtended[i])
-      #   print("fitsExtended[i]")
-      #   print(fitsExtended[i])
-      #   
-      # }
-
       fitsExtended[(frequency[r]+1):extendedTau] <-
         exp(log(s[r]) + log(mlesPoissonExponential) +
               ((frequency[r]+1):extendedTau * log(mlesPoisson)) -

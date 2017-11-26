@@ -62,7 +62,6 @@ CatchAll(testData)
 create_package("CatchAll")
 build()
 install()
-#rename to test.csv?2
 
 test_data_set_1 <- read.csv("test.csv", header = F)
 x <- CatchAll(test_data_set_1)
