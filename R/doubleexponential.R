@@ -26,20 +26,8 @@ DoubleExponentialModel <- function(s, r, observedCount, n,
                             (mle2 + (mle1 * mle2) - (mle3 * mle2) +
                                (mle3 * mle1)))
     
-    #correct sHatSubset
-    #everything below is correct EXCEPT maximumObservation (and therefore s[maximumObser])
-    print("sHatSubset")
-    print(sHatSubset)
-    print("maximumObservation") #expected: 12, actual: 6
-    print(maximumObservation)
-    print("s[maximumObservation]")
-    print(s[maximumObservation])
-    print("s[r]")
-    print(s[r])
-    print(s)
+  
     sHatTotal <- sHatSubset+(s[maximumObservation]-s[r])
-    print("sHatTotal")
-    print(sHatTotal)
     part1 <- lnSFactorial[r]-sumlnFFactorial[r]
     part2 <- sum(observedCount[1:r] * log((u * ((mle1/(1+mle1))^(frequency[1:r]))/mle1) +
                                             ((1-u)*(mle2/(1+mle2))^(frequency[1:r])/mle2)))
@@ -295,12 +283,43 @@ DoubleExponentialStandardError <- function(t1, t2, t3, sHatSubset) {
     break
   }
   
+  #everything below is correct EXCEPT a
+  print("sHatSubset")
+  print(sHatSubset)
   print("a00")
   print(a00)
   print("a0")
   print(a0)
   print("a")
-  print(a)
+  print(a) 
+  #expected:
+  A: System.Double[,]
+  #matrix version-basically double check everything except a31 and a32
+  # 0.179622088634146 0.140601862586965 -5.11579949172844E-07
+  # 0 0.110058200043004 -4.0044681730998E-07
+  # 0 0 1.45702595023964E-12
+  
+  # 0
+  # 0
+  # 0
+  # 0
+  # 0
+  # 0.179622088634146
+  # 0.140601862586965
+  # -5.11579949172844E-07 -yes
+  # 0
+  # 0
+  # 0.110058200043004
+  # -4.0044681730998E-07 -yes
+  # 0
+  # 0
+  # 0
+  # 1.45702595023964E-12
+  #actual 
+  # [,1]       [,2]          [,3]
+  # [1,] 0.1602196 0.06215330 -5.115799e-07
+  # [2,] 0.0000000 0.09578114 -4.004468e-07
+  # [3,] 0.0000000 0.00000000  1.594090e-02
   ## invert
   print(MatrixInversion(sHatSubset, a00, a0, a))
   MatrixInversion(sHatSubset, a00, a0, a)
