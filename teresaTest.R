@@ -12,11 +12,12 @@ directory <- "/Users/teres/Documents/GitHub/Catch All REAL/CatchAll"
 setwd(directory)
 
 # Download some required packages
-require(devtools)
-require(roxygen2)
-require(testthat)
-require(knitr)
-require(rstudioapi)
+
+library(devtools)
+library(roxygen2)
+library(testthat)
+library(knitr)
+library(rstudioapi)
 library(Rd2roxygen)
 devtools::install_github("hadley/pkgdown")
 library(pkgdown)
