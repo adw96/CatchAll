@@ -30,10 +30,10 @@ rm(list = ls(all = T))
 build()
 4+4
 install()
+
 5+5
 library(CatchAll)
 
-#how to run it on test.csv? maybe i'm getting confused on workflow
 
 testData <- read.csv("test_data.csv", header = F)
 

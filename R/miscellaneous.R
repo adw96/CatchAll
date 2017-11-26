@@ -91,8 +91,6 @@ ChiSqBin <- function(r, fitsExtended, bin,
                      frequency, s, observedCount) {
   extendedTau <- frequency[r] * 4
 
-  print("extendedTau")
-  print(extendedTau)
   ## find terminal indices of binned cells
   check <- rep(NA, extendedTau) 
   accumulatedFit <- 0

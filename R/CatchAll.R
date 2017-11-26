@@ -59,12 +59,12 @@ CatchAll <- function(frequency_table) {
     break
   }
   maximumObservation <- numberOfRows # yes, this is correct
-  
+
   bestGOF0  <- array(dim = c(4, 9, maximumObservation))
   bestAICc <- array(dim = c(4, 9, maximumObservation))
   GOFTest <- array(dim = c(9, maximumObservation))
   
-  # should be 2 columns??
+
   frequency <- positive_frequency_table[, 1]
   observedCount <- positive_frequency_table[, 2]
   print("frequency")
@@ -97,7 +97,7 @@ CatchAll <- function(frequency_table) {
   print(s);
   n <- cumsum(frequency * observedCount)
   
-  #hmmm
+  #hmmm-double check these
   logFactorial <- function(x) ifelse(x == 0, 0, sum(log(1:x)))
   
   lnSFactorial <- mapply(logFactorial, s)
@@ -158,13 +158,21 @@ CatchAll <- function(frequency_table) {
   #   }
   # }
 
+  print(maximumObservation) #still 12, good
   ################################
   ## Double Exponential -stimate       SE      LCB      UCB incorrect. only returns 1 too
   ################################
   modelNumber <- 3
   if (fMinFlag[modelNumber]==1) {
+    #find max index of which frequency < fMin
+    print("fMin[modelNumber]")
+    print(fMin[modelNumber])
+    print("frequency")
+    print(frequency)
     frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-    maximumObservation <- frequencyMinimum
+   # maximumObservation <- frequencyMinimum #here
+    print("maximumObservation")
+    print(maximumObservation)
     for (r in frequencyMinimum:maximumObservation) {
       double_exponential_results <- DoubleExponentialModel(s, r, observedCount, n,
                                                            s0Init, frequency,
@@ -189,7 +197,7 @@ CatchAll <- function(frequency_table) {
   #     output <- rbind(output, double_exponential_results)
   #   }
   # }
-  # 
+
   
   ################################
   ## TODO: the rest
