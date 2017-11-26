@@ -43,6 +43,9 @@ PoissonModel <- function(s, r, observedCount, n,
     fitsCheck <- 0
   }
   
+  # dummy initializer, 
+  fitsCount <- rep(0.0, times = frequency[r] + 1)
+  
   # this is after calling the getPoissonModel
   if (fitsCheck == 1) {
     mlesPoissonExponential <- exp(-mlesPoisson)
@@ -52,13 +55,22 @@ PoissonModel <- function(s, r, observedCount, n,
     
     for (t in 1:frequency[r]) {
       lnFactorial <- lnFactorial + log(t)
+      fitsCount[t] <- log(s[r]) + log(mlesPoissonExponential) +
+        ((t)*log(mlesPoisson)) - log(1-mlesPoissonExponential) -
+        lnFactorial
+
+      fitsCount[t] <- exp(fitsCount[t])
     }
     
-    fitsCount <- log(s[r]) + log(mlesPoissonExponential) + 
-      (1:(frequency[r]))*log(mlesPoisson) - log(1-mlesPoissonExponential) -
-      lnFactorial
+    print("lnFactorial after method")
+    print(lnFactorial)
+    # correct lnFactorial
     
-    fitsCount <- exp(fitsCount)
+    # fitsCount <- log(s[r]) + log(mlesPoissonExponential) + 
+    #   (1:(frequency[r]))*log(mlesPoisson) - log(1-mlesPoissonExponential) -
+    #   lnFactorial
+    # 
+    # fitsCount <- exp(fitsCount)
     
     if (sum(fitsCount < 0) >= 1) fitsCheck = 0
     
