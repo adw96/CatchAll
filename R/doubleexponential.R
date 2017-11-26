@@ -3,6 +3,7 @@ DoubleExponentialModel <- function(s, r, observedCount, n,
                                    lnSFactorial, sumlnFFactorial, 
                                    maximumObservation) {
   
+  ## lnSFactorial?? sumlnFactorial??
   #### Fits
   numParams <- 3
   
@@ -25,6 +26,7 @@ DoubleExponentialModel <- function(s, r, observedCount, n,
                             (mle2 + (mle1 * mle2) - (mle3 * mle2) +
                                (mle3 * mle1)))
     
+  
     sHatTotal <- sHatSubset+(s[maximumObservation]-s[r])
     part1 <- lnSFactorial[r]-sumlnFFactorial[r]
     part2 <- sum(observedCount[1:r] * log((u * ((mle1/(1+mle1))^(frequency[1:r]))/mle1) +
@@ -40,11 +42,11 @@ DoubleExponentialModel <- function(s, r, observedCount, n,
     bounds <- GetConfidenceBounds(r, se$se, sHatSubset, s, maximumObservation)
     
     output <- data.frame("Model" = "DoubleExponential", 
-                         "Cutoff" = r, 
-                         "Estimate" = CheckOutput(sHatTotal), 
-                         "SE" = CheckOutput(se$se), 
-                         "LCB"= CheckOutput(bounds$lcb), 
-                         "UCB" = CheckOutput(bounds$ucb), 
+                         "Cutoff" = r, #wrong
+                         "Estimate" = CheckOutput(sHatTotal), #wrong
+                         "SE" = CheckOutput(se$se), #wrong
+                         "LCB"= CheckOutput(bounds$lcb), #wrong
+                         "UCB" = CheckOutput(bounds$ucb), #wrong
                          "chiSq" = CheckOutput(calculate_analysis_variables_result$chiSq),
                          "AIC" = CheckOutput(calculate_analysis_variables_result$AIC), 
                          "AICc" = CheckOutput(calculate_analysis_variables_result$AICc), 
@@ -70,11 +72,25 @@ DoubleExponentialFits <- function(r, n, s, frequency, observedCount) {
     mle2 <- mle$mlesSExp2
     u <- mle$u # 5:44 Tue: problem is with u calc
     mle3 <- (u*mle2*(1+mle1)) / (mle1 + (mle1 * mle2) + (u*mle2) - (u*mle1))
+    
     fitsCount <- s[r] * ((u * ((1.0 / mle1) *
                                  ((mle1 / (1.0 + mle1))^(1:frequency[r])))) +
                            ((1.0 - u) * ((1.0 / mle2) *
                                            ((mle2 / (1.0 + mle2))^(1:frequency[r])))))
-    fitsCheck <- ifelse(min(fitsCount) < 0, 0, 1) 
+    fitsCheck <- ifelse(min(fitsCount) < 0, 0, 1)
+    # all correct
+    # print("fitsCount")
+    # print(fitsCount)
+    # print("fitsCheck")
+    # print(fitsCheck)
+    # print("mle1")
+    # print(mle1)
+    # print("mle2")
+    # print(mle2)
+    # print("mle3")
+    # print(mle3)
+    # print("u")
+    # print(u)
     list("flag" = mle$flag, 
          "fitsCount"=fitsCount, "check"=fitsCheck,
          "mlesSExp1"=mle1, "mlesSExp2"=mle2, "mlesSExp3"=mle3, "u"=u)
@@ -267,9 +283,43 @@ DoubleExponentialStandardError <- function(t1, t2, t3, sHatSubset) {
     break
   }
   
+  #everything below is correct EXCEPT a
+  print("sHatSubset")
+  print(sHatSubset)
+  print("a00")
   print(a00)
+  print("a0")
   print(a0)
-  print(a)
+  print("a")
+  print(a) 
+  #expected:
+  A: System.Double[,]
+  #matrix version-basically double check everything except a31 and a32
+  # 0.179622088634146 0.140601862586965 -5.11579949172844E-07
+  # 0 0.110058200043004 -4.0044681730998E-07
+  # 0 0 1.45702595023964E-12
+  
+  # 0
+  # 0
+  # 0
+  # 0
+  # 0
+  # 0.179622088634146
+  # 0.140601862586965
+  # -5.11579949172844E-07 -yes
+  # 0
+  # 0
+  # 0.110058200043004
+  # -4.0044681730998E-07 -yes
+  # 0
+  # 0
+  # 0
+  # 1.45702595023964E-12
+  #actual 
+  # [,1]       [,2]          [,3]
+  # [1,] 0.1602196 0.06215330 -5.115799e-07
+  # [2,] 0.0000000 0.09578114 -4.004468e-07
+  # [3,] 0.0000000 0.00000000  1.594090e-02
   ## invert
   print(MatrixInversion(sHatSubset, a00, a0, a))
   MatrixInversion(sHatSubset, a00, a0, a)

@@ -51,8 +51,6 @@ CatchAll <- function(frequency_table) {
   ## Create input data
   ################################
   
-  # ohh i see, in the C# give the observed count already
-  # must calculate on own in R
   positive_frequency_table <- frequency_table[frequency_table[,2]>0, ]
 
   numberOfRows <- dim(positive_frequency_table)[1]
@@ -61,12 +59,12 @@ CatchAll <- function(frequency_table) {
     break
   }
   maximumObservation <- numberOfRows # yes, this is correct
-  
+
   bestGOF0  <- array(dim = c(4, 9, maximumObservation))
   bestAICc <- array(dim = c(4, 9, maximumObservation))
   GOFTest <- array(dim = c(9, maximumObservation))
   
-  # should be 2 columns??
+
   frequency <- positive_frequency_table[, 1]
   observedCount <- positive_frequency_table[, 2]
   print("frequency")
@@ -92,26 +90,14 @@ CatchAll <- function(frequency_table) {
   
   observedCount
   print("OBSERVED COUNT")
-  # observed count should be: ?? i guess this is diff data set
-  # 1	2532
-  # 2	1209
-  # 3	654
-  # 4	331
-  # 5	163
-  # 6	76
-  # 7	47
-  # 8	26
-  # 9	19
-  # 10	3
-  # 11	2
-  # 12	2
-  
+
   print(observedCount) 
   s <- cumsum(observedCount) 
   print("s");
   print(s);
   n <- cumsum(frequency * observedCount)
   
+  #hmmm-double check these
   logFactorial <- function(x) ifelse(x == 0, 0, sum(log(1:x)))
   
   lnSFactorial <- mapply(logFactorial, s)
@@ -143,22 +129,22 @@ CatchAll <- function(frequency_table) {
   bestCount <- rep(NA, 4)
   
   ################################
-  ## Poisson 
-  ################################
-  modelNumber <- 1
-  if (fMinFlag[modelNumber]==1) {
-    frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-    for (r in frequencyMinimum:maximumObservation) {
-      poisson_results <- PoissonModel(s, r, observedCount, n,
-                                   s0Init, frequency,
-                                   lnSFactorial, sumlnFFactorial, sumFlnFFactorial,
-                                   maximumObservation)
-      output <- rbind(output, poisson_results)
-    }
-  }
+  ## Poisson -works now
+  # ################################
+  # modelNumber <- 1
+  # if (fMinFlag[modelNumber]==1) {
+  #   frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+  #   for (r in frequencyMinimum:maximumObservation) {
+  #     poisson_results <- PoissonModel(s, r, observedCount, n,
+  #                                  s0Init, frequency,
+  #                                  lnSFactorial, sumlnFFactorial, sumFlnFFactorial,
+  #                                  maximumObservation)
+  #     output <- rbind(output, poisson_results)
+  #   }
+  # }
   
   ################################
-  ## Single Exponential 
+  ## Single Exponential -works now
   ################################
   # modelNumber <- 2
   # if (fMinFlag[modelNumber]==1) {
@@ -172,21 +158,22 @@ CatchAll <- function(frequency_table) {
   #   }
   # }
 
+  print(maximumObservation) #still 12, good
   ################################
-  ## Double Exponential 
+  ## Double Exponential -stimate       SE      LCB      UCB incorrect. only returns 1 too
   ################################
-  # modelNumber <- 3
-  # if (fMinFlag[modelNumber]==1) {
-  #   frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-  #   maximumObservation <- frequencyMinimum
-  #   for (r in frequencyMinimum:maximumObservation) {
-  #     double_exponential_results <- DoubleExponentialModel(s, r, observedCount, n,
-  #                                                          s0Init, frequency, 
-  #                                                          lnSFactorial, sumlnFFactorial, 
-  #                                                          maximumObservation)
-  #     output <- rbind(output, double_exponential_results)
-  #   }
-  # }
+  modelNumber <- 3
+  if (fMinFlag[modelNumber]==1) {
+    frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+   # maximumObservation <- frequencyMinimum #here
+    for (r in frequencyMinimum:maximumObservation) {
+      double_exponential_results <- DoubleExponentialModel(s, r, observedCount, n,
+                                                           s0Init, frequency,
+                                                           lnSFactorial, sumlnFFactorial,
+                                                           maximumObservation)
+      output <- rbind(output, double_exponential_results)
+    }
+  }
   
   ################################
   ## Triple Exponential 
@@ -203,7 +190,7 @@ CatchAll <- function(frequency_table) {
   #     output <- rbind(output, double_exponential_results)
   #   }
   # }
-  # 
+
   
   ################################
   ## TODO: the rest

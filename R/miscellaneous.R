@@ -15,6 +15,7 @@ CalculateAnalysisVariables <- function(part1, part2,
   ## calculate ChiSq, no binning
   
   # removed observedCountNoF0 ? not sure what that is
+  # incorrect chiSq return >:(
   chiSqAll <- ChiSqFunction(r, fitsCount, modelNumber, frequency, observedCount, s)
   return_variable$chiSq <- chiSqAll
   
@@ -47,6 +48,7 @@ CalculateAnalysisVariables <- function(part1, part2,
   return_variable
 }
 
+#line 1201 in C#
 ChiSqFunction <- function(r, fitsCount, modelNumber,
                   frequency, observedCount, s) {
   chiSqTemporary <- 0
@@ -56,6 +58,11 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     stop("first frequency is 0?")
   }
   
+  # print("frequency")
+  # print(frequency)
+  # 
+  # print("fitsCount")
+  # print(fitsCount)
   # this bizarre looking flow adjusts for non-contiguous frequencies
   for (t in 1:frequency[r]) {
     if (t == frequency[rr]) {
@@ -66,11 +73,16 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     }
   }
   sumFit <- sum(fitsCount)
+  print("sumFit")
+  print(sumFit)
   
   if(modelNumber<6) {
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
   }
+  
   #list("chiSq"=chiSqTemporary, "sumFit"=sumFit)
+  # print("chiSqTemporary")
+  # print(chiSqTemporary)
   chiSqTemporary
 }
 
@@ -78,31 +90,15 @@ ChiSqBin <- function(r, fitsExtended, bin,
                      df, numberParameters, 
                      frequency, s, observedCount) {
   extendedTau <- frequency[r] * 4
-  
-  if (r == 6 || r == 5) {
-    print("FITSEXTENDED")
-    print(fitsExtended)
-  }
-  # fits extended breaks here
-  # actual supposed fitsExtended[t] is 1/2
-  # expected:  155.5416317008
-  # actual: 311.0833
-  
+
   ## find terminal indices of binned cells
-  check <- rep(NA, extendedTau) #don't understand why this
-  # makes 3 different tables?? I thought it was only called
-  # once
-  # print("print check")
-  # print(check)
+  check <- rep(NA, extendedTau) 
   accumulatedFit <- 0
   df <- 0
   stop <- 0
   t <- 1
 
-  #something wrong in this loop when extendedTau is 24
-  # counter is 5, but it should also be 24
-  # so problem is in the while loop condition?
-  
+
   #print("extendedTau")
   #print(extendedTau)
   #print("t NOW")
@@ -111,38 +107,17 @@ ChiSqBin <- function(r, fitsExtended, bin,
   #is s incorrect??
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
     check[t] <- 0
-    if (r == 6) {
-      print("fitsExtended[t]")
-      print(fitsExtended[t])
-    }
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
     
-    #breaking at 
-    # is it r?? or s? r doesn't seem to change
-    # Ok I undersand where it's breaking but not sure how to fix it'
-    # breaking at s[r] - condition, does not reset accumulatedFit back to 0
-    # since s[r] is 716 and accumulatedFit is 847.1435 which is not greater
-    # than 5
-    # what is it SUPPOSED to be?? need to run C# code
-    if (r == 6) { #why only 6 does it break
-      print("r")
-      print(r)
-      print("s[r]")
-      print(s[r])
-      print("accumulatedFit")
-      print(accumulatedFit)
-      print("bin")
-      print(bin)
-      print("s[r] - accumulatedFit")
-      print(s[r]-accumulatedFit)
-      print("t")
-      print(t)
-      print("extended tau")
-      print(extendedTau)
-      print("+------------------------------+")
-    }
-
-    
+    # print("t")
+    # print(t)
+    # print("fitsExtended[t]")
+    # print(fitsExtended[t])
+    # print("accumulatedFit")
+    # print(accumulatedFit)
+    # print("extended tau")
+    # print(extendedTau)
+    # print("+------------------------------+")
     if (accumulatedFit >= bin  & (s[r] - accumulatedFit) >= bin) {
       check[t] <- 1
       df <- df + 1
@@ -150,25 +125,8 @@ ChiSqBin <- function(r, fitsExtended, bin,
       accumulatedFit <- 0
     }
     t <- t + 1
-    #print("accumulatedFit")
-    #print(accumulatedFit)
-    #print("bin")
-    #print(bin)
-    #print("accumulatedFit < bin") #BREAKS BUT WHY
-    #accumulated fit randomly goes from 0 -> 847.1435, could
-    # it be fitsExtended?
-    # print(accumulatedFit < bin)
   }
   
-  print("t")
-  print(t)
-  
-  #print("DONE")
-  #print("counter")
-  #print(counter)
-  #print("extendedTau")
-  #print(extendedTau)
- 
   ## todo: fix
  # check[t-1]<-0
   
@@ -186,9 +144,6 @@ ChiSqBin <- function(r, fitsExtended, bin,
         rr <- rr + 1
       } 
       cellFit <- cellFit + fitsExtended[t]
-      #print("t")
-      #print(t)
-      #print(check[t]) # null value here?
       if (check[t] == 1) {
         chiSqTemporary <- chiSqTemporary + (cellObservation-cellFit)^2/cellFit
         cellObservation <- 0
@@ -297,8 +252,7 @@ BracetRoot <- function(poissonConstant, momentsInit) {
 
 Math.Pow <- function(a, b) a^b
 
-# x should be an array
-# is this correct?? 
+# DOESN'T WORK FOR LNFACTORIAL 
 logFactorial <- function(x) {
   cumsum(log(x))
 }
