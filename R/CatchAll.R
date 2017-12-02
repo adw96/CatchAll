@@ -67,11 +67,11 @@ CatchAll <- function(frequency_table) {
 
   frequency <- positive_frequency_table[, 1]
   observedCount <- positive_frequency_table[, 2]
-  print("frequency")
-  print(frequency)
-  
-  print("POSITIVE FRQUENCY TABLE")
-  print(positive_frequency_table)
+  # print("frequency")
+  # print(frequency)
+  # 
+  # print("POSITIVE FRQUENCY TABLE")
+  # print(positive_frequency_table)
   
   frequencyTau10 <- max(which(frequency <= 10 & observedCount > 0))+1
   
@@ -89,12 +89,12 @@ CatchAll <- function(frequency_table) {
   fMinFlag[frequencyMaximum >= fMin & c(rep(FALSE, 5), rep(TRUE,2))] <- 1
   
   observedCount
-  print("OBSERVED COUNT")
+ # print("OBSERVED COUNT")
 
   print(observedCount) 
   s <- cumsum(observedCount) 
-  print("s");
-  print(s);
+  # print("s");
+  # print(s);
   n <- cumsum(frequency * observedCount)
   
   #hmmm-double check these
@@ -158,14 +158,14 @@ CatchAll <- function(frequency_table) {
   #   }
   # }
 
-  print(maximumObservation) #still 12, good
+
   ################################
   ## Double Exponential -stimate       SE      LCB      UCB incorrect. only returns 1 too
   ################################
   modelNumber <- 3
   if (fMinFlag[modelNumber]==1) {
     frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-   # maximumObservation <- frequencyMinimum #here
+    #change back to maximumObservation!!!
     for (r in frequencyMinimum:maximumObservation) {
       double_exponential_results <- DoubleExponentialModel(s, r, observedCount, n,
                                                            s0Init, frequency,
@@ -197,7 +197,7 @@ CatchAll <- function(frequency_table) {
   ################################
   
   
-  output
+ output
 }
 
 

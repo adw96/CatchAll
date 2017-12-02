@@ -250,6 +250,11 @@ BracetRoot <- function(poissonConstant, momentsInit) {
   result
 }
 
+
+pow <- function(a, b) {
+  a^b
+}
+
 Math.Pow <- function(a, b) a^b
 
 # DOESN'T WORK FOR LNFACTORIAL 
@@ -265,9 +270,11 @@ MatrixInversion <- function(sHat, a00, a0, A) {
   
   aInverse <- try(solve(A), silent = TRUE)
   
+  print("aInverse")
+  print(aInverse)
   if (class(aInverse) != "try-error") {
     answer <- a0 %*% aInverse %*% a0
-    
+    print("hey there")
     if (a00>answer) {
       result$answer <- sqrt(a00-answer)
       result$se <- sqrt(sHat)/answer
