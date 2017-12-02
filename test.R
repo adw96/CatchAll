@@ -4,16 +4,16 @@
 
 ## Create and set the working directory
 
-directory <- "/Users/teres/Documents/GitHub/Catch All REAL/CatchAll" ## your local copy here
+directory <- "/Users/adw96/Documents/software/CatchAll" ## your local copy here
 setwd(directory)
 
 # Download some required packages
-require(devtools)
-require(roxygen2)
-require(testthat)
-require(knitr)
-require(rstudioapi)
-require(Rd2roxygen)
+library(devtools)
+library(roxygen2)
+library(testthat)
+library(knitr)
+library(rstudioapi)
+library(Rd2roxygen)
 devtools::install_github("hadley/pkgdown")
 library(pkgdown)
 library(breakaway)
