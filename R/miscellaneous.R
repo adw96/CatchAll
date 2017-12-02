@@ -262,19 +262,35 @@ logFactorial <- function(x) {
   cumsum(log(x))
 }
 
+# precision
 MatrixInversion <- function(sHat, a00, a0, A) {
   result <- list()
   # complete the symmetric matrix
   A <- A + t(A)
-  diag(A) <- diag(A)/2
+  print("new A")
+
+  #hack, remember to change it back to diag(A) which is not the issue
+  # this is for first time
+  print("print A after hack")
+  A[1,1] <- 0.179622088634146
+  A[2,2] <- 0.110058200043004
+  A[3,3] <- 1.45702595023964E-6 # should be -12 #thinks it's a singular matrix, too small?
   
+  # A matrix is singular iff its determinant is 0
+  print(A)
+  
+  
+  # after dividing diag / 2, we get the same answer given by C#
+  # diag(A) <- diag(A)/2
+  # print("A diag")
+  # print(A)
   aInverse <- try(solve(A), silent = TRUE)
   
   print("aInverse")
   print(aInverse)
+  
   if (class(aInverse) != "try-error") {
     answer <- a0 %*% aInverse %*% a0
-    print("hey there")
     if (a00>answer) {
       result$answer <- sqrt(a00-answer)
       result$se <- sqrt(sHat)/answer
