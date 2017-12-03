@@ -5,10 +5,14 @@
 
 ## Create and set the working directory
 
-directory <- "/Users/teres/Documents/GitHub/Catch All REAL/CatchAll" ## your local copy here
+#C:\Users\teres\OneDrive\CatchAll
+#"/Users/teres/Documents/GitHub/Catch All REAL/CatchAll
+# directory <- "/Users/teres/OneDrive/CatchAll" ## your local copy here
+directory <- "/Users/teres/Documents/GitHub/Catch All REAL/CatchAll"
 setwd(directory)
 
 # Download some required packages
+
 library(devtools)
 library(roxygen2)
 library(testthat)
@@ -27,23 +31,20 @@ rm(list = ls(all = T))
 build()
 4+4
 install()
+
 5+5
 library(CatchAll)
 
-#how to run it on test.csv? maybe i'm getting confused on workflow
-#test_simple <- read.csv("test.csv", header = F)
-#simple <- CatchAll(test_simple)
 
-# Amy 17/11/23:
-test1 <- read.csv("tests/test_data.csv", header = F)
-CatchAll(test1)
-apples1 <- read.csv("tests/apples.csv", header = F)
-CatchAll(apples1)
-butterfly1 <- read.csv("tests/butterfly.csv", header = F)
-CatchAll(butterfly1)
+testData <- read.csv("test_data.csv", header = F)
 
-#CatchAll(apples) 
-CatchAll(apples) 
+CatchAll(testData)
+# apples1 <- read.csv("tests/apples.csv", header = F)
+# CatchAll(apples1)
+# butterfly1 <- read.csv("tests/butterfly.csv", header = F)
+# CatchAll(butterfly1)
+# #CatchAll(apples) 
+# CatchAll(apples) 
 
 
 ## another test set
@@ -52,8 +53,8 @@ for (file in list.files("R/", full.names = T)) source(file)
 
 print(file)
 print("hi")
-CatchAll(apples)
-#CatchAll(simple)
+#CatchAll(apples)
+CatchAll(testData)
 2+2
 
 
@@ -62,7 +63,6 @@ CatchAll(apples)
 create_package("CatchAll")
 build()
 install()
-#rename to test.csv?2
 
 test_data_set_1 <- read.csv("test.csv", header = F)
 x <- CatchAll(test_data_set_1)

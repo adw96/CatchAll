@@ -3,6 +3,7 @@ DoubleExponentialModel <- function(s, r, observedCount, n,
                                    lnSFactorial, sumlnFFactorial, 
                                    maximumObservation) {
   
+  ## lnSFactorial?? sumlnFactorial??
   #### Fits
   numParams <- 3
   
@@ -25,26 +26,36 @@ DoubleExponentialModel <- function(s, r, observedCount, n,
                             (mle2 + (mle1 * mle2) - (mle3 * mle2) +
                                (mle3 * mle1)))
     
+  
     sHatTotal <- sHatSubset+(s[maximumObservation]-s[r])
+    print("sHatTotal")
+    print(sHatTotal)
     part1 <- lnSFactorial[r]-sumlnFFactorial[r]
     part2 <- sum(observedCount[1:r] * log((u * ((mle1/(1+mle1))^(frequency[1:r]))/mle1) +
                                             ((1-u)*(mle2/(1+mle2))^(frequency[1:r])/mle2)))
     
     calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
                                                                       fitsExtended, 
-                                                                      s, 3, frequency, observedCount)  
-    
+                                                                     s, 3, frequency, observedCount)
+    print("mle1")
+    print(mle1)
+    print("mle2")
+    print(mle2)
+    print("mle3")
+    print(mle3)
+    print("s[r]")
+    print(s[r])
     ## standard error
     se <- DoubleExponentialStandardError(mle1, mle2, mle3, sHatSubset)
     if (r == 6) print(se)
     bounds <- GetConfidenceBounds(r, se$se, sHatSubset, s, maximumObservation)
     
     output <- data.frame("Model" = "DoubleExponential", 
-                         "Cutoff" = r, 
-                         "Estimate" = CheckOutput(sHatTotal), 
-                         "SE" = CheckOutput(se$se), 
-                         "LCB"= CheckOutput(bounds$lcb), 
-                         "UCB" = CheckOutput(bounds$ucb), 
+                         "Cutoff" = r, #wrong
+                         "Estimate" = CheckOutput(sHatTotal), #wrong
+                         "SE" = CheckOutput(se$se), #wrong
+                         "LCB"= CheckOutput(bounds$lcb), #wrong
+                         "UCB" = CheckOutput(bounds$ucb), #wrong
                          "chiSq" = CheckOutput(calculate_analysis_variables_result$chiSq),
                          "AIC" = CheckOutput(calculate_analysis_variables_result$AIC), 
                          "AICc" = CheckOutput(calculate_analysis_variables_result$AICc), 
@@ -70,11 +81,25 @@ DoubleExponentialFits <- function(r, n, s, frequency, observedCount) {
     mle2 <- mle$mlesSExp2
     u <- mle$u # 5:44 Tue: problem is with u calc
     mle3 <- (u*mle2*(1+mle1)) / (mle1 + (mle1 * mle2) + (u*mle2) - (u*mle1))
+    
     fitsCount <- s[r] * ((u * ((1.0 / mle1) *
                                  ((mle1 / (1.0 + mle1))^(1:frequency[r])))) +
                            ((1.0 - u) * ((1.0 / mle2) *
                                            ((mle2 / (1.0 + mle2))^(1:frequency[r])))))
-    fitsCheck <- ifelse(min(fitsCount) < 0, 0, 1) 
+    fitsCheck <- ifelse(min(fitsCount) < 0, 0, 1)
+    # all correct
+    # print("fitsCount")
+    # print(fitsCount)
+    # print("fitsCheck")
+    # print(fitsCheck)
+    # print("mle1")
+    # print(mle1)
+    # print("mle2")
+    # print(mle2)
+    # print("mle3")
+    # print(mle3)
+    # print("u")
+    # print(u)
     list("flag" = mle$flag, 
          "fitsCount"=fitsCount, "check"=fitsCheck,
          "mlesSExp1"=mle1, "mlesSExp2"=mle2, "mlesSExp3"=mle3, "u"=u)
@@ -148,29 +173,35 @@ DoubleExponentialStandardError <- function(t1, t2, t3, sHatSubset) {
           (t3-1-t1+t3*t1)/(1+t2)/(-t3*t2-1-t1+t3*t1), 
           -1/(-t3*t2-1-t1+t3*t1)*(-t2+t1))
   a <- matrix(0, nrow = 3, ncol = 3) 
+  print("t1")
+  print(t1)
+  print("t2")
+  print(t2)
+  print("t3")
+  print(t3)
   
   ## a11
   test <- 100
   k <- 0
+ # print(pow(2,2))
   
   while (test > criteria & k < maximumIteration) {
-    a11 <- -t3*((t1/(1+t1))^k)*(t3*((t1/(1+t1))^k)*k+2*k*t1*t3*
-                                          ((t1/(1+t1))^k)*t2-(t1*t1)*t3*((t1/(1+t1))^k)*t2+2*k*t1*t3*
-                                          ((t1/(1+t1))^k)-5*k*t1*(t2/(1+t2)^k)*t3-4*k*(t1*t1)*
-                                          (t2/(1+t2)^k)*t3+k*k*(t2/(1+t2)^k)*t3*t1+k*t3*
-                                          ((t1/(1+t1))^k)*t2-(t1*t1)*t3*((t1/(1+t1))^k)+2*(t1*t1)*
-                                          (t2/(1+t2)^k)*t3+2*(t1^3)*(t2/(1+t2)^k)*t3+5*k*t1*
-                                          (t2/(1+t2)^k)+4*k*(t1*t1)*(t2/(1+t2)^k)+k*k*(t2/(1+t2)^k)*t3-k*k*
-                                          (t2/(1+t2)^k)*t1-k*(t2/(1+t2)^k)*t3-2*(t1*t1)*(t2/(1+t2)^k)-2*
-                                          (t1^3)*(t2/(1+t2)^k)-k*k*(t2/(1+t2)^k)+k*(t2/(1+t2)^k))/
-      (-t3*((t1/(1+t1))^k)-t3*((t1/(1+t1))^k)*t2+(t2/(1+t2)^k)*t3-(t2/(1+t2)^k)-
-         (t2/(1+t2)^k)*t1+(t2/(1+t2)^k)*t3*t1)*(t1^(-2))*((1 + t1)^ (-3))
-    
+    a11 <- -t3 * pow((t1 / (1 + t1)), k) * (t3 * pow((t1 / (1 + t1)), k) * k + 2 * k * t1 * t3 *
+                                                   pow((t1 / (1 + t1)), k) * t2 - (t1 * t1) * t3 * pow((t1 / (1 + t1)), k) * t2 + 2 * k * t1 * t3 *
+                                                   pow((t1 / (1 + t1)), k) - 5 * k * t1 * pow(t2 / (1 + t2), k) * t3 - 4 * k * (t1 * t1) *
+                                                   pow(t2 / (1 + t2), k) * t3 + k * k * pow(t2 / (1 + t2), k) * t3 * t1 + k * t3 *
+                                                   pow((t1 / (1 + t1)), k) * t2 - (t1 * t1) * t3 * pow((t1 / (1 + t1)), k) + 2 * (t1 * t1) *
+                                                   pow(t2 / (1 + t2), k) * t3 + 2 * pow(t1, 3) * pow(t2 / (1 + t2), k) * t3 + 5 * k * t1 *
+                                                   pow(t2 / (1 + t2), k) + 4 * k * (t1 * t1) * pow(t2 / (1 + t2), k) + k * k * pow(t2 / (1 + t2), k) * t3 - k * k *
+                                                   pow(t2 / (1 + t2), k) * t1 - k * pow(t2 / (1 + t2), k) * t3 - 2 * (t1 * t1) * pow(t2 / (1 + t2), k) - 2 *
+                                                   pow(t1, 3) * pow(t2 / (1 + t2), k) - k * k * pow(t2 / (1 + t2), k) + k * pow(t2 / (1 + t2), k)) / (-t3 *
+                                                                                                                                                                            pow((t1 / (1 + t1)), k) - t3 * pow((t1 / (1 + t1)), k) * t2 + pow(t2 / (1 + t2), k) * t3 - pow(t2 / (1 + t2), k) -
+                                                                                                                                                                            pow(t2 / (1 + t2), k) * t1 + pow(t2 / (1 + t2), k) * t3 * t1) * pow(t1, (-2)) * pow((1 + t1), (-3));
     if (k > 0) test <- abs(a11/a[1,1])
     a[1,1] <- a[1,1] + a11
     k <- k+1
   }
-  
+
   if (k == maximumIteration) {
     return(list("flag"=1))
     break
@@ -179,10 +210,22 @@ DoubleExponentialStandardError <- function(t1, t2, t3, sHatSubset) {
   ## a12
   test <- 1
   k <- 0
+  # pow((t1 / (1 + t1)), k) * t3 * (-t1 + k) * (-1 + t3) *
+  #   pow((t2 / (1 + t2)), k) * (-t2 + k) / t2 / (1 + t2) / t1 / (1 + t1) /
+  #   (-t3 * pow((t1 / (1 + t1)), k) - t3 *
+  # 
+  #       pow((t1 / (1 + t1)), k) * t2 + pow((t2 / (1 + t2)), k) * t3 - pow((t2 / (1 + t2)), k) -
+  # 
+  #       pow((t2 / (1 + t2)), k) * t1 + pow((t2 / (1 + t2)), k) * t3 * t1);
   while (test > criteria  &  k < maximumIteration) {
-    a12 <- (t1/(1+t1))^(k) * t3 * (-t1+k) * (-1+t3) * (t2/(1+t2))^(k) * (-t2+k)/t2/(1+t2)/t1/(1+t1) / (-t3 * ((1+t1)^(k))
-            -t3 * (-t3 * (1+t1)^(k)) * t2 + ((t2/(1+t2))^(k)) * t3-(t2/(1+t2))^(k) - ((t2/(1+t2))^(k)) * ((t2/(1+t2))^k) * t3 * t1)
+  
+    a12 <- pow((t1 / (1 + t1)), k) * t3 * (-t1 + k) * (-1 + t3) *
+      pow((t2 / (1 + t2)), k) * (-t2 + k) / t2 / (1 + t2) / t1 / (1 + t1) / (-t3 * pow((t1 / (1 + t1)), k) - t3 *
+                                                                                    pow((t1 / (1 + t1)), k) * t2 + pow((t2 / (1 + t2)), k) * t3 - pow((t2 / (1 + t2)), k) -
+                                                                                    pow((t2 / (1 + t2)), k) * t1 + pow((t2 / (1 + t2)), k) * t3 * t1);
+    
     if (k > 0) test <- abs(a12/a[1,2])
+
     a[1,2] <- a[1,2] + a12
     k <- k+1
   }  
@@ -211,18 +254,18 @@ DoubleExponentialStandardError <- function(t1, t2, t3, sHatSubset) {
   test <- 1
   k <- 0
   while (test > criteria & k < maximumIteration) {
-    a22 <- (-1+t3)*((t2/(1+t2))^k)*(-k*t1*((t2/(1+t2))^k)+k*
-                                              ((t2/(1+t2))^k)*t3-t3*(t1/(1+t1)^k)*k+k*k*t3*(t1/(1+t1)^k)-2*k*t2*
-                                              ((t2/(1+t2))^k)+(t2*t2)*((t2/(1+t2))^k)*t1-(t2*t2)*((t2/(1+t2))^k)*t3+2*
-                                              (t2^3)*t3*(t1/(1+t1)^k)+2*(t2*t2)*t3*(t1/(1+t1)^k)+2*k*t2*
-                                              ((t2/(1+t2))^k)*t3-4*k*(t2*t2)*t3*(t1/(1+t1)^k)-5*k*t3*
-                                              (t1/(1+t1)^k)*t2-(t2*t2)*((t2/(1+t2))^k)*t3*t1-2*k*t2*
-                                              ((t2/(1+t2))^k)*t1-k*((t2/(1+t2))^k)+(t2*t2)*((t2/(1+t2))^k)+k*k*t3*
-                                              (t1/(1+t1)^k)*t2+2*k*t2*((t2/(1+t2))^k)*t3*t1+k*t1*
-                                              ((t2/(1+t2))^k)*t3)/(t3*(t1/(1+t1)^k)+t3*(t1/(1+t1)^k)*t2-
-                                                                             ((t2/(1+t2))^k)*t3+((t2/(1+t2))^k)+((t2/(1+t2))^k)*t1-
-                                                                             ((t2/(1+t2))^k)*t3*t1)*(t2^(-2))*((1+t2)^(-3))
     
+    a22 <- (-1 + t3) * pow((t2 / (1 + t2)), k) * (-k * t1 * pow((t2 / (1 + t2)), k) + k *
+                                                         pow((t2 / (1 + t2)), k) * t3 - t3 * pow(t1 / (1 + t1), k) * k + k * k * t3 * pow(t1 / (1 + t1), k) - 2 * k * t2 *
+                                                         pow((t2 / (1 + t2)), k) + (t2 * t2) * pow((t2 / (1 + t2)), k) * t1 - (t2 * t2) * pow((t2 / (1 + t2)), k) * t3 + 2 *
+                                                         pow(t2, 3) * t3 * pow(t1 / (1 + t1), k) + 2 * (t2 * t2) * t3 * pow(t1 / (1 + t1), k) + 2 * k * t2 *
+                                                         pow((t2 / (1 + t2)), k) * t3 - 4 * k * (t2 * t2) * t3 * pow(t1 / (1 + t1), k) - 5 * k * t3 *
+                                                         pow(t1 / (1 + t1), k) * t2 - (t2 * t2) * pow((t2 / (1 + t2)), k) * t3 * t1 - 2 * k * t2 *
+                                                         pow((t2 / (1 + t2)), k) * t1 - k * pow((t2 / (1 + t2)), k) + (t2 * t2) * pow((t2 / (1 + t2)), k) + k * k * t3 *
+                                                         pow(t1 / (1 + t1), k) * t2 + 2 * k * t2 * pow((t2 / (1 + t2)), k) * t3 * t1 + k * t1 *
+                                                         pow((t2 / (1 + t2)), k) * t3) / (t3 * pow(t1 / (1 + t1), k) + t3 * pow(t1 / (1 + t1), k) * t2 -
+                                                                                                 pow((t2 / (1 + t2)), k) * t3 + pow((t2 / (1 + t2)), k) + pow((t2 / (1 + t2)), k) * t1 -
+                                                                                                 pow((t2 / (1 + t2)), k) * t3 * t1) * pow(t2, (-2)) * pow((1 + t2), (-3))
     if (k > 0) test <- abs(a22/a[2,2])
     a[2,2] <- a[2,2] + a22
     k <- k+1
@@ -252,12 +295,11 @@ DoubleExponentialStandardError <- function(t1, t2, t3, sHatSubset) {
   test <- 1
   k <- 0
   while (test > criteria & k < maximumIteration) {
-    a33 <- ((((t1 / (1 + t1))^ k) + ((t1 / (1 + t1)) ^ k) * t2 - (t2 / (1 + t2) ^ k) -
-                      (t2 / (1 + t2)^ k) * t1) ^ 2) / (1 + t2) / (1 + t1) / (t3 * ((t1 / (1 + t1))^ k) + t3 *
-                                                                                     ((t1 / (1 + t1)) ^ k) * t2 -(t2 / (1 + t2) ^ k) * t3 + (t2 / (1 + t2) ^ k) 
-                                                                           + (t2 / (1 + t2) ^ k) * t1 -
-                                                                                     (t2 / (1 + t2) ^ k) * t3 * t1)
     
+    a33 <- pow(pow((t1 / (1 + t1)), k) + pow((t1 / (1 + t1)), k) * t2 - pow(t2 / (1 + t2), k) -
+                      pow(t2 / (1 + t2), k) * t1, 2) / (1 + t2) / (1 + t1) / (t3 * pow((t1 / (1 + t1)), k) + t3 *
+                                                                                     pow((t1 / (1 + t1)), k) * t2 - pow(t2 / (1 + t2), k) * t3 + pow(t2 / (1 + t2), k) + pow(t2 / (1 + t2), k) * t1 -
+                                                                                     pow(t2 / (1 + t2), k) * t3 * t1);
     if (k > 0) test <- abs(a33/a[3,3])
     a[3,3] <- a[3,3] + a33
     k <- k+1
@@ -267,11 +309,20 @@ DoubleExponentialStandardError <- function(t1, t2, t3, sHatSubset) {
     break
   }
   
+  #everything below is correct EXCEPT a
+  print("sHatSubset")
+  print(sHatSubset) #this is also wrong
+  print("a00")
   print(a00)
+  print("a0")
   print(a0)
-  print(a)
+  print("a")
+  print(a) 
+
   ## invert
+  print("inverting now")
   print(MatrixInversion(sHatSubset, a00, a0, a))
+  print("print invert done")
   MatrixInversion(sHatSubset, a00, a0, a)
   
 }
