@@ -269,26 +269,37 @@ MatrixInversion <- function(sHat, a00, a0, A) {
   A <- A + t(A)
   print("new A")
 
-  #hack, remember to change it back to diag(A) which is not the issue
-  # this is for first time
   print("print A after hack")
-  A[1,1] <- 0.179622088634146
-  A[2,2] <- 0.110058200043004
-  A[3,3] <- 1.45702595023964E-6 # should be -12 #thinks it's a singular matrix, too small?
-  
+  # A[1,1] <- 0.179622088634146
+  # A[2,2] <- 0.110058200043004
+  # A[3,3] <- 1.45702595023964E-6 # should be -12 #thinks it's a singular matrix, too small?
+  # 
   # A matrix is singular iff its determinant is 0
   print(A)
   
   
   # after dividing diag / 2, we get the same answer given by C#
-  # diag(A) <- diag(A)/2
-  # print("A diag")
-  # print(A)
+  diag(A) <- diag(A)/2
+  print("A diag")
+  print(A)
+  
+  #multiply every element by 100
+  
+  reallyDummy <- function(x) x * 1E100
+  
+  #A <- apply(A, 2, function(x) x*1E10, A)
+  A[] <- vapply(A, reallyDummy, numeric(1))
+ # A <- mapply(reallyDummy, A)
+  print("A after mapply")
+  print(A)
   aInverse <- try(solve(A), silent = TRUE)
   
+  #divide every element by 100 to resolve singular matrix problems
   print("aInverse")
   print(aInverse)
   
+  A <- apply(A, 1E10, div)
+ 
   if (class(aInverse) != "try-error") {
     answer <- a0 %*% aInverse %*% a0
     if (a00>answer) {
