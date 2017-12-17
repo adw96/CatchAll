@@ -18,9 +18,13 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   u1 <- fits$u1
   u2 <- fits$u2
   
-  #need to fix all references to mle1...mle5 below
   fitsExtended <- rep(NA, frequency[r]*4)
   fitsExtended[1:frequency[r]] <- fits$fitsCount
+  #(frequency[r] + 1
+  print("hey hey hey yo 5yo yo")
+  #change to pow later
+  
+  print(paste("frequency[r]*4", frequency[r]*4, sep="   "))
   fitsExtended[(frequency[r] + 1):(frequency[r]*4)] <- 
     s[r] * ((u1 * ((1.0 / mle1) * ((mle1 / (1.0 + mle1)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
               (u2 * ((1.0 / mle2) * ((mle2 / (1.0 + mle2)) ^ (frequency[r] + 1):(frequency[r]*4)))) +

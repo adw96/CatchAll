@@ -90,7 +90,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
                      df, numberParameters, 
                      frequency, s, observedCount) {
   extendedTau <- frequency[r] * 4
-
+  
   ## find terminal indices of binned cells
   check <- rep(NA, extendedTau) 
   accumulatedFit <- 0
@@ -99,12 +99,23 @@ ChiSqBin <- function(r, fitsExtended, bin,
   t <- 1
 
 
-  #print("extendedTau")
-  #print(extendedTau)
-  #print("t NOW")
-  #print(t)
+  print("extendedTau")
+  print(extendedTau)
+  print("check")
+  print(check)
+  print("r")
+  print(r)
+  print("frequency")
+  print(frequency)
+  print("bin")
+  print(bin)
+  print("s")
+  print(s)
+  print("fitsExtended")
+  print(fitsExtended)
  
-  #is s incorrect??
+  
+  #doesn't go through all the extendedTau for triple exponential
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
     check[t] <- 0
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
@@ -125,10 +136,17 @@ ChiSqBin <- function(r, fitsExtended, bin,
       accumulatedFit <- 0
     }
     t <- t + 1
+    tmp <- paste("accumulatedFit", accumulatedFit, sep=" ")
+    print(tmp)
+    dumb <- paste("s[r] - accumulatedFit", s[r] - accumulatedFit, sep=" ")
+    print(dumb)
   }
   
   ## todo: fix
  # check[t-1]<-0
+  
+  print("check check")
+  print(check)
   
   ## check for enough data for bininng and positive df
   chiSqTemporary <- 0
@@ -282,14 +300,11 @@ MatrixInversion <- function(sHat, a00, a0, A) {
   print("A diag")
   print(A)
   
-  aInverse <- try(solve(A, tol = 1e-30), silent = TRUE)
+  #tol = 1e-17
+  #5.04722e-22
+  aInverse <- try(solve(A, tol = 0), silent = TRUE)
   print("AInverse after multiplication")
   print(aInverse)
-  
-  #aInverse <- matrix_apply(aInverse, function(x, y) x / 1E100)
-  print("AInverse after division")
-  print(aInverse)
-  
 
   if (class(aInverse) != "try-error") {
     answer <- a0 %*% aInverse %*% a0
