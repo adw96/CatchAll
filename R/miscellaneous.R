@@ -255,7 +255,14 @@ pow <- function(a, b) {
   a^b
 }
 
-Math.Pow <- function(a, b) a^b
+#really dumb, delete later, still not understanding the apply family
+matrix_apply <- function(m, f) {
+  m2 <- m
+  for (r in seq(nrow(m2)))
+    for (c in seq(ncol(m2)))
+      m2[[r, c]] <- f(m2[[r,c]], c)
+    return(m2)
+}
 
 # DOESN'T WORK FOR LNFACTORIAL 
 logFactorial <- function(x) {
@@ -268,38 +275,22 @@ MatrixInversion <- function(sHat, a00, a0, A) {
   # complete the symmetric matrix
   A <- A + t(A)
   print("new A")
-
-  print("print A after hack")
-  # A[1,1] <- 0.179622088634146
-  # A[2,2] <- 0.110058200043004
-  # A[3,3] <- 1.45702595023964E-6 # should be -12 #thinks it's a singular matrix, too small?
-  # 
-  # A matrix is singular iff its determinant is 0
   print(A)
-  
   
   # after dividing diag / 2, we get the same answer given by C#
   diag(A) <- diag(A)/2
   print("A diag")
   print(A)
   
-  #multiply every element by 100
-  
-  reallyDummy <- function(x) x * 1E100
-  
-  #A <- apply(A, 2, function(x) x*1E10, A)
-  A[] <- vapply(A, reallyDummy, numeric(1))
- # A <- mapply(reallyDummy, A)
-  print("A after mapply")
-  print(A)
-  aInverse <- try(solve(A), silent = TRUE)
-  
-  #divide every element by 100 to resolve singular matrix problems
-  print("aInverse")
+  aInverse <- try(solve(A, tol = 1e-30), silent = TRUE)
+  print("AInverse after multiplication")
   print(aInverse)
   
-  A <- apply(A, 1E10, div)
- 
+  #aInverse <- matrix_apply(aInverse, function(x, y) x / 1E100)
+  print("AInverse after division")
+  print(aInverse)
+  
+
   if (class(aInverse) != "try-error") {
     answer <- a0 %*% aInverse %*% a0
     if (a00>answer) {
