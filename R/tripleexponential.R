@@ -10,6 +10,8 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
     
   fits <- TripleExponentialFits(r, n, s, frequency, observedCount)
   print("cats")
+  #incorrect mles1--5
+
   mle1 <- fits$mlesSExp1
   mle2 <- fits$mlesSExp2
   mle3 <- fits$mlesSExp3
@@ -18,15 +20,29 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   u1 <- fits$u1
   u2 <- fits$u2
   
-  #need to fix all references to mle1...mle5 below
   fitsExtended <- rep(NA, frequency[r]*4)
   fitsExtended[1:frequency[r]] <- fits$fitsCount
+  #(frequency[r] + 1
+  print("hey hey hey yo 5yo yo")
+  #change to pow later
+  
+  print("s")
+  print(s)
+  print(paste("mle1", mle1, sep="   "))
+  print(paste("mle2", mle2, sep="   "))
+  print(paste("mle3", mle3, sep="   "))
+  print(paste("mle4", mle4, sep="   "))
+  print(paste("mle5", mle5, sep="   "))
+  print(paste("u1", u1, sep="   "))
+  print(paste("u2", u2, sep="   "))
+  print(paste("frequency[r]*4", frequency[r]*4, sep="   "))
   fitsExtended[(frequency[r] + 1):(frequency[r]*4)] <- 
     s[r] * ((u1 * ((1.0 / mle1) * ((mle1 / (1.0 + mle1)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
               (u2 * ((1.0 / mle2) * ((mle2 / (1.0 + mle2)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
               ((1.0 - u1 - u2) * ((1.0 / mle3) *
                                     ((mle3 / (1.0 + mle3)) ^ (frequency[r] + 1):(frequency[r]*4)))))
-  
+  print("fitsExtended2")
+  print(fitsExtended)
   sHatSubset <- s[r] * (((1.0 + mle1) * (1.0 + mle2) *
                            (1.0 + mle3)) / ((-mle5 * mle3 * mle1) +
                                                    (mle1 * mle2 * mle3) + (mle5 * mle1 * mle2) +
@@ -72,14 +88,8 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
                        "T7"=NA)
 }
 
-
-
-
-
-
-#ARE THESE THE RIGHT PARAMS?? not sure, what do r and n and s mean
-# we don't need to pass in mlesExp1 -> 3 because we calculated it in the MLE function
 TripleExponentialFits <- function(r, n, s, frequency, observedCount) {
+  print("hellllooooooooooooooooooooooooooooooooooooooooooooooo")
   mle <- MLETripleExponential(r, n, s, frequency, observedCount)
   
   print("mle from MLETripleExponential")
@@ -115,35 +125,54 @@ TripleExponentialFits <- function(r, n, s, frequency, observedCount) {
          "mlesSExp1"=mle1, "mlesSExp2"=mle2, "mlesSExp3"=mle3, "mlesSExp4"=mle4, "mlesSExp5"=mle5, "u1"=u1, "u2"=u2)
     
   } else {
-    
     list("flag" = mle$Flag, "check" = 0)
   }
   
 }
 
 MLETripleExponential <- function(r, n, s, frequency, observedCount) {
-  
+  #all correct
+  # print("n")
+  # print(n)
+  # print("r")
+  # print(r)
+  # print("s")
+  # print(s)
+  print("frequency")
+  print(frequency)
   results <- list()
   
   u1 <- 0.33
   u2 <- 0.33
   
+  #ks, rs, k1s not correct
   k <- round(frequency[r]*0.5)
-  r1 <- max(which(frequency <= k)) - 1
-  k1 <- max(which(frequency < frequency[r1]))
+  #subtracted -1 from max for r1..r3
+  #made the k1...k3 <= instead of <
+  r1 <- max(which(frequency <= k))
+  k1 <- max(which(frequency <= frequency[r1]))
+  print(paste("k", k, sep="   "))
+  print(paste("r1", r1, sep="   "))
+  print(paste("k1", k1, sep="   "))
   
   k <- round(frequency[r]*0.25)
-  r2 <- max(which(frequency <= k)) - 1
+  r2 <- max(which(frequency <= k))
   #not sure I understand this fully or why it's different than above
-  k2 <- ifelse(sum((frequency < frequency[r2])) > 0, max(which(frequency < frequency[r2])), 1)
+  k2 <- ifelse(sum((frequency < frequency[r2])) > 0, max(which(frequency <= frequency[r2])), 1)
+  print(paste("k", k, sep="   "))
+  print(paste("r2", r2, sep="   "))
+  print(paste("k2", k2, sep="   "))
   
   k <- round(frequency[r]*0.75)
-  r3 <- max(which(frequency <= k)) - 1
-  k3 <- max(which(frequency < frequency[r3]))
+  r3 <- max(which(frequency <= k))
+  k3 <- max(which(frequency <= frequency[r3]))
+  print(paste("k", k, sep="   "))
+  print(paste("r3", r3, sep="   "))
+  print(paste("k3", k3, sep="   "))
   
   if (n[k1] != s[k1] & (s[k3] != s[k2])) {
     t1 <- n[k1]/s[k1]-1
-    t2 <- (n[r]-n[k2])/(s[r]-s[k2])-1
+    t2 <- ((n[k3] - n[k2]) / (s[k3] - s[k2])) - 1;
     t3 <- ((n[r] - n[k1]) / (s[r] - s[k1])) - 1;
     
     part2 <- sum(observedCount[1:r] * log((u1 * ((1/t1) * (t1/1+t1)^(frequency[1:r]))) 
@@ -155,6 +184,12 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
     part2old <- part2
     k <- 0
     
+    print(paste("t1", t1, sep=" "))
+    print(paste("t2", t2, sep=" ")) #t2 is incorrect, it's 2.92752505782575"
+    # but should be  2.72303921568627 . t1 and t3 are correct
+    print(paste("t3", t3, sep=" "))
+    print(paste("part2", part2, sep=" "))
+   
     iteration <- 1
     # confused where 1e6 came from
     while(deltaPart2 > 1e-10 & iteration < 1e6) {
@@ -187,6 +222,7 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
       t2 <- t2part1/t2part2-1
       t3 <- t3part1/t3part2-1
       
+   
       part2 <-  sum(observedCount[1:r] * log((u1 * ((1.0 / t1) *
                                                       ((t1 / (1.0 + t1))^frequency[1:r]))) +
                                                (u2 * ((1.0 / t2) *
@@ -196,6 +232,13 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
       part2old <- part2
       iteration <- iteration + 1
     }
+    #wrong
+    # t1: 0.993645187507376
+    # t2: 0.993650399865099
+    # t3: 0.99365062836378
+    print(paste("t1", t1, sep=" "))
+    print(paste("t2", t2, sep=" "))
+    print(paste("t3", t3, sep=" "))
     
     #where is 1e6 from??
     if (iteration == 1e6) warning("Triple Exp didn't converge?")
@@ -209,6 +252,8 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
   } else {
     results$flag <- 0
   }
+  print("results!!!")
+  print(results)
   results
 }
 

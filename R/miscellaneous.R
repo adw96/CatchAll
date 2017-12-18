@@ -90,7 +90,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
                      df, numberParameters, 
                      frequency, s, observedCount) {
   extendedTau <- frequency[r] * 4
-
+  
   ## find terminal indices of binned cells
   check <- rep(NA, extendedTau) 
   accumulatedFit <- 0
@@ -99,12 +99,23 @@ ChiSqBin <- function(r, fitsExtended, bin,
   t <- 1
 
 
-  #print("extendedTau")
-  #print(extendedTau)
-  #print("t NOW")
-  #print(t)
+  print("extendedTau")
+  print(extendedTau)
+  print("check")
+  print(check)
+  print("r")
+  print(r)
+  print("frequency")
+  print(frequency)
+  print("bin")
+  print(bin)
+  print("s")
+  print(s)
+  print("fitsExtended")
+  print(fitsExtended)
  
-  #is s incorrect??
+  
+  #doesn't go through all the extendedTau for triple exponential
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
     check[t] <- 0
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
@@ -125,10 +136,17 @@ ChiSqBin <- function(r, fitsExtended, bin,
       accumulatedFit <- 0
     }
     t <- t + 1
+    tmp <- paste("accumulatedFit", accumulatedFit, sep=" ")
+    print(tmp)
+    dumb <- paste("s[r] - accumulatedFit", s[r] - accumulatedFit, sep=" ")
+    print(dumb)
   }
   
   ## todo: fix
  # check[t-1]<-0
+  
+  print("check check")
+  print(check)
   
   ## check for enough data for bininng and positive df
   chiSqTemporary <- 0
@@ -255,7 +273,14 @@ pow <- function(a, b) {
   a^b
 }
 
-Math.Pow <- function(a, b) a^b
+#really dumb, delete later, still not understanding the apply family
+matrix_apply <- function(m, f) {
+  m2 <- m
+  for (r in seq(nrow(m2)))
+    for (c in seq(ncol(m2)))
+      m2[[r, c]] <- f(m2[[r,c]], c)
+    return(m2)
+}
 
 # DOESN'T WORK FOR LNFACTORIAL 
 logFactorial <- function(x) {
@@ -268,27 +293,19 @@ MatrixInversion <- function(sHat, a00, a0, A) {
   # complete the symmetric matrix
   A <- A + t(A)
   print("new A")
-
-  #hack, remember to change it back to diag(A) which is not the issue
-  # this is for first time
-  print("print A after hack")
-  A[1,1] <- 0.179622088634146
-  A[2,2] <- 0.110058200043004
-  A[3,3] <- 1.45702595023964E-6 # should be -12 #thinks it's a singular matrix, too small?
-  
-  # A matrix is singular iff its determinant is 0
   print(A)
   
-  
   # after dividing diag / 2, we get the same answer given by C#
-  # diag(A) <- diag(A)/2
-  # print("A diag")
-  # print(A)
-  aInverse <- try(solve(A), silent = TRUE)
+  diag(A) <- diag(A)/2
+  print("A diag")
+  print(A)
   
-  print("aInverse")
+  #tol = 1e-17
+  #5.04722e-22
+  aInverse <- try(solve(A, tol = 0), silent = TRUE)
+  print("AInverse after multiplication")
   print(aInverse)
-  
+
   if (class(aInverse) != "try-error") {
     answer <- a0 %*% aInverse %*% a0
     if (a00>answer) {
