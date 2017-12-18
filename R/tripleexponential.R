@@ -172,7 +172,7 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
   
   if (n[k1] != s[k1] & (s[k3] != s[k2])) {
     t1 <- n[k1]/s[k1]-1
-    t2 <- (n[r]-n[k2])/(s[r]-s[k2])-1
+    t2 <- ((n[k3] - n[k2]) / (s[k3] - s[k2])) - 1;
     t3 <- ((n[r] - n[k1]) / (s[r] - s[k1])) - 1;
     
     part2 <- sum(observedCount[1:r] * log((u1 * ((1/t1) * (t1/1+t1)^(frequency[1:r]))) 
@@ -184,6 +184,12 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
     part2old <- part2
     k <- 0
     
+    print(paste("t1", t1, sep=" "))
+    print(paste("t2", t2, sep=" ")) #t2 is incorrect, it's 2.92752505782575"
+    # but should be  2.72303921568627 . t1 and t3 are correct
+    print(paste("t3", t3, sep=" "))
+    print(paste("part2", part2, sep=" "))
+   
     iteration <- 1
     # confused where 1e6 came from
     while(deltaPart2 > 1e-10 & iteration < 1e6) {
@@ -226,6 +232,10 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
       part2old <- part2
       iteration <- iteration + 1
     }
+    #wrong
+    # t1: 0.993645187507376
+    # t2: 0.993650399865099
+    # t3: 0.99365062836378
     print(paste("t1", t1, sep=" "))
     print(paste("t2", t2, sep=" "))
     print(paste("t3", t3, sep=" "))
