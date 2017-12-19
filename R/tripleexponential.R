@@ -44,6 +44,7 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   #             ((1.0 - u1 - u2) * ((1.0 / mle3) *
   #                                   ((mle3 / (1.0 + mle3)) ^ (frequency[r] + 1):(frequency[r]*4)))))
   
+  #change to nonforloop later
   for(t in (frequency[r]+1):(frequency[r]*4)){
     fitsExtended[t] = s[r] *
       ((u1 * ((1.0 / mle1) * pow((mle1 / (1.0 + mle1)), t))) +
@@ -51,8 +52,8 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
          ((1.0 - u1 - u2) * ((1.0 / mle3) *
                                pow((mle3 / (1.0 + mle3)), t))))
   }
-  print("fitsExtended2")
-  print(fitsExtended)
+  # print("fitsExtended2")
+  # print(fitsExtended)
   sHatSubset <- s[r] * (((1.0 + mle1) * (1.0 + mle2) *
                            (1.0 + mle3)) / ((-mle5 * mle3 * mle1) +
                                                    (mle1 * mle2 * mle3) + (mle5 * mle1 * mle2) +
@@ -64,11 +65,13 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   sHatTotal <- sHatSubset+(s[maximumObservation]-s[r])
   part1 <- lnSFactorial[r]-sumlnFFactorial[r]
   
-  part2 <- (observedCount[1:r] * log(
+  part2 <- sum((observedCount[1:r] * log(
     (u1 * ((1.0 / mle1) * ((mle1 / (1.0 + mle1)) ^frequency[1:r]))) +
       (u2 * ((1.0 / mle2) * ((mle2 / (1.0 + mle2)) ^ frequency[1:r]))) +
       ((1.0 - u1 - u2) * ((1.0 / mle3) *
-                            ((mle3 / (1.0 + mle3)) ^ frequency[1:r])))))
+                            ((mle3 / (1.0 + mle3)) ^ frequency[1:r]))))))
+  
+  print(paste("part 2 here: ", part2, sep=" "))
   
   # model number 4
   calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
@@ -100,15 +103,12 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
 }
 
 TripleExponentialFits <- function(r, n, s, frequency, observedCount) {
-  print("hellllooooooooooooooooooooooooooooooooooooooooooooooo")
   mle <- MLETripleExponential(r, n, s, frequency, observedCount)
   
   print("mle from MLETripleExponential")
   print(mle)
   if (mle$flag == 1) {
     #access the elements from mle
-    print("hey there!")
-    print(mle$mlesSExp1)
     mle1 <- mle$mlesSExp1
     mle2 <- mle$mlesSExp2
     mle3 <- mle$mlesSExp3
@@ -149,8 +149,6 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
   # print(r)
   # print("s")
   # print(s)
-  print("frequency")
-  print(frequency)
   results <- list()
   
   u1 <- 0.33
@@ -162,24 +160,24 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
   #made the k1...k3 <= instead of <
   r1 <- max(which(frequency <= k))
   k1 <- max(which(frequency <= frequency[r1]))
-  print(paste("k", k, sep="   "))
-  print(paste("r1", r1, sep="   "))
-  print(paste("k1", k1, sep="   "))
-  
+  # print(paste("k", k, sep="   "))
+  # print(paste("r1", r1, sep="   "))
+  # print(paste("k1", k1, sep="   "))
+  # 
   k <- round(frequency[r]*0.25)
   r2 <- max(which(frequency <= k))
   #not sure I understand this fully or why it's different than above
   k2 <- ifelse(sum((frequency < frequency[r2])) > 0, max(which(frequency <= frequency[r2])), 1)
-  print(paste("k", k, sep="   "))
-  print(paste("r2", r2, sep="   "))
-  print(paste("k2", k2, sep="   "))
+  # print(paste("k", k, sep="   "))
+  # print(paste("r2", r2, sep="   "))
+  # print(paste("k2", k2, sep="   "))
   
   k <- round(frequency[r]*0.75)
   r3 <- max(which(frequency <= k))
   k3 <- max(which(frequency <= frequency[r3]))
-  print(paste("k", k, sep="   "))
-  print(paste("r3", r3, sep="   "))
-  print(paste("k3", k3, sep="   "))
+  # print(paste("k", k, sep="   "))
+  # print(paste("r3", r3, sep="   "))
+  # print(paste("k3", k3, sep="   "))
   
   if (n[k1] != s[k1] & (s[k3] != s[k2])) {
     t1 <- n[k1]/s[k1]-1

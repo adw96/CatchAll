@@ -7,7 +7,12 @@ CalculateAnalysisVariables <- function(part1, part2,
   maxGoodnessOfFit <- 10
   return_variable <- list()
   return_variable$AIC <- 2 * numberParameters - 2*(part1 + part2)
+  print(paste("return_variable$AIC",  return_variable$AIC, sep = " "))
+  print(paste("numberParameters",  numberParameters, sep = " "))
+  print(paste("part1",  part1, sep = " "))
+  print(paste("part2",  part2, sep = " "))
   if (s[r] - numberParameters - 1 > 0) {
+    print("hey hey")
     return_variable$AICc <- return_variable$AIC + (2*numberParameters*(numberParameters+1)/(s[r]-numberParameters-1))
     return_variable$AICcFlag <- 1
   }
@@ -15,7 +20,6 @@ CalculateAnalysisVariables <- function(part1, part2,
   ## calculate ChiSq, no binning
   
   # removed observedCountNoF0 ? not sure what that is
-  # incorrect chiSq return >:(
   chiSqAll <- ChiSqFunction(r, fitsCount, modelNumber, frequency, observedCount, s)
   return_variable$chiSq <- chiSqAll
   
@@ -98,24 +102,22 @@ ChiSqBin <- function(r, fitsExtended, bin,
   stop <- 0
   t <- 1
 
-
-  print("extendedTau")
-  print(extendedTau)
-  print("check")
-  print(check)
-  print("r")
-  print(r)
-  print("frequency")
-  print(frequency)
-  print("bin")
-  print(bin)
-  print("s")
-  print(s)
-  print("fitsExtended")
-  print(fitsExtended)
+# 
+#   print("extendedTau")
+#   print(extendedTau)
+#   print("check")
+#   print(check)
+#   print("r")
+#   print(r)
+#   print("frequency")
+#   print(frequency)
+#   print("bin")
+#   print(bin)
+#   print("s")
+#   print(s)
+#   print("fitsExtended")
+#   print(fitsExtended)
  
-  
-  #doesn't go through all the extendedTau for triple exponential
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
     check[t] <- 0
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
