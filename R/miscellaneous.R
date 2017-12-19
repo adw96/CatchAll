@@ -136,10 +136,6 @@ ChiSqBin <- function(r, fitsExtended, bin,
       accumulatedFit <- 0
     }
     t <- t + 1
-    tmp <- paste("accumulatedFit", accumulatedFit, sep=" ")
-    print(tmp)
-    dumb <- paste("s[r] - accumulatedFit", s[r] - accumulatedFit, sep=" ")
-    print(dumb)
   }
   
   ## todo: fix

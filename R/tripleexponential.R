@@ -10,8 +10,8 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
     
   fits <- TripleExponentialFits(r, n, s, frequency, observedCount)
   print("cats")
-  #incorrect mles1--5
-
+ 
+  #eveyrhing correct here
   mle1 <- fits$mlesSExp1
   mle2 <- fits$mlesSExp2
   mle3 <- fits$mlesSExp3
@@ -35,12 +35,22 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   print(paste("mle5", mle5, sep="   "))
   print(paste("u1", u1, sep="   "))
   print(paste("u2", u2, sep="   "))
-  print(paste("frequency[r]*4", frequency[r]*4, sep="   "))
-  fitsExtended[(frequency[r] + 1):(frequency[r]*4)] <- 
-    s[r] * ((u1 * ((1.0 / mle1) * ((mle1 / (1.0 + mle1)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
-              (u2 * ((1.0 / mle2) * ((mle2 / (1.0 + mle2)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
-              ((1.0 - u1 - u2) * ((1.0 / mle3) *
-                                    ((mle3 / (1.0 + mle3)) ^ (frequency[r] + 1):(frequency[r]*4)))))
+  print(paste("s[r]", s[r], sep="   "))
+  print(paste("frequency[r]*4: ", frequency[r]*4, sep="   "))
+  
+  # fitsExtended[(frequency[r] + 1):(frequency[r]*4)] <- 
+  #   s[r] * ((u1 * ((1.0 / mle1) * ((mle1 / (1.0 + mle1)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
+  #             (u2 * ((1.0 / mle2) * ((mle2 / (1.0 + mle2)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
+  #             ((1.0 - u1 - u2) * ((1.0 / mle3) *
+  #                                   ((mle3 / (1.0 + mle3)) ^ (frequency[r] + 1):(frequency[r]*4)))))
+  
+  for(t in (frequency[r]+1):(frequency[r]*4)){
+    fitsExtended[t] = s[r] *
+      ((u1 * ((1.0 / mle1) * pow((mle1 / (1.0 + mle1)), t))) +
+         (u2 * ((1.0 / mle2) * pow((mle2 / (1.0 + mle2)), t))) +
+         ((1.0 - u1 - u2) * ((1.0 / mle3) *
+                               pow((mle3 / (1.0 + mle3)), t))))
+  }
   print("fitsExtended2")
   print(fitsExtended)
   sHatSubset <- s[r] * (((1.0 + mle1) * (1.0 + mle2) *
@@ -63,7 +73,8 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   # model number 4
   calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
                                                                     fitsExtended, 
-                                                                    s, 4, frequency, observedCount)  
+                                                                    s, 4, frequency, observedCount) 
+  se <- TripleExponentialStandardError(mle1, mle2, mle3, mle4, mle5, sHatSubset)
   # s is lower class bound
   # maximumObservation is upper class bound
   bounds <- GetConfidenceBounds(r, se$se, sHatSubset, s, maximumObservation)
@@ -172,8 +183,6 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
   
   if (n[k1] != s[k1] & (s[k3] != s[k2])) {
     t1 <- n[k1]/s[k1]-1
-    print(paste("(n[k3] - n[k2])", (n[k3] - n[k2]), sep=" "))
-    print(paste("(s[k3] - s[k2])", (s[k3] - s[k2]), sep=" "))
     t2 <- ((n[k3] - n[k2]) / (s[k3] - s[k2])) - 1;
     t3 <- ((n[r] - n[k1]) / (s[r] - s[k1])) - 1;
     
@@ -185,13 +194,7 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
     deltaPart2 <- 1.0001e-10
     part2old <- part2
     k <- 0
-    
-    print(paste("t1", t1, sep=" "))
-    print(paste("t2", t2, sep=" ")) #t2 is incorrect, it's 2.92752505782575"
-    # but should be  2.72303921568627 . t1 and t3 are correct
-    print(paste("t3", t3, sep=" "))
-    print(paste("part2Old", part2old, sep=" "))
-   
+
     iteration <- 1
     # confused where 1e6 came from
     while(deltaPart2 > 1e-10 & iteration < 1e6) {
@@ -252,8 +255,6 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
   } else {
     results$flag <- 0
   }
-  print("results!!!")
-  print(results)
   results
 }
 
