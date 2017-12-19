@@ -7,12 +7,8 @@ CalculateAnalysisVariables <- function(part1, part2,
   maxGoodnessOfFit <- 10
   return_variable <- list()
   return_variable$AIC <- 2 * numberParameters - 2*(part1 + part2)
-  print(paste("return_variable$AIC",  return_variable$AIC, sep = " "))
-  print(paste("numberParameters",  numberParameters, sep = " "))
-  print(paste("part1",  part1, sep = " "))
-  print(paste("part2",  part2, sep = " "))
+
   if (s[r] - numberParameters - 1 > 0) {
-    print("hey hey")
     return_variable$AICc <- return_variable$AIC + (2*numberParameters*(numberParameters+1)/(s[r]-numberParameters-1))
     return_variable$AICcFlag <- 1
   }
@@ -30,6 +26,8 @@ CalculateAnalysisVariables <- function(part1, part2,
   #bigChisq is a global variable
   if (test < maxGoodnessOfFit  & chiSqAll < BigChiSq){
     GOF0 <- GoodnessOfFit(chiSqAll, df)
+    print("GOF0")
+    print(GOF0)
     return_variable$GOF0Check <- GOF0$flag
     return_variable$GOF0 <- GOF0$gof
   } else{
@@ -52,7 +50,7 @@ CalculateAnalysisVariables <- function(part1, part2,
   return_variable
 }
 
-#line 1201 in C#
+
 ChiSqFunction <- function(r, fitsCount, modelNumber,
                   frequency, observedCount, s) {
   chiSqTemporary <- 0
@@ -62,11 +60,6 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     stop("first frequency is 0?")
   }
   
-  # print("frequency")
-  # print(frequency)
-  # 
-  # print("fitsCount")
-  # print(fitsCount)
   # this bizarre looking flow adjusts for non-contiguous frequencies
   for (t in 1:frequency[r]) {
     if (t == frequency[rr]) {
@@ -83,10 +76,6 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
   if(modelNumber<6) {
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
   }
-  
-  #list("chiSq"=chiSqTemporary, "sumFit"=sumFit)
-  # print("chiSqTemporary")
-  # print(chiSqTemporary)
   chiSqTemporary
 }
 
@@ -143,9 +132,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
   ## todo: fix
  # check[t-1]<-0
   
-  print("check check")
-  print(check)
-  
+
   ## check for enough data for bininng and positive df
   chiSqTemporary <- 0
   df <- df - numberParameters
@@ -209,6 +196,7 @@ GoodnessOfFit <- function(chiSqAll, df) {
   
   list("gof"=gof, "flag"=flag)
 }
+
 
 GetConfidenceBounds <- function(r, se, sHatSubset, s, observationMaximum) {
   answer <- list()

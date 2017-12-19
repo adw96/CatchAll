@@ -23,20 +23,20 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   fitsExtended <- rep(NA, frequency[r]*4)
   fitsExtended[1:frequency[r]] <- fits$fitsCount
   #(frequency[r] + 1
-  print("hey hey hey yo 5yo yo")
+ 
   #change to pow later
-  
-  print("s")
-  print(s)
-  print(paste("mle1", mle1, sep="   "))
-  print(paste("mle2", mle2, sep="   "))
-  print(paste("mle3", mle3, sep="   "))
-  print(paste("mle4", mle4, sep="   "))
-  print(paste("mle5", mle5, sep="   "))
-  print(paste("u1", u1, sep="   "))
-  print(paste("u2", u2, sep="   "))
-  print(paste("s[r]", s[r], sep="   "))
-  print(paste("frequency[r]*4: ", frequency[r]*4, sep="   "))
+  # 
+  # print("s")
+  # print(s)
+  # print(paste("mle1", mle1, sep="   "))
+  # print(paste("mle2", mle2, sep="   "))
+  # print(paste("mle3", mle3, sep="   "))
+  # print(paste("mle4", mle4, sep="   "))
+  # print(paste("mle5", mle5, sep="   "))
+  # print(paste("u1", u1, sep="   "))
+  # print(paste("u2", u2, sep="   "))
+  # print(paste("s[r]", s[r], sep="   "))
+  # print(paste("frequency[r]*4: ", frequency[r]*4, sep="   "))
   
   # fitsExtended[(frequency[r] + 1):(frequency[r]*4)] <- 
   #   s[r] * ((u1 * ((1.0 / mle1) * ((mle1 / (1.0 + mle1)) ^ (frequency[r] + 1):(frequency[r]*4)))) +
@@ -71,8 +71,7 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
       ((1.0 - u1 - u2) * ((1.0 / mle3) *
                             ((mle3 / (1.0 + mle3)) ^ frequency[1:r]))))))
   
-  print(paste("part 2 here: ", part2, sep=" "))
-  
+
   # model number 4
   calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
                                                                     fitsExtended, 
@@ -91,7 +90,7 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
                        "chiSq" = CheckOutput(calculate_analysis_variables_result$chiSq),
                        "AIC" = CheckOutput(calculate_analysis_variables_result$AIC), 
                        "AICc" = CheckOutput(calculate_analysis_variables_result$AICc), 
-                       "GOF0" = CheckOutput(calculate_analysis_variables_result$GOF), 
+                       "GOF0" = CheckOutput(calculate_analysis_variables_result$GOF0), 
                        "GOF5" = CheckOutput(calculate_analysis_variables_result$GOF5),
                        "T1"=CheckOutput(mle1),
                        "T2"=CheckOutput(mle2),
