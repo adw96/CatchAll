@@ -172,13 +172,15 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
   
   if (n[k1] != s[k1] & (s[k3] != s[k2])) {
     t1 <- n[k1]/s[k1]-1
+    print(paste("(n[k3] - n[k2])", (n[k3] - n[k2]), sep=" "))
+    print(paste("(s[k3] - s[k2])", (s[k3] - s[k2]), sep=" "))
     t2 <- ((n[k3] - n[k2]) / (s[k3] - s[k2])) - 1;
     t3 <- ((n[r] - n[k1]) / (s[r] - s[k1])) - 1;
     
-    part2 <- sum(observedCount[1:r] * log((u1 * ((1/t1) * (t1/1+t1)^(frequency[1:r]))) 
-                                          + (u2 * ((1/t2) * (t2/1+t2)^(frequency[1:r])))
-                                          + ((1 - u1 -u2) * (1/t3) * ((t3/(1 + t3))^(frequency[1:r])))
-    ))
+    part2 <- sum(observedCount[1:r] * log((u1 * ((1.0 / t1) * pow((t1 / (1.0 + t1)), frequency[1:r]))) +
+          (u2 * ((1.0 / t2) * pow((t2 / (1.0 + t2)), frequency[1:r]))) +
+          ((1.0 - u1 - u2) * ((1.0 / t3) * pow((t3 / (1.0 + t3)), frequency[1:r])))))
+    
     
     deltaPart2 <- 1.0001e-10
     part2old <- part2
@@ -188,7 +190,7 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
     print(paste("t2", t2, sep=" ")) #t2 is incorrect, it's 2.92752505782575"
     # but should be  2.72303921568627 . t1 and t3 are correct
     print(paste("t3", t3, sep=" "))
-    print(paste("part2", part2, sep=" "))
+    print(paste("part2Old", part2old, sep=" "))
    
     iteration <- 1
     # confused where 1e6 came from
@@ -223,11 +225,9 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
       t3 <- t3part1/t3part2-1
       
    
-      part2 <-  sum(observedCount[1:r] * log((u1 * ((1.0 / t1) *
-                                                      ((t1 / (1.0 + t1))^frequency[1:r]))) +
-                                               (u2 * ((1.0 / t2) *
-                                                        ((t2 / (1.0 + t2))^frequency[1:r]))) +
-                                               ((1.0 - u1 -u2) * ((1.0 / t3) * ((t3 / (1.0 + t3))^frequency[1:r])))))
+      part2 <- sum(observedCount[1:r] * log((u1 * ((1.0 / t1) * pow((t1 / (1.0 + t1)), frequency[1:r]))) +
+                                              (u2 * ((1.0 / t2) * pow((t2 / (1.0 + t2)), frequency[1:r]))) +
+                                              ((1.0 - u1 - u2) * ((1.0 / t3) * pow((t3 / (1.0 + t3)), frequency[1:r])))))
       deltaPart2 <- part2-part2old
       part2old <- part2
       iteration <- iteration + 1
