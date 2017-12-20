@@ -232,13 +232,11 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
       part2old <- part2
       iteration <- iteration + 1
     }
-    #wrong
-    # t1: 0.993645187507376
-    # t2: 0.993650399865099
+
     # t3: 0.99365062836378
-    print(paste("t1", t1, sep=" "))
-    print(paste("t2", t2, sep=" "))
-    print(paste("t3", t3, sep=" "))
+    # print(paste("t1", t1, sep=" "))
+    # print(paste("t2", t2, sep=" "))
+    # print(paste("t3", t3, sep=" "))
     
     #where is 1e6 from??
     if (iteration == 1e6) warning("Triple Exp didn't converge?")
