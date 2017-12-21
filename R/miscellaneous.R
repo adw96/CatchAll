@@ -27,8 +27,6 @@ CalculateAnalysisVariables <- function(part1, part2,
   #bigChisq is a global variable
   if (test < maxGoodnessOfFit  & chiSqAll < BigChiSq){
     GOF0 <- GoodnessOfFit(chiSqAll, df)
-    print("GOF0")
-    print(GOF0)
     return_variable$GOF0Check <- GOF0$flag
     return_variable$GOF0 <- GOF0$gof
   } else{
@@ -38,12 +36,10 @@ CalculateAnalysisVariables <- function(part1, part2,
   ## calculate ChiSq, bin 5
   chiSq5 <- ChiSqBin(r, fitsExtended, 5, df, numberParameters, frequency, s, observedCount)
   
+  df <- chiSq5$df
   GOF5Check <- chiSq5$flag
   chiSq5 <- chiSq5$chiSq
-
-
-  print(paste("chiSq5: ", chiSq5, sep = " "))
-  print(paste("df: ", df, sep = " ")) #chisq5 is correct but df is not (should be 5 but is 3)
+ 
   ## calculate goodness of fit
   test <- (chiSq5 - df)/sqrt(2*df)
   if (test < maxGoodnessOfFit & GOF5Check == 1 & chiSq5 < BigChiSq) {
@@ -166,7 +162,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
   } else {
     flag <- 0
   }
-  list("chiSq"=chiSqTemporary, "flag"=flag)
+  list("chiSq"=chiSqTemporary, "flag"=flag, "df"=df)
 }
 
 GoodnessOfFit <- function(chiSqAll, df) {

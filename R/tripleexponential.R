@@ -81,7 +81,7 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   # maximumObservation is upper class bound
   bounds <- GetConfidenceBounds(r, se$se, sHatSubset, s, maximumObservation)
   
-  output <- data.frame("Model" = "DoubleExponential", 
+  output <- data.frame("Model" = "TripleExponential", 
                        "Cutoff" = r, 
                        "Estimate" = CheckOutput(sHatTotal), 
                        "SE" = CheckOutput(se$se), 
@@ -104,8 +104,6 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
 TripleExponentialFits <- function(r, n, s, frequency, observedCount) {
   mle <- MLETripleExponential(r, n, s, frequency, observedCount)
   
-  print("mle from MLETripleExponential")
-  print(mle)
   if (mle$flag == 1) {
     #access the elements from mle
     mle1 <- mle$mlesSExp1
