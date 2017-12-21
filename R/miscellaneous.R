@@ -7,6 +7,7 @@ CalculateAnalysisVariables <- function(part1, part2,
   maxGoodnessOfFit <- 10
   return_variable <- list()
   return_variable$AIC <- 2 * numberParameters - 2*(part1 + part2)
+
   if (s[r] - numberParameters - 1 > 0) {
     return_variable$AICc <- return_variable$AIC + (2*numberParameters*(numberParameters+1)/(s[r]-numberParameters-1))
     return_variable$AICcFlag <- 1
@@ -15,16 +16,18 @@ CalculateAnalysisVariables <- function(part1, part2,
   ## calculate ChiSq, no binning
   
   # removed observedCountNoF0 ? not sure what that is
-  # incorrect chiSq return >:(
   chiSqAll <- ChiSqFunction(r, fitsCount, modelNumber, frequency, observedCount, s)
   return_variable$chiSq <- chiSqAll
   
   ## calculate Goodness of Fit
-  df <- frequency[r] - numberParameters
+
+  df <- frequency[r] - numberParameters 
   test <- (chiSqAll - df)/sqrt(2*df)
   GOF0 <- list()
   #bigChisq is a global variable
   if (test < maxGoodnessOfFit  & chiSqAll < BigChiSq){
+    print(paste("chiSqAll: ", chiSqAll, sep = " "))
+    print(paste("df: ", df, sep = " "))
     GOF0 <- GoodnessOfFit(chiSqAll, df)
     return_variable$GOF0Check <- GOF0$flag
     return_variable$GOF0 <- GOF0$gof
@@ -35,9 +38,10 @@ CalculateAnalysisVariables <- function(part1, part2,
   ## calculate ChiSq, bin 5
   chiSq5 <- ChiSqBin(r, fitsExtended, 5, df, numberParameters, frequency, s, observedCount)
   
+  df <- chiSq5$df
   GOF5Check <- chiSq5$flag
   chiSq5 <- chiSq5$chiSq
-  
+ 
   ## calculate goodness of fit
   test <- (chiSq5 - df)/sqrt(2*df)
   if (test < maxGoodnessOfFit & GOF5Check == 1 & chiSq5 < BigChiSq) {
@@ -48,9 +52,21 @@ CalculateAnalysisVariables <- function(part1, part2,
   return_variable
 }
 
-#line 1201 in C#
+
 ChiSqFunction <- function(r, fitsCount, modelNumber,
                   frequency, observedCount, s) {
+  print("r")
+  print(r)
+  print("fitsCount")
+  print(fitsCount)
+  print("modelNumber")
+  print(modelNumber)
+  print("frequency")
+  print(frequency)
+  print("observedCount")
+  print(observedCount)
+  print(s)
+  
   chiSqTemporary <- 0
   sumFit <- 0
   rr <- 1
@@ -58,11 +74,6 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     stop("first frequency is 0?")
   }
   
-  # print("frequency")
-  # print(frequency)
-  # 
-  # print("fitsCount")
-  # print(fitsCount)
   # this bizarre looking flow adjusts for non-contiguous frequencies
   for (t in 1:frequency[r]) {
     if (t == frequency[rr]) {
@@ -73,16 +84,11 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     }
   }
   sumFit <- sum(fitsCount)
-  print("sumFit")
-  print(sumFit)
-  
+
   if(modelNumber<6) {
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
   }
-  
-  #list("chiSq"=chiSqTemporary, "sumFit"=sumFit)
-  # print("chiSqTemporary")
-  # print(chiSqTemporary)
+  print(paste("chiSq DUMMY DUMMY: ", chiSqTemporary, sep = "  "))
   chiSqTemporary
 }
 
@@ -98,24 +104,22 @@ ChiSqBin <- function(r, fitsExtended, bin,
   stop <- 0
   t <- 1
 
-
-  print("extendedTau")
-  print(extendedTau)
-  print("check")
-  print(check)
-  print("r")
-  print(r)
-  print("frequency")
-  print(frequency)
-  print("bin")
-  print(bin)
-  print("s")
-  print(s)
-  print("fitsExtended")
-  print(fitsExtended)
+# 
+#   print("extendedTau")
+#   print(extendedTau)
+#   print("check")
+#   print(check)
+#   print("r")
+#   print(r)
+#   print("frequency")
+#   print(frequency)
+#   print("bin")
+#   print(bin)
+#   print("s")
+#   print(s)
+#   print("fitsExtended")
+#   print(fitsExtended)
  
-  
-  #doesn't go through all the extendedTau for triple exponential
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
     check[t] <- 0
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
@@ -136,18 +140,12 @@ ChiSqBin <- function(r, fitsExtended, bin,
       accumulatedFit <- 0
     }
     t <- t + 1
-    tmp <- paste("accumulatedFit", accumulatedFit, sep=" ")
-    print(tmp)
-    dumb <- paste("s[r] - accumulatedFit", s[r] - accumulatedFit, sep=" ")
-    print(dumb)
   }
   
   ## todo: fix
  # check[t-1]<-0
   
-  print("check check")
-  print(check)
-  
+
   ## check for enough data for bininng and positive df
   chiSqTemporary <- 0
   df <- df - numberParameters
@@ -175,7 +173,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
   } else {
     flag <- 0
   }
-  list("chiSq"=chiSqTemporary, "flag"=flag)
+  list("chiSq"=chiSqTemporary, "flag"=flag, "df"=df)
 }
 
 GoodnessOfFit <- function(chiSqAll, df) {
@@ -211,6 +209,7 @@ GoodnessOfFit <- function(chiSqAll, df) {
   
   list("gof"=gof, "flag"=flag)
 }
+
 
 GetConfidenceBounds <- function(r, se, sHatSubset, s, observationMaximum) {
   answer <- list()
