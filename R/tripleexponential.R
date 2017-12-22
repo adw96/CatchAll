@@ -9,7 +9,6 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   numParams <- 5
     
   fits <- TripleExponentialFits(r, n, s, frequency, observedCount)
-  print("cats")
  
   #eveyrhing correct here
   mle1 <- fits$mlesSExp1

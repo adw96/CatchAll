@@ -1,287 +1,237 @@
-FourExponentialStandardError <- function(t1, t2, t3, t4, t5, t6, t7, sHatSubset) {
-  a00 <- -(-t7*t2*t4+t6*t2*t3+t6*t2+t7*t3+t7*t1*t2*t3-
-                   t6*t1*t4+t6*t1*t2-t5*t2*t4-t6*t3*t4+t2*t3*t4+
-                   t7*t2*t3-t5*t3*t4+t7*t1*t3+t1*t2*t4+t5*t1*t2-t7*t1*t4+
-                   t1*t3*t4+t5*t1*t3-t5*t2*t3*t4+t5*t1-t6*t1*t3*t4+t4+
-                   t5*t1*t2*t3-t7*t1*t2*t4+t6*t1*t2*t3+t3*t4+t2*t4-t5*t4+
-                   t1*t4-t6*t4+t1*t2*t3*t4-t7*t4)/(-1-t7*t2*t4+t6*t2*t3-t2-
-                                                     t1+t6*t2+t7*t3+t7*t1*t2*t3-t6*t1*t4+t6*t1*t2-t5*t2*t4-
-                                                     t6*t3*t4+t7*t2*t3-t5*t3*t4+t7*t1*t3+t5*t1*t2-t7*t1*t4+
-                                                     t5*t1*t3-t1*t2*t3-t5*t2*t3*t4+t5*t1-t3-t6*t1*t3*t4+
-                                                     t5*t1*t2*t3-t7*t1*t2*t4+t6*t1*t2*t3-t2*t3-t5*t4-t1*t3-
-                                                     t6*t4-t1*t2-t7*t4)
+#fix formatting later
+FourExponentialModel <-  function(s, r, observedCount, n, 
+                                    s0Init, frequency, 
+                                    lnSFactorial, sumlnFFactorial, 
+                                    maximumObservation) {
   
-  # create a vector with 8 elements
-  a0 <- c(-t5*(1+t4)*(1+t3)*(1+t2)/(1+t1)/(-1-t7*t2*t4+t6*t2*t3-
-                                             t2-t1+t6*t2+t7*t3+t7*t1*t2*t3-t6*t1*t4+t6*t1*t2-
-                                             t5*t2*t4-t6*t3*t4+t7*t2*t3-t5*t3*t4+t7*t1*t3+t5*t1*t2-
-                                             t7*t1*t4+t5*t1*t3-t1*t2*t3-t5*t2*t3*t4+t5*t1-t3-
-                                             t6*t1*t3*t4+t5*t1*t2*t3-t7*t1*t2*t4+t6*t1*t2*t3-t2*t3-
-                                             t5*t4-t1*t3-t6*t4-t1*t2-t7*t4), 
-          -t6*(t1*t4+t3*t4+t1*t3+t1*t3*t4+1+t4+t3+t1)/(1+t2)/
-            (-1-t7*t2*t4+t6*t2*t3-t2-t1+t6*t2+t7*t3+t7*t1*t2*t3-
-               t6*t1*t4+t6*t1*t2-t5*t2*t4-t6*t3*t4+t7*t2*t3-t5*t3*t4+
-               t7*t1*t3+t5*t1*t2-t7*t1*t4+t5*t1*t3-t1*t2*t3-t5*t2*t3*t4+
-               t5*t1-t3-t6*t1*t3*t4+t5*t1*t2*t3-t7*t1*t2*t4+t6*t1*t2*t3-
-               t2*t3-t5*t4-t1*t3-t6*t4-t1*t2-t7*t4),
-          -(1+t2)*(1+t4)*t7*(1+t1)/(1+t3)/(-1-t7*t2*t4+t6*t2*t3-t2-
-                                             t1+t6*t2+t7*t3+t7*t1*t2*t3-t6*t1*t4+t6*t1*t2-t5*t2*t4-
-                                             t6*t3*t4+t7*t2*t3-t5*t3*t4+t7*t1*t3+t5*t1*t2-t7*t1*t4+
-                                             t5*t1*t3-t1*t2*t3-t5*t2*t3*t4+t5*t1-t3-t6*t1*t3*t4+
-                                             t5*t1*t2*t3-t7*t1*t2*t4+t6*t1*t2*t3-t2*t3-t5*t4-t1*t3-
-                                             t6*t4-t1*t2-t7*t4),
-          (1+t2)*(t7*t1+t6*t3-1+t6+t7*t1*t3+t6*t1+t7*t3+t5*t1+
-                    t5*t3-t1*t3+t5*t1*t3+t6*t1*t3-t3+t5-t1+t7)/(1+t4)/
-            (-1-t7*t2*t4+t6*t2*t3-t2-t1+t6*t2+t7*t3+t7*t1*t2*t3-
-               t6*t1*t4+t6*t1*t2-t5*t2*t4-t6*t3*t4+t7*t2*t3-t5*t3*t4+
-               t7*t1*t3+t5*t1*t2-t7*t1*t4+t5*t1*t3-t1*t2*t3-t5*t2*t3*t4+
-               t5*t1-t3-t6*t1*t3*t4+t5*t1*t2*t3-t7*t1*t2*t4+t6*t1*t2*t3-
-               t2*t3-t5*t4-t1*t3-t6*t4-t1*t2-t7*t4),
-          
-          -1/(-1-t7*t2*t4+t6*t2*t3-t2-t1+t6*t2+t7*t3+t7*t1*t2*t3-
-                t6*t1*t4+t6*t1*t2-t5*t2*t4-t6*t3*t4+t7*t2*t3-t5*t3*t4+
-                t7*t1*t3+t5*t1*t2-t7*t1*t4+t5*t1*t3-t1*t2*t3-t5*t2*t3*t4+
-                t5*t1-t3-t6*t1*t3*t4+t5*t1*t2*t3-t7*t1*t2*t4+t6*t1*t2*t3-
-                t2*t3-t5*t4-t1*t3-t6*t4-t1*t2-t7*t4)*(-t2*t4-t3*t4+t1*t2+
-                                                        t1*t3-t2*t3*t4+t1+t1*t2*t3-t4),
-          -1/(-1-t7*t2*t4+t6*t2*t3-t2-t1+t6*t2+t7*t3+t7*t1*t2*t3-
-                t6*t1*t4+t6*t1*t2-t5*t2*t4-t6*t3*t4+t7*t2*t3-t5*t3*t4+
-                t7*t1*t3+t5*t1*t2-t7*t1*t4+t5*t1*t3-t1*t2*t3-t5*t2*t3*t4+
-                t5*t1-t3-t6*t1*t3*t4+t5*t1*t2*t3-t7*t1*t2*t4+t6*t1*t2*t3-
-                t2*t3-t5*t4-t1*t3-t6*t4-t1*t2-t7*t4)*(t2*t3+t2-t1*t4+t1*t2-
-                                                        t3*t4-t1*t3*t4+t1*t2*t3-t4),
-          -1/(-1-t7*t2*t4+t6*t2*t3-t2-t1+t6*t2+t7*t3+t7*t1*t2*t3-
-                t6*t1*t4+t6*t1*t2-t5*t2*t4-t6*t3*t4+t7*t2*t3-t5*t3*t4+
-                t7*t1*t3+t5*t1*t2-t7*t1*t4+t5*t1*t3-t1*t2*t3-t5*t2*t3*t4+
-                t5*t1-t3-t6*t1*t3*t4+t5*t1*t2*t3-t7*t1*t2*t4+t6*t1*t2*t3-
-                t2*t3-t5*t4-t1*t3-t6*t4-t1*t2-t7*t4)*(-t2*t4+t3+t1*t2*t3+
-                                                        t2*t3+t1*t3-t1*t4-t1*t2*t4-t4))
   
-        #TODO: confused where the objects(??) are created or which methods are called in C#
+  ### Fits
+  numParams <- 7
+  # 
+  # //find fmin frequency
+  # int r = 1;
+  # while (freq[r] < fMin)
+  #   r++;
+  # int freqMin = r;
+  # 
+  # for (r = freqMin; r <= obsMax; r++)
+  # {
+  #   double u1 = 0.0;
+  #   double u2 = 0.0;
+  #   double u3 = 0.0;
+  #   
+  #   double mle1 = 0.0;
+  #   double mle2 = 0.0;
+  #   double mle3 = 0.0;
+  #   double mle4 = 0.0;
+  #   double mle5 = 0.0;
+  #   double mle6 = 0.0;
+  #   double mle7 = 0.0;
+  #   
+  #   int fitsCheck = 1;
+  #   
+  #   double[] fitsCount = new double[freq[r] + 1];
+  #   
+  #   int MLEFlag = FourMixedExponentialFits(r, ref u1, ref u2, ref u3,
+  #                                          ref mle1, ref mle2, ref mle3, ref mle4,
+  #                                          ref mle5, ref mle6, ref mle7, ref fitsCheck,
+  #                                          ref fitsCount);
+  
+  fits <- FourExponentialFits(r, n, s, frequency, observedCount)
+  
+  mle1 <- fits$mlesSExp1
+  mle2 <- fits$mlesSExp2
+  mle3 <- fits$mlesSExp3
+  mle4 <- fits$mlesSExp4
+  mle5 <- fits$mlesSExp5
+  mle6 <- fits$mlesSExp6
+  mle7 <- fits$mlesSExp7
+  u1 <- fits$u1
+  u2 <- fits$u2
+  u3 <- fits$u3
+  
+  fitsExtended <- rep(NA, frequency[r]*4)
+  fitsExtended[1:frequency[r]] <- fits$fitsCount
+ 
+#fix mle1, mle2...
+  #change to nonforloop later
+  for(t in (frequency[r]+1):(frequency[r]*4)){
+    fitsExtended[t] = s[r] *
+      ((u1 * ((1.0 / mle1) * pow((mle1 / (1.0 + mle1)), t))) +
+         (u2 * ((1.0 / mle2) * pow((mle2 / (1.0 + mle2)), t))) +
+         (u3 * ((1.0 / mle3) * pow((mle3 / (1.0 + mle3)), t))) +
+         ((1.0 - u1 - u2 - u3) * ((1.0 / mle4) *
+                                    pow((mle4 / (1.0 + mle4)), t))));
+  }
+  
+  sHatSubset <- s[r] * (((1.0 + mle1) * (1.0 + mle2) *
+                           (1.0 + mle3) * (1.0 + mle4)) / ((mle5 * mle1 * mle3) +
+                                                                       (mle4 * mle2 * mle3) - (mle7 * mle2 * mle4) +
+                                                                       (mle6 * mle2 * mle3) - (mle7 * mle4 * mle1) +
+                                                                       (mle6 * mle1 * mle2) + (mle4 * mle1 * mle2) -
+                                                                       (mle5 * mle2 * mle4) - (mle5 * mle4 * mle3) +
+                                                                       (mle1 * mle3 * mle4) + (mle7 * mle2 * mle3) -
+                                                                       (mle6 * mle4 * mle1) + (mle7 * mle1 * mle3) -
+                                                                       (mle7 * mle4) + (mle5 * mle1) +
+                                                                       (mle6 * mle2) + mle4 + (mle4 * mle3) +
+                                                                       (mle7 * mle3) + (mle2 * mle4) -
+                                                                       (mle5 * mle4) - (mle6 * mle4) +
+                                                                       (mle7 * mle1 * mle2 * mle3) +
+                                                                       (mle1 * mle2 * mle3 * mle4) -
+                                                                       (mle6 * mle4 * mle3) + (mle5 * mle1 * mle2) +
+                                                                       (mle4 * mle1) - (mle6 * mle1 * mle3 * mle4) -
+                                                                       (mle5 * mle4 * mle2 * mle3) +
+                                                                       (mle6 * mle1 * mle2 * mle3) +
+                                                                       (mle5 * mle1 * mle2 * mle3) -
+                                                                       (mle7 * mle4 * mle1 * mle2)));
+  
+  sHatTotal <- sHatSubset+(s[maximumObservation]-s[r])
+  part1 <- lnSFactorial[r]-sumlnFFactorial[r]
+  
+  part2 <- sum((observedCount[1:r] * Math.Log(
+    (u1 * ((1.0 / mle1) * Math.Pow((mle1 / (1.0 + mle1)), freq[1:r]))) +
+      (u2 * ((1.0 / mle2) * Math.Pow((mle2 / (1.0 + mle2)), freq[1:r]))) +
+      (u3 * ((1.0 / mle3) * Math.Pow((mle3 / (1.0 + mle3)), freq[1:r]))) +
+      ((1.0 - u1 - u2 - u3) * ((1.0 / mle4) *
+                                 Math.Pow((mle4 / (1.0 + mle4)), freq[1:r]))))))
+  
+  
+  # model number 5
+  calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
+                                                                    fitsExtended, 
+                                                                    s, 5, frequency, observedCount) 
+  se <- FourExponentialStandardError(mle1, mle2, mle3, mle4, mle5, mle6, mle7, sHatSubset)
+  # s is lower class bound
+  # maximumObservation is upper class bound
+  bounds <- GetConfidenceBounds(r, se$se, sHatSubset, s, maximumObservation)
+  
+  output <- data.frame("Model" = "FourExponential", 
+                       "Cutoff" = r, 
+                       "Estimate" = CheckOutput(sHatTotal), 
+                       "SE" = CheckOutput(se$se), 
+                       "LCB"= CheckOutput(bounds$lcb), 
+                       "UCB" = CheckOutput(bounds$ucb), 
+                       "chiSq" = CheckOutput(calculate_analysis_variables_result$chiSq),
+                       "AIC" = CheckOutput(calculate_analysis_variables_result$AIC), 
+                       "AICc" = CheckOutput(calculate_analysis_variables_result$AICc), 
+                       "GOF0" = CheckOutput(calculate_analysis_variables_result$GOF0), 
+                       "GOF5" = CheckOutput(calculate_analysis_variables_result$GOF5),
+                       "T1"=CheckOutput(mle1),
+                       "T2"=CheckOutput(mle2),
+                       "T3"=CheckOutput(mle3),
+                       "T4"=CheckOutput(mle4),
+                       "T5"=CheckOutput(mle5),
+                       "T6"=CheckOutput(mle6),
+                       "T7"=CheckOutput(mle7))
 }
 
+MLEFourExponential <- function(r, n, s, frequency, observedCount) {
+  results <- list()
+  
+  u1 <- 0.25
+  u2 <- 0.25
+  u3 <- 0.25
+  
+  #ks, rs, k1s not correct
+  k <- round(frequency[r]*0.4)
+  #subtracted -1 from max for r1..r3
+  #made the k1...k3 <= instead of <
+  r1 <- max(which(frequency <= k))
+  k1 <- max(which(frequency <= frequency[r1]))
 
+  k <- round(frequency[r]*0.2)
+  r2 <- max(which(frequency <= k))
+  #not sure I understand this fully or why it's different than above
+  k2 <- ifelse(sum((frequency < frequency[r2])) > 0, max(which(frequency <= frequency[r2])), 1)
 
+  k <- round(frequency[r]*0.6)
+  r3 <- max(which(frequency <= k))
+  k3 <- max(which(frequency <= frequency[r3]))
+  
+  k <- round(frequency[r]*0.8)
+  r4 <- max(which(frequency <= k))
+  k4 <- max(which(frequency <= frequency[r4]))
 
-
-
-
-
-# i don't think it needs an array param cuz we make a matrix
-FourExponentialStandardErrorA5_A7 <- function(t1, t2, t3, t4, t5, t6, t7) {
-  a <- matrix(0, nrow = 7, ncol = 7) # not sure these numbers are correct
   
-  # global variables in C#
-  maximumIteration <- 100000
-  criteria <-  0.0000000000000001
-  
-  #a55
-  test <- 100
-  k <- 0
-  
-  while (test > criteria & k < maximumIteration) {
+  if (n[k1] != s[k1] & (s[k3] != s[k2]) & (s[k4] != s[k2])) {
+    t1 <- (n[k1] / s[k1]) - 1;
+    t2 <- ((n[k3] - n[k2]) / (s[k3] - s[k2])) - 1;
+    t3 <- ((n[k4] - n[k2]) / (s[k4] - s[k2])) - 1;
+    t4 <- ((n[r] - n[k3]) / (s[r] - s[k3])) - 1;
     
-    t1P <- (t1/(1+t1))^k
-    t2P <- (t2/(1+t2))^k
-    t3P <- (t3/(1+t3))^k
-    t4P <- (t4/(1+t4))^k
+    part2 <- sum(observedCount[1:r] * log(
+      (u1 * ((1.0 / t1) * pow((t1 / (1.0 + t1)), freq[1:r]))) +
+        (u2 * ((1.0 / t2) * pow((t2 / (1.0 + t2)), freq[1:r]))) +
+        (u3 * ((1.0 / t3) * pow((t3 / (1.0 + t3)), freq[1:r]))) +
+        ((1.0 - u1 - u2 - u3) * ((1.0 / t4) * pow((t4 / (1.0 + t4)), freq[1:r])))))
     
-    a55 <- -t3*((t1/(1+t1))^k)*(t3*((t1/(1+t1))^k)*k+2*k*t1*t3*
-                                  ((t1/(1+t1))^k)*t2-(t1*t1)*t3*((t1/(1+t1))^k)*t2+2*k*t1*t3*
-                                  ((t1/(1+t1))^k)-5*k*t1*(t2/(1+t2)^k)*t3-4*k*(t1*t1)*
-                                  (t2/(1+t2)^k)*t3+k*k*(t2/(1+t2)^k)*t3*t1+k*t3*
-                                  ((t1/(1+t1))^k)*t2-(t1*t1)*t3*((t1/(1+t1))^k)+2*(t1*t1)*
-                                  (t2/(1+t2)^k)*t3+2*(t1^3)*(t2/(1+t2)^k)*t3+5*k*t1*
-                                  (t2/(1+t2)^k)+4*k*(t1*t1)*(t2/(1+t2)^k)+k*k*(t2/(1+t2)^k)*t3-k*k*
-                                  (t2/(1+t2)^k)*t1-k*(t2/(1+t2)^k)*t3-2*(t1*t1)*(t2/(1+t2)^k)-2*
-                                  (t1^3)*(t2/(1+t2)^k)-k*k*(t2/(1+t2)^k)+k*(t2/(1+t2)^k))/
-      (-t3*((t1/(1+t1))^k)-t3*((t1/(1+t1))^k)*t2+(t2/(1+t2)^k)*t3-(t2/(1+t2)^k)-
-         (t2/(1+t2)^k)*t1+(t2/(1+t2)^k)*t3*t1)*(t1^(-2))*((1 + t1)^ (-3))
     
-    if (k > 0) 
-      test <- abs(a55/a[5,5])
-    a[5,5] <- a[5,5] + a55
-    k <- k+1
+    deltaPart2 <- 1.0001e-10
+    part2old <- part2
+    k <- 0
+    
+    iteration <- 1
+    # confused where 1e6 came from
+    while(deltaPart2 > 1e-10 & iteration < 1e6) { #double check
+      
+      denom <- ((u1 * (1.0 / t1) * pow((t1 / (1.0 + t1)), freq[1:r])) +
+                   (u2 * (1.0 / t2) * pow((t2 / (1.0 + t2)), freq[1:r])) +
+                   (u3 * (1.0 / t3) * pow((t3 / (1.0 + t3)), freq[1:r])) +
+                   ((1.0 - u1 - u2 - u3) * (1.0 / t4) * pow((t4 / (1.0 + t4)), freq[1:r])));
+      
+      
+      
+      z1 <- (u1 * (1.0 / t1) * ((t1 / (1.0 + t1)) ^ frequency[1:r])) / denom
+      
+      z2 <- (u2 * (1.0 / t2) * ((t2 / (1.0 + t2)) ^ frequency[1:r])) / denom
+      
+      z3 <- (u3 * (1.0 / t2) * ((t3 / (1.0 + t3)) ^ frequency[1:r])) / denom
+      
+      u1 <- sum(observedCount[1:r]*z1[1:r])
+      u2 <- sum(observedCount[1:r]*z2[1:r])
+      u3 <- sum(observedCount[1:r]*z3[1:r])
+      
+      t1part1 <- sum(observedCount[1:r]*frequency[1:r]*z1)
+      t2part1 <- sum(observedCount[1:r]*frequency[1:r]*z2)
+      t3part1 <- sum(observedCount[1:r]*frequency[1:r]*z3)
+      t4part1 <- sum(observedCount[1:r]*frequency[1:r]*(1-z1-z2-z3))
+      
+      t1part2 <- sum(observedCount[1:r]*z1)
+      t2part2 <- sum(observedCount[1:r]*z2)
+      t3Part2 <- sum(observedCount[1:r]*z3)
+      t4part2 <- sum(observedCount[1:r]*(1-z1-z2-z3))
+      
+      u1 <- u1/(s[r])
+      u2 <- u2/(s[r])
+      u3 <- u3/(s[r])
+      
+      t1 <- t1part1/t1part2-1
+      t2 <- t2part1/t2part2-1
+      t3 <- t3part1/t3part2-1
+      t4 <- t4part1/t4part2-1
+      
+      part2 <- sum(observedCount[1:r] * Math.Log(
+        (u1 * ((1.0 / t1) * pow((t1 / (1.0 + t1)), freq[1:r]))) +
+          (u2 * ((1.0 / t2) * pow((t2 / (1.0 + t2)), freq[1:r]))) +
+          (u3 * ((1.0 / t3) * pow((t3 / (1.0 + t3)), freq[1:r]))) +
+          ((1.0 - u1 - u2 - u3) * ((1.0 / t4) * pow((t4 / (1.0 + t4)), freq[1:r])))))
+      
+      deltaPart2 <- part2-part2old
+      part2old <- part2
+      iteration <- iteration + 1
+    }
+    
+    #where is 1e6 from??
+    if (iteration == 1e6) warning("Triple Exp didn't converge?")
+    results$u1 <- u1
+    results$u2 <- u2
+    results$mlesSExp1 <- t1
+    results$mlesSExp2 <- t2
+    results$mlesSExp3 <- t3
+    results$flag <- ifelse(is.nan(part2), 0, 1)
+    
+  } else {
+    results$flag <- 0
   }
-  
-  #I think it's 0 here since it's broken and then u check for the flag later
-  if (k == maximumIteration) {
-    return(list("flag"=0))
-    break
-  }
-  
-  #a56
-  test <- 100
-  k <- 0
-  
-  while (test > criteria & k < maximumIteration) {
-    
-    t1P <- (t1/(1+t1))^k
-    t2P <- (t2/(1+t2))^k
-    t3P <- (t3/(1+t3))^k
-    t4P <- (t4/(1+t4))^k
-    
-    t42kP <- ((t4/(1+t4))^(2*k))
-    
-    a56 <- -(1+t3)*(-t2P*t1P-2*t2P*t1P*t4-t2P*t1P*t4*t4+t2P*t4P+t2P*t4P*t1+t2P*t4P*t4+t2P
-                    *t4P*t1*t4+t4P*t1P+t4P*t1P*t2+t4P*t1P*t4+t4P*t1P*t2*t4-t42kP-t42kP*t1-t42kP*t2-t42kP
-                    *t1*t2)/(t7*t3P+t6*t2P+t5*t1P+t4P-t4P*t5*t1*t2*t3+t5*t1P*t2+t6*t2P*t4+t6*t2P*t3+t6*t2P
-                             *t1+t7*t3P*t4+t7*t3P*t2+t7*t3P*t1-t4P*t6*t2-t4P*t7*t3-t4P*t5*t1+t4P*t2*t3-t4P*t5*t3-t4P
-                             *t5*t2+t4P*t1*t3-t4P*t6*t3-t4P*t6*t1+t4P*t1*t2-t4P*t7*t2-t4P*t7*t1+t5*t1P*t4+t5*t1P*t3
-                             +t4P*t3-t4P*t5-t4P*t6-t4P*t7+t4P*t2+t4P*t1+t5*t1P*t2*t4+t5*t1P*t3*t4+t5*t1P*t2*t3+t6
-                             *t2P*t1*t4+t6*t2P*t3*t4+t6*t2P*t1*t3+t7*t3P*t2*t4+t7*t3P*t1*t2+t7*t3P*t1*t4-t4P*t7*t1*t2-t4P
-                             *t6*t2*t3-t4P*t6*t1*t2-t4P*t7*t2*t3-t4P*t7*t1*t3-t4P*t6*t1*t3-t4P*t5*t1*t2-t4P*t5*t1*t3-t4P
-                             *t5*t2*t3+t4P*t1*t2*t3-t4P*t6*t1*t2*t3+t5*t1P*t2*t3*t4+t6*t2P*t1*t3*t4+t7*t3P*t1*t2*t4-t4P
-                             *t7*t1*t2*t3)/(1+t4)
-    
-    if (k > 0) 
-      test <- abs(a56/a[5,6])
-    a[5,6] <- a[5,6] + a56
-    k <- k+1
-  }
-  
-  #I think it's 0 here since it's broken and then u check for the flag later
-  if (k == maximumIteration) {
-    return(list("flag"=0))
-    break
-  }
-  
-  #a57
-  test <- 100
-  k <- 0
-  
-  while (test > criteria & k < maximumIteration) {
-    
-    t1P <- (t1/(1+t1))^k
-    t2P <- (t2/(1+t2))^k
-    t3P <- (t3/(1+t3))^k
-    t4P <- (t4/(1+t4))^k
-    
-    t42kP <- ((t4/(1+t4))^(2*k))
-    
-    a57 <- -(1+t2)*(-t3P*t1P-2*t3P*t1P*t4-t3P*t1P*t4*t4+t3P*t4P+t3P*t4P*t1+t3P*t4P*t4+t3P
-                    *t4P*t1*t4+t4P*t1P+t4P*t1P*t3+t4P*t1P*t4+t4P*t1P*t3*t4-t42kP-t42kP*t3-t42kP*t1-t42kP
-                    *t1*t3)/(t7*t3P+t6*t2P+t5*t1P+t4P-t4P*t5*t1*t2*t3+t5*t1P*t2+t6*t2P*t4+t6*t2P*t3+t6*t2P
-                             *t1+t7*t3P*t4+t7*t3P*t2+t7*t3P*t1-t4P*t6*t2-t4P*t7*t3-t4P*t5*t1+t4P*t2*t3-t4P*t5*t3-t4P
-                             *t5*t2+t4P*t1*t3-t4P*t6*t3-t4P*t6*t1+t4P*t1*t2-t4P*t7*t2-t4P*t7*t1+t5*t1P*t4+t5*t1P*t3
-                             +t4P*t3-t4P*t5-t4P*t6-t4P*t7+t4P*t2+t4P*t1+t5*t1P*t2*t4+t5*t1P*t3*t4+t5*t1P*t2*t3+t6
-                             *t2P*t1*t4+t6*t2P*t3*t4+t6*t2P*t1*t3+t7*t3P*t2*t4+t7*t3P*t1*t2+t7*t3P*t1*t4-t4P*t7*t1*t2-t4P
-                             *t6*t2*t3-t4P*t6*t1*t2-t4P*t7*t2*t3-t4P*t7*t1*t3-t4P*t6*t1*t3-t4P*t5*t1*t2-t4P*t5*t1*t3-t4P
-                             *t5*t2*t3+t4P*t1*t2*t3-t4P*t6*t1*t2*t3+t5*t1P*t2*t3*t4+t6*t2P*t1*t3*t4+t7*t3P*t1*t2*t4-t4P
-                             *t7*t1*t2*t3)/(1+t4)
-    
-    if (k > 0) 
-      test <- abs(a57/a[5,7])
-    a[5,7] <- a[5,7] + a57
-    k <- k+1
-  }
-  
-  #I think it's 0 here since it's broken and then u check for the flag later
-  if (k == maximumIteration) {
-    return(list("flag"=0))
-    break
-  }
-  
-  #a66
-  test <- 100
-  k <- 0
-  
-  while (test > criteria & k < maximumIteration) {
-    
-    t1P <- (t1/(1+t1))^k
-    t2P <- (t2/(1+t2))^k
-    t3P <- (t3/(1+t3))^k
-    t4P <- (t4/(1+t4))^k
-    
-    a66 <- 1/(t7*t3P+t6*t2P+t5*t1P+t4P-t4P*t5*t1*t2*t3+t5*t1P*t2+t6*t2P*t4+t6*t2P*t3+t6*t2P*t1
-              +t7*t3P*t4+t7*t3P*t2+t7*t3P*t1-t4P*t6*t2-t4P*t7*t3-t4P*t5*t1+t4P*t2*t3-t4P*t5*t3-t4P
-              *t5*t2+t4P*t1*t3-t4P*t6*t3-t4P*t6*t1+t4P*t1*t2-t4P*t7*t2-t4P*t7*t1+t5*t1P*t4+t5*t1P*t3
-              +t4P*t3-t4P*t5-t4P*t6-t4P*t7+t4P*t2+t4P*t1+t5*t1P*t2*t4+t5*t1P*t3*t4+t5*t1P*t2*t3+t6
-              *t2P*t1*t4+t6*t2P*t3*t4+t6*t2P*t1*t3+t7*t3P*t2*t4+t7*t3P*t1*t2+t7*t3P*t1*t4-t4P*t7*t1*t2-t4P
-              *t6*t2*t3-t4P*t6*t1*t2-t4P*t7*t2*t3-t4P*t7*t1*t3-t4P*t6*t1*t3-t4P*t5*t1*t2-t4P*t5*t1*t3-t4P
-              *t5*t2*t3+t4P*t1*t2*t3-t4P*t6*t1*t2*t3+t5*t1P*t2*t3*t4+t6*t2P*t1*t3*t4+t7*t3P*t1*t2*t4-t4P
-              *t7*t1*t2*t3)*(1+t1)/(1+t2)*(1+t3)/(1+t4)*((-t2P-t2P*t4+t4P+t4P*t2) ^ 2)
-    
-    if (k > 0) 
-      test <- abs(a66/a[6,6])
-    a[6,6] <- a[6,6] + a66
-    k <- k+1
-  }
-  
-  #I think it's 0 here since it's broken and then u check for the flag later
-  if (k == maximumIteration) {
-    return(list("flag"=0))
-    break
-  }
-  
-  #a67
-  test <- 100
-  k <- 0
-  
-  while (test > criteria & k < maximumIteration) {
-    
-    t1P <- (t1/(1+t1))^k
-    t2P <- (t2/(1+t2))^k
-    t3P <- (t3/(1+t3))^k
-    t4P <- (t4/(1+t4))^k
-    
-    t42kP <- ((t4/(1+t4))^(2*k))
-    
-    a67 <- -(1+t1)*(-t3P*t2P-2*t3P*t2P*t4-t3P*t2P*t4*t4+t3P*t4P+t3P*t4P*t2+t3P*t4P*t4+t3P
-                    *t4P*t2*t4+t2P*t4P+t2P*t4P*t3+t2P*t4P*t4+t2P*t4P*t3*t4-t42kP-t42kP*t3-t42kP*t2-t42kP
-                    *t2*t3)/(t7*t3P+t6*t2P+t5*t1P+t4P-t4P*t5*t1*t2*t3+t5*t1P*t2+t6*t2P*t4+t6*t2P*t3+t6*t2P
-                             *t1+t7*t3P*t4+t7*t3P*t2+t7*t3P*t1-t4P*t6*t2-t4P*t7*t3-t4P*t5*t1+t4P*t2*t3-t4P*t5*t3-t4P
-                             *t5*t2+t4P*t1*t3-t4P*t6*t3-t4P*t6*t1+t4P*t1*t2-t4P*t7*t2-t4P*t7*t1+t5*t1P*t4+t5*t1P*t3
-                             +t4P*t3-t4P*t5-t4P*t6-t4P*t7+t4P*t2+t4P*t1+t5*t1P*t2*t4+t5*t1P*t3*t4+t5*t1P*t2*t3+t6
-                             *t2P*t1*t4+t6*t2P*t3*t4+t6*t2P*t1*t3+t7*t3P*t2*t4+t7*t3P*t1*t2+t7*t3P*t1*t4-t4P*t7*t1*t2-t4P
-                             *t6*t2*t3-t4P*t6*t1*t2-t4P*t7*t2*t3-t4P*t7*t1*t3-t4P*t6*t1*t3-t4P*t5*t1*t2-t4P*t5*t1*t3-t4P
-                             *t5*t2*t3+t4P*t1*t2*t3-t4P*t6*t1*t2*t3+t5*t1P*t2*t3*t4+t6*t2P*t1*t3*t4+t7*t3P*t1*t2*t4-t4P
-                             *t7*t1*t2*t3)/(1+t4)
-    
-    if (k > 0) 
-      test <- abs(a67/a[6,7])
-    a[6,7] <- a[6,7] + a67
-    k <- k+1
-  }
-  
-  #I think it's 0 here since it's broken and then u check for the flag later
-  if (k == maximumIteration) {
-    return(list("flag"=0))
-    break
-  }
-  
-  #a77
-  test <- 100
-  k <- 0
-  
-  while (test > criteria & k < maximumIteration) {
-    
-    t1P <- (t1/(1+t1))^k
-    t2P <- (t2/(1+t2))^k
-    t3P <- (t3/(1+t3))^k
-    t4P <- (t4/(1+t4))^k
-    
-    
-    a77 <- 1/(t7*t3P+t6*t2P+t5*t1P+t4P-t4P*t5*t1*t2*t3+t5*t1P*t2+t6*t2P*t4+t6*t2P*t3+t6*t2P*t1
-              +t7*t3P*t4+t7*t3P*t2+t7*t3P*t1-t4P*t6*t2-t4P*t7*t3-t4P*t5*t1+t4P*t2*t3-t4P*t5*t3-t4P
-              *t5*t2+t4P*t1*t3-t4P*t6*t3-t4P*t6*t1+t4P*t1*t2-t4P*t7*t2-t4P*t7*t1+t5*t1P*t4+t5*t1P*t3
-              +t4P*t3-t4P*t5-t4P*t6-t4P*t7+t4P*t2+t4P*t1+t5*t1P*t2*t4+t5*t1P*t3*t4+t5*t1P*t2*t3+t6
-              *t2P*t1*t4+t6*t2P*t3*t4+t6*t2P*t1*t3+t7*t3P*t2*t4+t7*t3P*t1*t2+t7*t3P*t1*t4-t4P*t7*t1*t2-t4P
-              *t6*t2*t3-t4P*t6*t1*t2-t4P*t7*t2*t3-t4P*t7*t1*t3-t4P*t6*t1*t3-t4P*t5*t1*t2-t4P*t5*t1*t3-t4P
-              *t5*t2*t3+t4P*t1*t2*t3-t4P*t6*t1*t2*t3+t5*t1P*t2*t3*t4+t6*t2P*t1*t3*t4+t7*t3P*t1*t2*t4-t4P
-              *t7*t1*t2*t3)*(1+t1)*(1+t2)/(1+t3)/(1+t4)*(-t3P-t3P*t4+t4P+t4P*t3^2)
-    
-    if (k > 0) 
-      test <- abs(a77/a[7,7])
-    a[7,7] <- a[7,7] + a77
-    k <- k+1
-  }
-  
-  #I think it's 0 here since it's broken and then u check for the flag later
-  if (k == maximumIteration) {
-    return(list("flag"=0))
-    break
-  }
-  
-  
+  results
 }
