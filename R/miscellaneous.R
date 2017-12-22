@@ -190,11 +190,9 @@ GoodnessOfFit <- function(chiSqAll, df) {
   flag <- 1
   if (is.nan(f)) flag <- 0
   gof  <- 1-f*(chiSqAll/2)^(df/2)
-  print(paste("gof GOF: ", gof, sep = "  "))
+
   if (is.nan(gof)) flag <- 0
   
-  print(paste("chiSqAll in GOF: ", chiSqAll, sep = "  "))
-  print(paste("df: ", df, sep = "  "))
   list("gof"=gof, "flag"=flag)
 }
 

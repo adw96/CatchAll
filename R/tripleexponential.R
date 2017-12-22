@@ -116,7 +116,7 @@ TripleExponentialFits <- function(r, n, s, frequency, observedCount) {
       (u2 * mle1  *  mle2) - (u1 * mle1  *  mle2) +
       (mle1  *  mle2)
     
-    mle4 <- ((1.0 + mle1 ) * u1 *  mle2 *  mle3) / denom #do these even get used anywhere...
+    mle4 <- ((1.0 + mle1 ) * u1 *  mle2 *  mle3) / denom 
     mle5 <- ((1.0 + mle2) * u2 * mle1  *  mle3) / denom
     
     fitsCount <- s[r] *
@@ -250,8 +250,6 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
   results
 }
 
-
-#where did the SE flag go?
 TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   
   maximumIteration <- 100000
