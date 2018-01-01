@@ -197,7 +197,7 @@ MLEFourExponential <- function(r, n, s, frequency, observedCount) {
     k <- 0
     
     iteration <- 1
-    # confused where 1e6 came from
+
     while(deltaPart2 > 1e-10 & iteration < 1e6) { #double check
       
       denom <- ((u1 * (1.0 / t1) * pow((t1 / (1.0 + t1)), freq[1:r])) +

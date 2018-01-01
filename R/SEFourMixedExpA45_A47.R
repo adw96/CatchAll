@@ -6,7 +6,7 @@ SEFourMixedExpA45_A47 <- function(t1, t2, t3, t4, t5, t6, t7, a, sHatSubset) {
    test <- 100.0
    k <- 0
   
-  //A45
+  ##A45
    while (test > criteria & k < maximumIteration)
   {
      t1P <- pow((t1/(1+t1)),k)
@@ -417,22 +417,21 @@ SEFourMixedExpA45_A47 <- function(t1, t2, t3, t4, t5, t6, t7, a, sHatSubset) {
                                                                                                        *t6*t1*t2-t4P*t7*t2*t3-t4P*t7*t1*t3-t4P*t6*t1*t3-t4P*t5*t1*t2-t4P*t5*t1*t3-t4P*t5*t2*t3+t4P
                                                                                                        *t1*t2*t3-t4P*t6*t1*t2*t3+t5*t1P*t2*t3*t4+t6*t2P*t1*t3*t4+t7*t3P*t1*t2*t4-t4P*t7*t1*t2*t3,-2)
     
-    if (k > 0)
-      test <- Math.Abs(A45 / A[4, 5])
     
-    A[4, 5] +<- A45
-    k++
+      
+      if (k > 0) test <- abs(A45/a[4,5])
+    a[4,5] <- a[4,5] + A45
+    k <- k+1
     
   } 
   
   
-  if (k <-<- maxIter)
-  {
-    iterFlag <- 0
-    return
-  }
+   if (k == maximumIteration) {
+     return(list("flag"=1))
+     break
+   }
   
-  //A46
+  ##A46
   test <- 100.0
   k <- 0
    while (test > criteria & k < maximumIteration)
@@ -850,22 +849,19 @@ SEFourMixedExpA45_A47 <- function(t1, t2, t3, t4, t5, t6, t7, a, sHatSubset) {
                                                                       +2*t7*t3P*(t1*t1)*t2*t42kP*t4-t7*t7*t3P*(t2*t2)*t3*t42kP*t4*(t1*t1)-2*t7*t7*t3P*t2*t3*t42kP
                                                                       *t4+t6*t2P*(t3*t3)*t42kP*t4*t5*(t1*t1)-t5*t5*t1P*t1*t42kP*t4+2*t7*t3P*t1*(t2*t2)*t42kP*t4)
     
-    if (k > 0)
-      test <- Math.Abs(A46 / A[4, 6])
-    
-    A[4, 6] +<- A46
-    k++
+     if (k > 0) test <- abs(A46/a[4,6])
+     a[4,6] <- a[4,6] + A46
+     k <- k+1
     
   } 
   
   
-  if (k <-<- maxIter)
-  {
-    iterFlag <- 0
-    return
+  if (k == maximumIteration) {
+    return(list("flag"=1))
+    break
   }
   
-  //A47
+  ##A47
   test <- 100.0
   k <- 0
    while (test > criteria & k < maximumIteration)
@@ -1284,17 +1280,14 @@ SEFourMixedExpA45_A47 <- function(t1, t2, t3, t4, t5, t6, t7, a, sHatSubset) {
                                                                       *(t1*t1)*t5*t3P*t4*t2-t6*t2P*(t3*t3)*t42kP*t4*t5*(t1*t1)-t5*t5*t1P*t1*t42kP*t4-2*t7*t3P*t1
                                                                       *(t2*t2)*t42kP*t4)
     
-    if (k > 0)
-      test <- Math.Abs(A47 / A[4, 7])
-    
-    A[4, 7] +<- A47
-    k++
+     if (k > 0) test <- abs(A47/a[4,7])
+     a[4,7] <- a[4,7] + A27
+     k <- k+1
     
   } 
   
-  if (k <-<- maxIter)
-  {
-    iterFlag <- 0
-    return
+  if (k == maximumIteration) {
+    return(list("flag"=1))
+    break
   }
 }
