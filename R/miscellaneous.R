@@ -26,8 +26,6 @@ CalculateAnalysisVariables <- function(part1, part2,
   GOF0 <- list()
   #bigChisq is a global variable
   if (test < maxGoodnessOfFit  & chiSqAll < BigChiSq){
-    print(paste("chiSqAll: ", chiSqAll, sep = " "))
-    print(paste("df: ", df, sep = " "))
     GOF0 <- GoodnessOfFit(chiSqAll, df)
     return_variable$GOF0Check <- GOF0$flag
     return_variable$GOF0 <- GOF0$gof
@@ -55,18 +53,7 @@ CalculateAnalysisVariables <- function(part1, part2,
 
 ChiSqFunction <- function(r, fitsCount, modelNumber,
                   frequency, observedCount, s) {
-  print("r")
-  print(r)
-  print("fitsCount")
-  print(fitsCount)
-  print("modelNumber")
-  print(modelNumber)
-  print("frequency")
-  print(frequency)
-  print("observedCount")
-  print(observedCount)
-  print(s)
-  
+
   chiSqTemporary <- 0
   sumFit <- 0
   rr <- 1
@@ -88,7 +75,6 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
   if(modelNumber<6) {
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
   }
-  print(paste("chiSq DUMMY DUMMY: ", chiSqTemporary, sep = "  "))
   chiSqTemporary
 }
 
@@ -204,7 +190,7 @@ GoodnessOfFit <- function(chiSqAll, df) {
   flag <- 1
   if (is.nan(f)) flag <- 0
   gof  <- 1-f*(chiSqAll/2)^(df/2)
-  
+
   if (is.nan(gof)) flag <- 0
   
   list("gof"=gof, "flag"=flag)

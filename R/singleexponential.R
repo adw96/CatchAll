@@ -35,7 +35,7 @@ SingleExponentialModel <- function(s, r, observedCount, n,
                          "chiSq" = CheckOutput(calculate_analysis_variables_result$chiSq),
                          "AIC" = CheckOutput(calculate_analysis_variables_result$AIC), 
                          "AICc" = CheckOutput(calculate_analysis_variables_result$AICc), 
-                         "GOF0" = CheckOutput(calculate_analysis_variables_result$GOF), 
+                         "GOF0" = CheckOutput(calculate_analysis_variables_result$GOF0), 
                          "GOF5" = CheckOutput(calculate_analysis_variables_result$GOF5),
                          "T1"=CheckOutput(mlesSExp),
                          "T2"=NA,
@@ -50,15 +50,10 @@ SingleExponentialModel <- function(s, r, observedCount, n,
 
 SingleExponentialFits <- function(r, n, s, frequency) {
   mlesSExp <- (n[r]/s[r])-1
-  
-  # print(paste("n[r]: ", n[r], sep = " "))
-  # print(paste("s[r]: ", s[r], sep = " "))
-  
+
   fitsCount <- s[r]*(1/mlesSExp)*(mlesSExp/(1+mlesSExp))^(1:(frequency[r]))
   fitsCheck <- ifelse(min(fitsCount) < 0, 0, 1)
-  
-  # print("FITSCOUNT HERE")
-  # print(fitsCount)
+
   list("fitsCount"=fitsCount, "check"=fitsCheck,
        "mlesSExp"=mlesSExp)
 }

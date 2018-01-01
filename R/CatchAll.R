@@ -146,17 +146,17 @@ CatchAll <- function(frequency_table) {
   ################################
   ## Single Exponential -works now
   ################################
-  modelNumber <- 2
-  if (fMinFlag[modelNumber]==1) {
-      frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-    for (r in frequencyMinimum:maximumObservation) {
-      single_exponential_results <- SingleExponentialModel(s, r, observedCount, n,
-                                    s0Init, frequency,
-                                    lnSFactorial, sumlnFFactorial,
-                                    maximumObservation)
-      output <- rbind(output, single_exponential_results)
-    }
-  }
+  # modelNumber <- 2
+  # if (fMinFlag[modelNumber]==1) {
+  #     frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+  #   for (r in frequencyMinimum:maximumObservation) {
+  #     single_exponential_results <- SingleExponentialModel(s, r, observedCount, n,
+  #                                   s0Init, frequency,
+  #                                   lnSFactorial, sumlnFFactorial,
+  #                                   maximumObservation)
+  #     output <- rbind(output, single_exponential_results)
+  #   }
+  # }
 
 
   ################################
@@ -194,9 +194,26 @@ CatchAll <- function(frequency_table) {
   
   ################################
   ## TODO: the rest
+  # {"None", "Poisson", "SingleExp",
+  #   "TwoMixedExp", "ThreeMixedExp", "FourMixedExp", "LogTransfWLR",
+  #   "UnTransfWLR", "Chao1", "ACE", "ACE1"};
   ################################
   
-  
+  ################################
+  ## Four Exponential 
+  ################################
+  modelNumber <- 5
+  if (fMinFlag[modelNumber]==1) {
+    frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+    #maximumObservation <- frequencyMinimum
+    for (r in frequencyMinimum:maximumObservation) {
+      four_exponential_results <- FourExponentialModel(s, r, observedCount, n,
+                                                           s0Init, frequency,
+                                                           lnSFactorial, sumlnFFactorial,
+                                                           maximumObservation)
+      output <- rbind(output, four_exponential_results)
+    }
+  }
  output
 }
 
