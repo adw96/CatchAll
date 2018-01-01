@@ -1173,23 +1173,22 @@ SEFourMixedExpA2 <- function(t1, t2, t3, t4, t5, t6, t7, a, sHatSubset) {
     t4P <- pow((t4 / (1 + t4)), k)
     
     a24 <- -1 / (1 + t2) / (1 + t4) / (t7 * t3P + t6 * t2P + t5 * t1P + pow((t4
-                                                                             / (1 + t4)), k) - t4P * t5 * t1 * t2 * t3 + t5 * t1P * t2 + t6 * t2P
+                                                                                  / (1 + t4)), k) - t4P * t5 * t1 * t2 * t3 + t5 * t1P * t2 + t6 * t2P
                                        * t4 + t6 * t2P * t3 + t6 * t2P * t1 + t7 * t3P * t4 + t7 * pow((t3
-                                                                                                        / (1 + t3)), k) * t2 + t7 * t3P * t1 - t4P * t6 * t2 - t4P * t7
+                                                                                                             / (1 + t3)), k) * t2 + t7 * t3P * t1 - t4P * t6 * t2 - t4P * t7
                                        * t3 - t4P * t5 * t1 + t4P * t2 * t3 - t4P * t5 * t3 - pow((t4
-                                                                                                   / (1 + t4)), k) * t5 * t2 + t4P * t1 * t3 - t4P * t6 * t3 - t4P
+                                                                                                        / (1 + t4)), k) * t5 * t2 + t4P * t1 * t3 - t4P * t6 * t3 - t4P
                                        * t6 * t1 + t4P * t1 * t2 - t4P * t7 * t2 - t4P * t7 * t1 + t5 * pow((t1
-                                                                                                             / (1 + t1)), k) * t4 + t5 * t1P * t3 + t4P * t3 - t4P * t5 - pow((t4
-                                                                                                                                                                               / (1 + t4)), k) * t6 - t4P * t7 + t4P * t2 + t4P * t1 + t5 * pow((t1
-                                                                                                                                                                                                                                                 / (1 + t1)), k) * t2 * t4 + t5 * t1P * t3 * t4 + t5 * t1P * t2 * t3 + t6 * pow((t2 / (1
-                                                                                                                                                                                                                                                                                                                                       + t2)), k) * t1 * t4 + t6 * t2P * t3 * t4 + t6 * t2P * t1 * t3 + t7 * t3P
+                                                                                                                  / (1 + t1)), k) * t4 + t5 * t1P * t3 + t4P * t3 - t4P * t5 - pow((t4
+                                                                                                                                                                                         / (1 + t4)), k) * t6 - t4P * t7 + t4P * t2 + t4P * t1 + t5 * pow((t1
+                                                                                                                                                                                                                                                                / (1 + t1)), k) * t2 * t4 + t5 * t1P * t3 * t4 + t5 * t1P * t2 * t3 + t6 * pow((t2 / (1
+                                                                                                                                                                                                                                                                                                                                                           + t2)), k) * t1 * t4 + t6 * t2P * t3 * t4 + t6 * t2P * t1 * t3 + t7 * t3P
                                        * t2 * t4 + t7 * t3P * t1 * t2 + t7 * t3P * t1 * t4 - t4P * t7 * t1
                                        * t2 - t4P * t6 * t2 * t3 - t4P * t6 * t1 * t2 - t4P * t7 * t2 * t3 - pow((t4
-                                                                                                                  / (1 + t4)), k) * t7 * t1 * t3 - t4P * t6 * t1 * t3 - t4P * t5 * t1 * t2 - pow((t4 / (1
-                                                                                                                                                                                                        + t4)), k) * t5 * t1 * t3 - t4P * t5 * t2 * t3 + t4P * t1 * t2 * t3 - t4P
+                                                                                                                       / (1 + t4)), k) * t7 * t1 * t3 - t4P * t6 * t1 * t3 - t4P * t5 * t1 * t2 - pow((t4 / (1
+                                                                                                                                                                                                                  + t4)), k) * t5 * t1 * t3 - t4P * t5 * t2 * t3 + t4P * t1 * t2 * t3 - t4P
                                        * t6 * t1 * t2 * t3 + t5 * t1P * t2 * t3 * t4 + t6 * t2P * t1 * t3 * t4 + t7 * pow((t3
-                                                                                                                           / (1 + t3)), k) * t1 * t2 * t4 - t4P * t7 * t1 * t2 * t3) / t2 / t4 * (1 + t1) * (1 + t3) * t6 * t2P
-    * t4P * (-k * k + t5 * k * k + k * k * t6 + k * k * t7 + k * t4 - t5 * k * t4 - k * t6 * t4 - k * t7 * t4 + t2 * k - k * t5 * t2 - t6 * k * t2 - k
+                                                                                                                                / (1 + t3)), k) * t1 * t2 * t4 - t4P * t7 * t1 * t2 * t3) / t2 / t4 * (1 + t1) * (1 + t3) * t6 * t2P * t4P * (-k * k + t5 * k * k + k * k * t6 + k * k * t7 + k * t4 - t5 * k * t4 - k * t6 * t4 - k * t7 * t4 + t2 * k - k * t5 * t2 - t6 * k * t2 - k
              * t7 * t2 - (t2 * t4) + t5 * t2 * t4 + t6 * t2 * t4 + t7 * t2 * t4)
     
     if (k > 0) test <- abs(a24/a[2,4])

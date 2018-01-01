@@ -50,15 +50,10 @@ SingleExponentialModel <- function(s, r, observedCount, n,
 
 SingleExponentialFits <- function(r, n, s, frequency) {
   mlesSExp <- (n[r]/s[r])-1
-  
-  # print(paste("n[r]: ", n[r], sep = " "))
-  # print(paste("s[r]: ", s[r], sep = " "))
-  
+
   fitsCount <- s[r]*(1/mlesSExp)*(mlesSExp/(1+mlesSExp))^(1:(frequency[r]))
   fitsCheck <- ifelse(min(fitsCount) < 0, 0, 1)
-  
-  # print("FITSCOUNT HERE")
-  # print(fitsCount)
+
   list("fitsCount"=fitsCount, "check"=fitsCheck,
        "mlesSExp"=mlesSExp)
 }
