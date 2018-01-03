@@ -10,7 +10,7 @@ FourExponentialModel <-  function(s, r, observedCount, n,
  
   fits <- FourExponentialFits(r, n, s, frequency, observedCount)
   
-  mle1 <- fits$mle1
+  mle1 <- fits$mlesSExp1
   mle2 <- fits$mlesSExp2
   mle3 <- fits$mlesSExp3
   mle4 <- fits$mlesSExp4
@@ -23,17 +23,38 @@ FourExponentialModel <-  function(s, r, observedCount, n,
   
   fitsExtended <- rep(NA, frequency[r]*4)
   fitsExtended[1:frequency[r]] <- fits$fitsCount
-
+  
+  print(paste("mle1", mle1, sep = "  "))
+  print(paste("mle2", mle2, sep = "  "))
+  print(paste("mle3", mle3, sep = "  "))
+  print(paste("mle4", mle4, sep = "  "))
+  print(paste("u1", u1, sep = "  "))
+  print(paste("u2", u2, sep = "  "))
+  print(paste("u3", u3, sep = "  "))
+  print(paste("frequency[r]+1", (frequency[r]+1), sep = "  "))
+  print(paste("frequency[r]*4", frequency[r]*4, sep = "  "))
+  
+  # expected
+  # mlesSExp1: 1.02466332782179
+  # mlesSExp2: 1.02472343724224
+  # mlesSExp3: 1.0247234738347
+  # mlesSExp4: 1.02472366941975
+  # u1: 0.331486760241316
+  # u2: 0.260014427915818
+  # u3: 0.252049830609936
   #change to nonforloop later
-  for(t in (frequency[r]+1):(frequency[r]*4)){
-    fitsExtended[t] = s[r] *
+  for(t in (frequency[r]+1):(frequency[r]*4) + 1){
+    fitsExtended[t] <- s[r] *
       ((u1 * ((1.0 / mle1) * pow((mle1 / (1.0 + mle1)), t))) +
          (u2 * ((1.0 / mle2) * pow((mle2 / (1.0 + mle2)), t))) +
          (u3 * ((1.0 / mle3) * pow((mle3 / (1.0 + mle3)), t))) +
          ((1.0 - u1 - u2 - u3) * ((1.0 / mle4) *
-                                    pow((mle4 / (1.0 + mle4)), t))));
+                                    pow((mle4 / (1.0 + mle4)), t))))
+
   }
-  
+  #think this is wrong
+  print("fits extended")
+  print(fitsExtended)
   sHatSubset <- s[r] * (((1.0 + mle1) * (1.0 + mle2) *
                            (1.0 + mle3) * (1.0 + mle4)) / ((mle5 * mle1 * mle3) +
                                                                        (mle4 * mle2 * mle3) - (mle7 * mle2 * mle4) +
@@ -59,11 +80,11 @@ FourExponentialModel <-  function(s, r, observedCount, n,
   part1 <- lnSFactorial[r]-sumlnFFactorial[r]
   
   part2 <- sum((observedCount[1:r] * log(
-    (u1 * ((1.0 / mle1) * pow((mle1 / (1.0 + mle1)), freq[1:r]))) +
-      (u2 * ((1.0 / mle2) * pow((mle2 / (1.0 + mle2)), freq[1:r]))) +
-      (u3 * ((1.0 / mle3) * pow((mle3 / (1.0 + mle3)), freq[1:r]))) +
+    (u1 * ((1.0 / mle1) * pow((mle1 / (1.0 + mle1)), frequency[1:r]))) +
+      (u2 * ((1.0 / mle2) * pow((mle2 / (1.0 + mle2)), frequency[1:r]))) +
+      (u3 * ((1.0 / mle3) * pow((mle3 / (1.0 + mle3)), frequency[1:r]))) +
       ((1.0 - u1 - u2 - u3) * ((1.0 / mle4) *
-                                 pow((mle4 / (1.0 + mle4)), freq[1:r]))))))
+                                 pow((mle4 / (1.0 + mle4)), frequency[1:r]))))))
   
   
   # model number 5
@@ -121,7 +142,7 @@ FourExponentialFits <- function(r, n, s, frequency, observedCount) {
     + (u2 * mle4 * mle1 * mle3)
     + (mle4 * mle1 * mle2 * mle3)
     + (u1 * mle4 * mle2 * mle3)
-    + (mle1 * mle2 * mles3)
+    + (mle1 * mle2 * mle3)
     - (u3 * mle1 * mle2 * mle3)
     - (u1 * mle1 * mle2 * mle3)
     - (u2 * mle1 * mle2 * mle3)
