@@ -91,20 +91,20 @@ ChiSqBin <- function(r, fitsExtended, bin,
   t <- 1
 
 # 
-#   print("extendedTau")
-#   print(extendedTau)
-#   print("check")
-#   print(check)
-#   print("r")
-#   print(r)
-#   print("frequency")
-#   print(frequency)
-#   print("bin")
-#   print(bin)
-#   print("s")
-#   print(s)
-#   print("fitsExtended")
-#   print(fitsExtended)
+  print("extendedTau")
+  print(extendedTau)
+  print("check")
+  print(check)
+  print("r")
+  print(r)
+  print("frequency")
+  print(frequency)
+  print("bin")
+  print(bin)
+  print("s")
+  print(s)
+  print("fitsExtended")
+  print(fitsExtended)
  
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
     check[t] <- 0
