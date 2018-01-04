@@ -213,6 +213,7 @@ MLEFourExponential <- function(r, n, s, frequency, observedCount) {
         (u3 * ((1.0 / t3) * pow((t3 / (1.0 + t3)), frequency[1:r]))) +
         ((1.0 - u1 - u2 - u3) * ((1.0 / t4) * pow((t4 / (1.0 + t4)), frequency[1:r])))))
     
+    print(paste("part2: ", part2, sep = " "))
     
     deltaPart2 <- 1.0001e-10
     part2old <- part2
@@ -235,6 +236,14 @@ MLEFourExponential <- function(r, n, s, frequency, observedCount) {
       
       z3 <- (u3 * (1.0 / t2) * ((t3 / (1.0 + t3)) ^ frequency[1:r])) / denom
       
+     # print(paste("z1: ", z1, sep = "  "))
+      # print(paste("z2: ", z2, sep = "  "))
+      # print(paste("z3: ", z3, sep = "  "))
+      # 
+      # print(paste("t1: ", t1, sep = "  "))
+      # print(paste("t2: ", t2, sep = "  "))
+      # print(paste("t3: ", t3, sep = "  "))
+      
       u1 <- sum(observedCount[1:r]*z1[1:r])
       u2 <- sum(observedCount[1:r]*z2[1:r])
       u3 <- sum(observedCount[1:r]*z3[1:r])
@@ -249,7 +258,9 @@ MLEFourExponential <- function(r, n, s, frequency, observedCount) {
       t3part2 <- sum(observedCount[1:r]*z3)
       t4part2 <- sum(observedCount[1:r]*(1-z1-z2-z3))
       
+      #print(paste("u1 before here: ", u1, sep = " "))
       u1 <- u1/(s[r])
+      #print(paste("u1 now here now now: ", u1, sep = " "))
       u2 <- u2/(s[r])
       u3 <- u3/(s[r])
       
@@ -268,6 +279,14 @@ MLEFourExponential <- function(r, n, s, frequency, observedCount) {
       part2old <- part2
       iteration <- iteration + 1
     }
+    
+    print(paste("u1: ", u1, sep = " "))
+    print(paste("u2: ", u2, sep = " "))
+    print(paste("u3: ", u3, sep = " "))
+    print(paste("t1: ", t1, sep = " "))
+    print(paste("t2: ", t2, sep = " "))
+    print(paste("t3: ", t3, sep = " "))
+    print(paste("t4: ", t4, sep = " "))
     
     #where is 1e6 from??
     if (iteration == 1e6) warning("FOur Exp didn't converge?")

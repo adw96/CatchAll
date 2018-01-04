@@ -38,6 +38,7 @@ library(CatchAll)
 
 testData <- read.csv("test_data.csv", header = F)
 
+
 CatchAll(testData)
 # apples1 <- read.csv("tests/apples.csv", header = F)
 # CatchAll(apples1)
