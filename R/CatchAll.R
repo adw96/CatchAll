@@ -223,11 +223,11 @@ CatchAll <- function(frequency_table) {
   if (fMinFlag[modelNumber]==1) {
      frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
      for (r in frequencyMinimum:maximumObservation) {
-       four_exponential_results <- LogTWLRModel(lnW, lnY,  WLRMSwitch, s, r, observedCount, n,
+       log_transfWLR_results <- LogTWLRModel(lnW, lnY,  WLRMSwitch, s, r, observedCount, n,
                                                             s0Init, frequency,
                                                             lnSFactorial, sumlnFFactorial,
                                                             maximumObservation)
-       output <- rbind(output, four_exponential_results)
+       output <- rbind(output, log_transfWLR_results)
      }
    }
   output

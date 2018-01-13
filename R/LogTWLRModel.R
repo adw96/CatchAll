@@ -82,31 +82,37 @@ LogTWLRFits <- function(lnW, lnY, r, n, s, frequency, observedCount) {
   MSE <- 0
   gamma <- 0
   delta <- 0
+  print(paste("frequency[r] + 1"), frequency[r] + 1, sep = " ")
+  print(frequency[r] + 1)
   fitsCount <- rep(NA, frequency[r] + 1)
   
+  ## k should be 2173644.92868474
   ## calculate k
-  for(j in 1:r) {
+  print("hello world")
+  for(j in 1:(r-1)) {
     tmp <- 0.0
-    for(i in 1:r) {
+    for(i in 1:(r-1)) {
       tmp <- tmp + i * lnW[i] * (i-j)
     }
     k <- k + lnW[j] * tmp
+    print(paste("tmp: ", tmp, sep = "   "))
+    print(paste("k: ", k, sep = "  "))
   }
   ## calculate gamma
-  for(j in 1:r) {
+  for(j in 1:(r-1)) {
     tmp <- 0.0
-    for(i in 1:r) {
+    for(i in 1:(r-1)) {
       tmp <- tmp + (j - i) * lnW[i] * lnY[i]
     }
     gamma <- gamma + j * lnW[j] * tmp
   }
-  
+  print(paste("k: ", k, sep = " "))
   gamma <- gamma / k
   
   ## calculate delta
-  for(j in 1:r) {
+  for(j in 1:(r-1)) {
     tmp <- 0
-    for(i in 1:r) {
+    for(i in 1:(r-1)) {
       tmp <- tmp + (i - j) * lnW[i] * lnY[i]
     }
     delta <- delta + lnW[j] * tmp
@@ -115,20 +121,33 @@ LogTWLRFits <- function(lnW, lnY, r, n, s, frequency, observedCount) {
   delta <- delta / k
   
   ## calculate MSE
-  MSE <- (lnW[1:r] * (lnY[1:r] - gamma - delta * j) * (lnY[1:r] -
-                                                        gamma - delta * (1:r)))
+  MSE <- (lnW[1:(r-1)] * (lnY[1:(r-1)] - gamma - delta * j) * (lnY[1:(r-1)] -
+                                                        gamma - delta * (1:(r-1))))
   MSE <- MSE * (1/ (r - 3))
   
-  fitsCount[0] = observedCount[frequency[1]] * exp(-gamma)
-  fitsCount[1] = observedCount[frequency[1]]
-  
-  for(t in 2:r) {
+  print(paste("gamma: ", gamma, sep = " "))
+  print(paste("exp(-gamma): ", exp(-gamma), sep = " "))
+  print(paste("observedCount[frequency[1]] * exp(-gamma): ", observedCount[frequency[1]] * exp(-gamma), sep = " "))
+  fitsCount[1] = ((observedCount[frequency[1]]) * exp(-gamma))
+  fitsCount[2] = observedCount[frequency[1]]
+  ##fitsCount[0] = fitsCount[1] * exp(-gamma)
+  ##fitsCount[0] = 2
+  print("ding dong ding")
+  # print(fitsCount[0])
+  # print(fitsCount[1])
+  print(paste("fitsCount[0]: ", fitsCount[1], sep = "  "))
+  print(paste("fitsCount[1]: ", fitsCount[2], sep = "  "))
+  print(paste("r: ", r, sep = " "))
+  for(t in 3:(r + 1)) {
     fitsCount[t] = fitsCount[t - 1] *
       exp(gamma + delta * (t - 1.0)) / t
   }
   
+  print("fitsCount")
+  print(fitsCount)
   #gamma, delta, MSE, k, fitsCheck, fitsCount
   
+  print((sum(fitsCount < 0)))
   #nothing is negative
   if (sum(fitsCount < 0) <= 0) {
     list("fitsCount"=fitsCount, "check"=fitsCheck,
