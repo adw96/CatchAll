@@ -1,13 +1,14 @@
-LogTWLRModel <- function(lnW, lnY,  WLRMSwitch, s, r, observedCount, n, 
+LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n, 
                                    s0Init, frequency, 
                                    lnSFactorial, sumlnFFactorial, 
                                    maximumObservation) {
   
   bigChiSq <- 1000000000
-  numParams <- 7
+  numParams <- 2
+  maxGOF <- 10
   fits <- LogTWLRFits(lnW, lnY, r, n, s, frequency, observedCount)
-  
-  if (fits$check == 1) {
+  fitsCheck <- ifelse(min(fits$fitsCount) < 0, 0, 1)
+  if (fitsCheck == 1) {
     gamma <- fits$gamma
     k <- fits$k
     delta <- fits$delta
@@ -17,14 +18,17 @@ LogTWLRModel <- function(lnW, lnY,  WLRMSwitch, s, r, observedCount, n,
     sHatSubset <- fitsCount[0] + s[r]
     
     sHatTotal <- sHatSubset + (s[maximumObservation] - s[r])
+    #wrong chiSqAll here
     chiSqAll <- ChiSqFunction(r, fitsCount, numParams, frequency, observedCount, s)
     
     df <- frequency[r] - numParams
     flag <- 1
     test <- (chiSqAll - df) / sqrt(2 * df)
     GOF0 <- 0
-    #where did maxGOF and BigChiSq come from...
-    if (test < maxGOF & chiSqAll < BigChiSq) {
+
+    if (test < maxGOF & chiSqAll < bigChiSq) {
+      print(paste("chiSqAll: ", chiSqAll, sep = " "))
+      print(paste("df: ", df, sep = " "))
       GOF0 <- GoodnessOfFit(chiSqAll, df)
     } else {
       flag <- 0
@@ -32,15 +36,17 @@ LogTWLRModel <- function(lnW, lnY,  WLRMSwitch, s, r, observedCount, n,
   }
   
   GOF0Check <- flag
-  WLRMSwitch[frequency[r]] <- GOF0 #is it ok for switch and GOF0 to be the same?
+  print("printing GOF0")
+  print(GOF0)
+  WLRMGOF0[frequency[r]] <- GOF0 #is it ok for switch and GOF0 to be the same?
   varGamma <- sum((1:r) * (1:r) * lnW[1:r])
   varGamma <- varGamma * MSE / k
   
   se <- (s[r] * fitsCount[0] / sHatSubset) + (exp(-2.0 * gamma) *
-                                                observedCount[frequency[1]] * (varGamma * observedCount[freq[1]] + 1.0))
+                                                observedCount[frequency[1]] * (varGamma * observedCount[frequency[1]] + 1.0))
   
   SEFlag <- 0
-  if (SE > 0) {
+  if (se > 0) {
     se <- sqrt(se)
     seFlag <- 1
   }
@@ -95,8 +101,7 @@ LogTWLRFits <- function(lnW, lnY, r, n, s, frequency, observedCount) {
       tmp <- tmp + i * lnW[i] * (i-j)
     }
     k <- k + lnW[j] * tmp
-    print(paste("tmp: ", tmp, sep = "   "))
-    print(paste("k: ", k, sep = "  "))
+   
   }
   ## calculate gamma
   for(j in 1:(r-1)) {
@@ -125,7 +130,12 @@ LogTWLRFits <- function(lnW, lnY, r, n, s, frequency, observedCount) {
                                                         gamma - delta * (1:(r-1))))
   MSE <- MSE * (1/ (r - 3))
   
+  MSE <- sum(MSE)
+  
+  print(paste("k: ", k, sep = " "))
   print(paste("gamma: ", gamma, sep = " "))
+  print(paste("delta: ", delta, sep = " "))
+  print(paste("MSE: ", MSE, sep = " "))
   print(paste("exp(-gamma): ", exp(-gamma), sep = " "))
   print(paste("observedCount[frequency[1]] * exp(-gamma): ", observedCount[frequency[1]] * exp(-gamma), sep = " "))
   fitsCount[1] = ((observedCount[frequency[1]]) * exp(-gamma))
@@ -138,22 +148,23 @@ LogTWLRFits <- function(lnW, lnY, r, n, s, frequency, observedCount) {
   print(paste("fitsCount[0]: ", fitsCount[1], sep = "  "))
   print(paste("fitsCount[1]: ", fitsCount[2], sep = "  "))
   print(paste("r: ", r, sep = " "))
+  ## ohh i know off by 1 error
   for(t in 3:(r + 1)) {
     fitsCount[t] = fitsCount[t - 1] *
-      exp(gamma + delta * (t - 1.0)) / t
+      exp(gamma + delta * ((t - 1) - 1.0)) / (t - 1)
   }
   
-  print("fitsCount")
-  print(fitsCount)
+  #print("fitsCount")
+  #print(fitsCount)
   #gamma, delta, MSE, k, fitsCheck, fitsCount
   
-  print((sum(fitsCount < 0)))
+  #print((sum(fitsCount < 0)))
   #nothing is negative
-  if (sum(fitsCount < 0) <= 0) {
-    list("fitsCount"=fitsCount, "check"=fitsCheck,
+  #if (sum(fitsCount < 0) <= 0) {
+    list("fitsCount"=fitsCount,
          "gamma"=gamma, "delta"=delta, "MSE"=MSE, "k"=k)
-  } else {
-    list("check"=0)
-  }
+ # } else {
+   # list("check"=0)
+ # }
 
 }
