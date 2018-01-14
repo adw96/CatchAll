@@ -70,7 +70,7 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
       ((1.0 - u1 - u2) * ((1.0 / mle3) *
                             ((mle3 / (1.0 + mle3)) ^ frequency[1:r]))))))
   
-
+  print("dinnngggg dong")
   # model number 4
   calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
                                                                     fitsExtended, 
@@ -251,9 +251,15 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
 }
 
 TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
-  
+  print("helllllllooooooooooooooooooooooo")
   maximumIteration <- 100000
   criteria <- 0.0000000000000001
+  
+  print(paste("t1: ", t1, sep = " "))
+  print(paste("t2: ", t2, sep = " "))
+  print(paste("t3: ", t3, sep = " "))
+  print(paste("t4: ", t4, sep = " "))
+  print(paste("t5: ", t5, sep = " "))
   
   t23P <- t2^3
   t33P <- t3^3
@@ -293,6 +299,11 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   test <- 100
   k <- 0
   
+  #incorrect a11 but then the t1..t5 are all correct..
+  #dummy values as 2 here
+  print(paste("t1P: ", ((t1 / (1 + t1))^2), sep = " "))
+  print(paste("t2P: ", ((t2 / (1 + t2))^ 2), sep = " "))
+  print(paste("t3P: ", ((t3 / (1 + t3))^ 2) , sep = " "))
   while (test > criteria & k < maximumIteration) {
     t1P <- ((t1 / (1 + t1))^ k) 
     t2P <- ((t2 / (1 + t2))^ k) 
@@ -332,6 +343,9 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
       (-t4 * t1P - t4 * t1P * t3 - t4 * t1P * t2 - t4 * t1P * t2 * t3 - t5 * t2P * t3 - t5 * t2P * t1 * t3 - t5 *
          t2P - t5 * t2P * t1 - t3P - t3P * t2 - t3P * t1 - t3P * t1 * t2 + t3P * t4 + t3P * t4 * t2 + t3P * t4 * t1 + t3P * t4 * t1 * t2 +
          t3P * t5 + t3P * t5 * t2 + t3P * t5 * t1 + t3P * t5 * t1 * t2) * t1bP 
+    if (k == 10) {
+      print(paste("a11 after ten iter: ", a11, sep = " "))
+    }
     
     if (k > 0) test <- abs(a11/a[1,1])
     a[1,1] <- a[1,1] + a11
@@ -343,6 +357,8 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     break
   }
   
+  print(paste("a11: ", a11, sep = " "))
+  print("reached a11")
   ## a12
   test <- 100
   k <- 0
@@ -365,10 +381,11 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   }  
   
   if (k == maximumIteration) {
+    print("reached maxIter in a12")
     return(list("flag"=1))
     break
   }
-  
+  print("reached a12")
   
   ## a13
   test <- 100
@@ -398,7 +415,7 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     return(list("flag"=1))
     break
   }
-  
+  print("reached a13")
   
   ## a14
   test <- 100
@@ -427,6 +444,7 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     break
   }
   
+  print("reached a14")
   
   ## a15
   test <- 100
@@ -541,6 +559,8 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     break
   }
   
+  print("reached a23")
+  
   ## a24
   test <- 100
   k <- 0
@@ -601,6 +621,7 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     break
   }
   
+  print("reached a25")
   
   ## a33
   test <- 100
@@ -694,6 +715,8 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     break
   }
   
+  print("reached a34")
+  
   ## a35
   test <- 100
   k <- 0
@@ -760,6 +783,8 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     break
   }
   
+  print("reached a44")
+  
   ## a45
   test <- 100
   k <- 0
@@ -823,7 +848,10 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     break
   }
   
-  print(a)
+  print("hellooooo")
+  print(paste("a: ", a, sep = " "))
+  print(paste("a00: ", a00, sep = " "))
+  print(paste("a0: ", a0, sep = " "))
   ## invert
   MatrixInversion(sHatSubset, a00, a0, a)
   
