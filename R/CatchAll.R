@@ -122,6 +122,7 @@ CatchAll <- function(frequency_table) {
     (observedCount[c(1:(frequencyMaximum-1))] + 
        observedCount[c(2:(frequencyMaximum))])
   WLRMSwitch <- rep(0, frequencyMaximum-1)
+  WLRMGOF0 <- rep(0, frequencyMaximum-1)
   
   ## TODO
   #  ACE1Tau10Rule <- ACE1Tau10()
@@ -223,11 +224,11 @@ CatchAll <- function(frequency_table) {
   if (fMinFlag[modelNumber]==1) {
      frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
      for (r in frequencyMinimum:maximumObservation) {
-       four_exponential_results <- LogTWLRModel(lnW, lnY,  WLRMSwitch, s, r, observedCount, n,
+       log_transfWLR_results <- LogTWLRModel(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
                                                             s0Init, frequency,
                                                             lnSFactorial, sumlnFFactorial,
                                                             maximumObservation)
-       output <- rbind(output, four_exponential_results)
+       output <- rbind(output, log_transfWLR_results)
      }
    }
   output

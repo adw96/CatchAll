@@ -75,6 +75,8 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
   if(modelNumber<6) {
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
   }
+  
+  print(paste("chiSqTemporary: ", chiSqTemporary))
   chiSqTemporary
 }
 
