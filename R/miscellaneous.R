@@ -76,7 +76,7 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
   }
   
-  print(paste("chiSqTemporary: ", chiSqTemporary))
+  #print(paste("chiSqTemporary: ", chiSqTemporary))
   chiSqTemporary
 }
 
@@ -93,20 +93,20 @@ ChiSqBin <- function(r, fitsExtended, bin,
   t <- 1
 
 # 
-  print("extendedTau")
-  print(extendedTau)
-  print("check")
-  print(check)
-  print("r")
-  print(r)
-  print("frequency")
-  print(frequency)
-  print("bin")
-  print(bin)
-  print("s")
-  print(s)
-  print("fitsExtended")
-  print(fitsExtended)
+  # print("extendedTau")
+  # print(extendedTau)
+  # print("check")
+  # print(check)
+  # print("r")
+  # print(r)
+  # print("frequency")
+  # print(frequency)
+  # print("bin")
+  # print(bin)
+  # print("s")
+  # print(s)
+  # print("fitsExtended")
+  # print(fitsExtended)
  
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
     check[t] <- 0
@@ -279,19 +279,19 @@ MatrixInversion <- function(sHat, a00, a0, A) {
   result <- list()
   # complete the symmetric matrix
   A <- A + t(A)
-  print("new A")
-  print(A)
-  
+  # print("new A")
+  # print(A)
   # after dividing diag / 2, we get the same answer given by C#
-  diag(A) <- diag(A)/2
-  print("A diag")
-  print(A)
   
+  diag(A) <- diag(A)/2
+  # print("A diag")
+  # print(A)
+  # 
   #tol = 1e-17
   #5.04722e-22
   aInverse <- try(solve(A, tol = 0), silent = TRUE)
-  print("AInverse after multiplication")
-  print(aInverse)
+  # print("AInverse after multiplication")
+  # print(aInverse)
 
   if (class(aInverse) != "try-error") {
     answer <- a0 %*% aInverse %*% a0

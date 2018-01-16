@@ -70,7 +70,7 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
       ((1.0 - u1 - u2) * ((1.0 / mle3) *
                             ((mle3 / (1.0 + mle3)) ^ frequency[1:r]))))))
   
-
+  
   # model number 4
   calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
                                                                     fitsExtended, 
@@ -251,7 +251,6 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
 }
 
 TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
-  
   maximumIteration <- 100000
   criteria <- 0.0000000000000001
   
@@ -293,6 +292,11 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   test <- 100
   k <- 0
   
+  #incorrect a11 but then the t1..t5 are all correct..
+  #dummy values as 2 here
+  # print(paste("t1P: ", ((t1 / (1 + t1))^2), sep = " "))
+  # print(paste("t2P: ", ((t2 / (1 + t2))^ 2), sep = " "))
+  # print(paste("t3P: ", ((t3 / (1 + t3))^ 2) , sep = " "))
   while (test > criteria & k < maximumIteration) {
     t1P <- ((t1 / (1 + t1))^ k) 
     t2P <- ((t2 / (1 + t2))^ k) 
@@ -332,7 +336,7 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
       (-t4 * t1P - t4 * t1P * t3 - t4 * t1P * t2 - t4 * t1P * t2 * t3 - t5 * t2P * t3 - t5 * t2P * t1 * t3 - t5 *
          t2P - t5 * t2P * t1 - t3P - t3P * t2 - t3P * t1 - t3P * t1 * t2 + t3P * t4 + t3P * t4 * t2 + t3P * t4 * t1 + t3P * t4 * t1 * t2 +
          t3P * t5 + t3P * t5 * t2 + t3P * t5 * t1 + t3P * t5 * t1 * t2) * t1bP 
-    
+
     if (k > 0) test <- abs(a11/a[1,1])
     a[1,1] <- a[1,1] + a11
     k <- k+1
@@ -346,10 +350,12 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   ## a12
   test <- 100
   k <- 0
-  t1P <- ((t1 / (1 + t1))^ k) 
-  t2P <- ((t2 / (1 + t2))^ k) 
-  t3P <- ((t3 / (1 + t3))^ k) 
+  
   while (test > criteria  &  k < maximumIteration) {
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
+    
     a12 <- -(1 + t3) * t1P * t4 * (-t1 + k) * t5 *
       t2P * (-t2 + k) / t2 / (1 + t2) / t1 / (1 + t1) / (-t4 * t1P - t4 *
                                                            t1P * t3 - t4 * t1P * t2 - t4 * t1P * t2 * t3 - t5 *
@@ -359,6 +365,7 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
                                                            t3P * t4 * t2 + t3P * t4 * t1 + t3P * t4 * t1 * t2 +
                                                            t3P * t5 + t3P * t5 * t2 + t3P * t5 * t1 +
                                                            t3P * t5 * t1 * t2) 
+    
     if (k > 0) test <- abs(a12/a[1,2])
     a[1,2] <- a[1,2] + a12
     k <- k+1
@@ -373,11 +380,13 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   ## a13
   test <- 100
   k <- 0
-  t1P <- ((t1 / (1 + t1))^ k) 
-  t2P <- ((t2 / (1 + t2))^ k) 
-  t3P <- ((t3 / (1 + t3))^ k) 
+  
   
   while (test > criteria & k < maximumIteration) {
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
+    
     a13 <- (1 + t2) * t1P * t4 * (-t1 + k) * (-1 + t4 + t5) *
       t3P * (-t3 + k) / t3 / (1 + t3) / t1 / (1 + t1) / (-t4 * t1P - t4 *
                                                            t1P * t3 - t4 * t1P * t2 - t4 * t1P * t2 * t3 - t5 *
@@ -398,16 +407,18 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     return(list("flag"=1))
     break
   }
-  
+
   
   ## a14
   test <- 100
   k <- 0
-  t1P <- ((t1 / (1 + t1))^ k) 
-  t2P <- ((t2 / (1 + t2))^ k) 
-  t3P <- ((t3 / (1 + t3))^ k) 
+
   
   while (test > criteria & k < maximumIteration) {
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
+    
     a14 <- -t1P * (-t1 + k) * (t5 * t2P * t3 + t5 * t2P +
                                  t3P * t2 - t3P * t5 * t2 + t3P -
                                  t3P * t5) / (t4 * t1P + t4 * t1P * t3 + t4 *
@@ -426,16 +437,18 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     return(list("flag"=1))
     break
   }
-  
+
   
   ## a15
   test <- 100
   k <- 0
-  t1P <- ((t1 / (1 + t1))^ k) 
-  t2P <- ((t2 / (1 + t2))^ k) 
-  t3P <- ((t3 / (1 + t3))^ k) 
+  
   
   while (test > criteria & k < maximumIteration) {
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
+    
     a15 <-  t1P * t4 * (-t1 + k) * (t2P + t2P * t3 -
                                       t3P - t3P * t2) / t1 / (1 + t1) / (t4 * t1P + t4 *
                                                                            t1P * t3 + t4 * t1P * t2 + t4 * t1P * t2 * t3 + t5 *
@@ -460,6 +473,10 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   k <- 0
   ## missing t1p etc assignment here?
   while (test > criteria & k < maximumIteration) {
+    t1P <- ((t1 / (1 + t1))^ k) 
+    t2P <- ((t2 / (1 + t2))^ k) 
+    t3P <- ((t3 / (1 + t3))^ k) 
+    
     a22 <- -t5 * t2P * (-k * k * t3P * t5 + k *
                           t3P * t4 + k * k * t4 * t1P + 2 * (t2 * t2) * t4 * t1P + 2 *
                           t23P * t4 * t1P + 2 * (t2 * t2) * t3P * t1 + 2 * t23P *
@@ -600,8 +617,7 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     return(list("flag"=1))
     break
   }
-  
-  
+
   ## a33
   test <- 100
   k <- 0
@@ -727,8 +743,6 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     break
   }
   
-  
-  
   ## a44
   test <- 100
   k <- 0
@@ -739,15 +753,14 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     t3P <- ((t3 / (1 + t3))^ k)
     
     #fix math later? formatting problems
-    a44 <-   (1 + t2) * (t1P + t1P * t3 - t3P -
-                           t3P * t1 ^ 2) / (1 + t3) / (1 + t1) / (t4 * t1P + t4 *
-                                                                    t1P * t3 + t4 * t1P * t2 + t4 * t1P * t2 * t3 + t5 *
-                                                                    t2P * t3 + t5 * t2P * t1 * t3 + t5 * t2P + t5 *
-                                                                    t2P * t1 - t3P * t4 - t3P * t4 * t2 +
-                                                                    t3P + t3P * t2 + t3P * t1 + t3P * t1 * t2 -
-                                                                    t3P * t4 * t1 - t3P * t4 * t1 * t2 - t3P * t5 -
-                                                                    t3P * t5 * t2 - t3P * t5 * t1 - t3P * t5 * t1 * t2)
-    
+    a44 <-  (1 + t2) * pow(t1P + t1P * t3 - t3P -
+                                  t3P * t1, 2) / (1 + t3) / (1 + t1) / (t4 * t1P + t4 *
+                                                                          t1P * t3 + t4 * t1P * t2 + t4 * t1P * t2 * t3 + t5 *
+                                                                          t2P * t3 + t5 * t2P * t1 * t3 + t5 * t2P + t5 *
+                                                                          t2P * t1 - t3P * t4 - t3P * t4 * t2 +
+                                                                          t3P + t3P * t2 + t3P * t1 + t3P * t1 * t2 -
+                                                                          t3P * t4 * t1 - t3P * t4 * t1 * t2 - t3P * t5 -
+                                                                          t3P * t5 * t2 - t3P * t5 * t1 - t3P * t5 * t1 * t2)
     
     
     
@@ -759,7 +772,7 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     return(list("flag"=1))
     break
   }
-  
+
   ## a45
   test <- 100
   k <- 0
@@ -771,8 +784,7 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     
     #fix math later? formatting problems
     a45 <-  (t1P + t1P * t3 - t3P -
-               t3P * t1) * (t2P + t2P * t3 - t3P -
-                              t3P * t2) / (1 + t3) / (t4 * t1P + t4 * t1P * t3 + t4 *
+               t3P * t1) * (t2P + t2P * t3 - t3P - t3P * t2) / (1 + t3) / (t4 * t1P + t4 * t1P * t3 + t4 *
                                                         t1P * t2 + t4 * t1P * t2 * t3 + t5 * t2P * t3 + t5 *
                                                         t2P * t1 * t3 + t5 * t2P + t5 * t2P * t1 -
                                                         t3P * t4 - t3P * t4 * t2 + t3P + t3P * t2 +
@@ -791,25 +803,28 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     break
   }
   
+  print("reached a45")
   
   ## a55
   test <- 100
   k <- 0
+
   while (test > criteria & k < maximumIteration) {
+  
     
     t1P <- ((t1 / (1 + t1))^ k) 
     t2P <- ((t2 / (1 + t2))^ k) 
     t3P <- ((t3 / (1 + t3))^ k) 
     
     #fix math later? formatting problems
-    a55 <-  (1 + t1) * (t2P + t2P * t3 - t3P -
-                          t3P * t2 ^ 2) / (1 + t3) / (1 + t2) / (t4 * t1P + t4 *
-                                                                   t1P * t3 + t4 * t1P * t2 + t4 * t1P * t2 * t3 + t5 *
-                                                                   t2P * t3 + t5 * t2P * t1 * t3 + t5 * t2P + t5 *
-                                                                   t2P * t1 - t3P * t4 - t3P * t4 * t2 +
-                                                                   t3P + t3P * t2 + t3P * t1 + t3P * t1 * t2 -
-                                                                   t3P * t4 * t1 - t3P * t4 * t1 * t2 - t3P * t5 -
-                                                                   t3P * t5 * t2 - t3P * t5 * t1 - t3P * t5 * t1 * t2) 
+    a55 <-  (1 + t1) * pow(t2P + t2P * t3 - t3P -
+                                  t3P * t2, 2) / (1 + t3) / (1 + t2) / (t4 * t1P + t4 *
+                                                                          t1P * t3 + t4 * t1P * t2 + t4 * t1P * t2 * t3 + t5 *
+                                                                          t2P * t3 + t5 * t2P * t1 * t3 + t5 * t2P + t5 *
+                                                                          t2P * t1 - t3P * t4 - t3P * t4 * t2 +
+                                                                          t3P + t3P * t2 + t3P * t1 + t3P * t1 * t2 -
+                                                                          t3P * t4 * t1 - t3P * t4 * t1 * t2 - t3P * t5 -
+                                                                          t3P * t5 * t2 - t3P * t5 * t1 - t3P * t5 * t1 * t2) 
     
     
     
@@ -819,13 +834,19 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     k <- k+1
   }
   if (k == maximumIteration) {
+    print("return at a55")
     return(list("flag"=1))
     break
   }
-  
-  print(a)
+  # print("reached a55")
+  # 
+  # print("hellooooo")
+  print(paste("a: ", a, sep = " "))
+  print(paste("a00: ", a00, sep = " "))
+  print(paste("a0: ", a0, sep = " "))
   ## invert
   MatrixInversion(sHatSubset, a00, a0, a)
   
 }
+
 
