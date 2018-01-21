@@ -289,7 +289,7 @@ MatrixInversion <- function(sHat, a00, a0, A) {
   # 
   #tol = 1e-17
   #5.04722e-22
-  aInverse <- try(solve(A, tol = 0), silent = TRUE)
+  aInverse <- try(solve(A), silent = TRUE)
   # print("AInverse after multiplication")
   # print(aInverse)
 

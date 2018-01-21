@@ -27,9 +27,9 @@ DoubleExponentialModel <- function(s, r, observedCount, n,
                                (mle3 * mle1)))
     
   
+    print(paste("s[maximumObservation] - s[r] ",s[maximumObservation] - s[r], sep = " " ))
     sHatTotal <- sHatSubset+(s[maximumObservation]-s[r])
-    print("sHatTotal")
-    print(sHatTotal)
+    print(paste("sHatTotal: ",sHatTotal, sep = " "))
     part1 <- lnSFactorial[r]-sumlnFFactorial[r]
     part2 <- sum(observedCount[1:r] * log((u * ((mle1/(1+mle1))^(frequency[1:r]))/mle1) +
                                             ((1-u)*(mle2/(1+mle2))^(frequency[1:r])/mle2)))
@@ -37,16 +37,15 @@ DoubleExponentialModel <- function(s, r, observedCount, n,
     calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
                                                                       fitsExtended, 
                                                                      s, 3, frequency, observedCount)
-    print("mle1")
-    print(mle1)
-    print("mle2")
-    print(mle2)
-    print("mle3")
-    print(mle3)
+    print(paste("mle1: ", mle1, sep = " "))
+    print(paste("mle2: ", mle2, sep = " "))
+    print(paste("mle3: ", mle3, sep = " "))
+    print(paste("sHatSubset: ", sHatSubset, sep = " "))
     print("s[r]")
     print(s[r])
     ## standard error
     se <- DoubleExponentialStandardError(mle1, mle2, mle3, sHatSubset)
+    print(paste("SE FOR TWO: ", se$se, sep = " "))
     if (r == 6) print(se)
     bounds <- GetConfidenceBounds(r, se$se, sHatSubset, s, maximumObservation)
     
@@ -173,30 +172,27 @@ DoubleExponentialStandardError <- function(t1, t2, t3, sHatSubset) {
           (t3-1-t1+t3*t1)/(1+t2)/(-t3*t2-1-t1+t3*t1), 
           -1/(-t3*t2-1-t1+t3*t1)*(-t2+t1))
   a <- matrix(0, nrow = 3, ncol = 3) 
-  print("t1")
-  print(t1)
-  print("t2")
-  print(t2)
-  print("t3")
-  print(t3)
   
+  print(paste("t1: ", t1, sep = " "))
+  print(paste("t2: ", t2, sep = " "))
+  print(paste("t3: ", t3, sep = " "))
   ## a11
   test <- 100
   k <- 0
  # print(pow(2,2))
   
   while (test > criteria & k < maximumIteration) {
-    a11 <- -t3 * pow((t1 / (1 + t1)), k) * (t3 * pow((t1 / (1 + t1)), k) * k + 2 * k * t1 * t3 *
-                                                   pow((t1 / (1 + t1)), k) * t2 - (t1 * t1) * t3 * pow((t1 / (1 + t1)), k) * t2 + 2 * k * t1 * t3 *
-                                                   pow((t1 / (1 + t1)), k) - 5 * k * t1 * pow(t2 / (1 + t2), k) * t3 - 4 * k * (t1 * t1) *
-                                                   pow(t2 / (1 + t2), k) * t3 + k * k * pow(t2 / (1 + t2), k) * t3 * t1 + k * t3 *
-                                                   pow((t1 / (1 + t1)), k) * t2 - (t1 * t1) * t3 * pow((t1 / (1 + t1)), k) + 2 * (t1 * t1) *
-                                                   pow(t2 / (1 + t2), k) * t3 + 2 * pow(t1, 3) * pow(t2 / (1 + t2), k) * t3 + 5 * k * t1 *
-                                                   pow(t2 / (1 + t2), k) + 4 * k * (t1 * t1) * pow(t2 / (1 + t2), k) + k * k * pow(t2 / (1 + t2), k) * t3 - k * k *
-                                                   pow(t2 / (1 + t2), k) * t1 - k * pow(t2 / (1 + t2), k) * t3 - 2 * (t1 * t1) * pow(t2 / (1 + t2), k) - 2 *
-                                                   pow(t1, 3) * pow(t2 / (1 + t2), k) - k * k * pow(t2 / (1 + t2), k) + k * pow(t2 / (1 + t2), k)) / (-t3 *
-                                                                                                                                                                            pow((t1 / (1 + t1)), k) - t3 * pow((t1 / (1 + t1)), k) * t2 + pow(t2 / (1 + t2), k) * t3 - pow(t2 / (1 + t2), k) -
-                                                                                                                                                                            pow(t2 / (1 + t2), k) * t1 + pow(t2 / (1 + t2), k) * t3 * t1) * pow(t1, (-2)) * pow((1 + t1), (-3));
+    a11 <- -t3*pow((t1/(1+t1)),k)*(t3*pow((t1/(1+t1)),k)*k+2*k*t1*t3*
+                                          pow((t1/(1+t1)),k)*t2-(t1*t1)*t3*pow((t1/(1+t1)),k)*t2+2*k*t1*t3*
+                                          pow((t1/(1+t1)),k)-5*k*t1*pow(t2/(1+t2),k)*t3-4*k*(t1*t1)*
+                                          pow(t2/(1+t2),k)*t3+k*k*pow(t2/(1+t2),k)*t3*t1+k*t3*
+                                          pow((t1/(1+t1)),k)*t2-(t1*t1)*t3*pow((t1/(1+t1)),k)+2*(t1*t1)*
+                                          pow(t2/(1+t2),k)*t3+2*pow(t1,3)*pow(t2/(1+t2),k)*t3+5*k*t1*
+                                          pow(t2/(1+t2),k)+4*k*(t1*t1)*pow(t2/(1+t2),k)+k*k*pow(t2/(1+t2),k)*t3-k*k*
+                                          pow(t2/(1+t2),k)*t1-k*pow(t2/(1+t2),k)*t3-2*(t1*t1)*pow(t2/(1+t2),k)-2*
+                                          pow(t1,3)*pow(t2/(1+t2),k)-k*k*pow(t2/(1+t2),k)+k*pow(t2/(1+t2),k))/(-t3*
+                                                                                                                                     pow((t1/(1+t1)),k)-t3*pow((t1/(1+t1)),k)*t2+pow(t2/(1+t2),k)*t3-pow(t2/(1+t2),k)-
+                                                                                                                                     pow(t2/(1+t2),k)*t1+pow(t2/(1+t2),k)*t3*t1)*pow(t1,(-2))*pow((1 + t1), (-3))
     if (k > 0) test <- abs(a11/a[1,1])
     a[1,1] <- a[1,1] + a11
     k <- k+1
@@ -303,19 +299,18 @@ DoubleExponentialStandardError <- function(t1, t2, t3, sHatSubset) {
   }
   
   #everything below is correct EXCEPT a
-  print("sHatSubset")
+  print("sHatSubset IN calculating se")
   print(sHatSubset) #this is also wrong
-  print("a00")
-  print(a00)
+  print(paste("a00: ", a00, sep = " "))
   print("a0")
   print(a0)
   print("a")
   print(a) 
 
   ## invert
-  print("inverting now")
-  print(MatrixInversion(sHatSubset, a00, a0, a))
-  print("print invert done")
+  # print("inverting now")
+  # print(MatrixInversion(sHatSubset, a00, a0, a))
+  # print("print invert done")
   MatrixInversion(sHatSubset, a00, a0, a)
   
 }

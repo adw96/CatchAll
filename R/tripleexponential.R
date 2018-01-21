@@ -446,7 +446,7 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
                                                 t3P + t3P * t2 + t3P * t1 + t3P * t1 * t2 -
                                                 t3P * t4 - t3P * t4 * t2 - t3P * t4 * t1 -
                                                 t3P * t4 * t1 * t2 - t3P * t5 - t3P * t5 * t2 -
-                                                t3P * t5 * t1 - t3P * t5 * t1 * t2) / t1 / (1 + t1) 
+                                                t3P * t5 * t1 - t3P * t5 * t1 * t2) / t1 / (1 + t1)
     if (k > 0) test <- abs(a14/a[1,4])
     a[1,4] <- a[1,4] + a14
     k <- k+1
