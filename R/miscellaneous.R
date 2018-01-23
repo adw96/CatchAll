@@ -53,7 +53,18 @@ CalculateAnalysisVariables <- function(part1, part2,
 
 ChiSqFunction <- function(r, fitsCount, modelNumber,
                   frequency, observedCount, s) {
-
+  print("IN CHI SQ FUNCTION")
+  print(paste("r: ", r, sep = " "))
+  print("fitsCount")
+  print(fitsCount)
+  print(paste("modelNumber: ", modelNumber, sep = " "))
+  print(frequency)
+  print("observedCount")
+  print(observedCount)
+  print("s")
+  print(s)
+  #why is this diff if original is same
+  print(paste("smFitsCount: ", sum(fitsCount), sep = " "))
   chiSqTemporary <- 0
   sumFit <- 0
   rr <- 1
@@ -61,22 +72,30 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     stop("first frequency is 0?")
   }
   
+  print(paste("freq[r]: ", frequency[r]))
   # this bizarre looking flow adjusts for non-contiguous frequencies
   for (t in 1:frequency[r]) {
     if (t == frequency[rr]) {
-      chiSqTemporary <- chiSqTemporary + ((observedCount)[rr] - fitsCount[t])^2/fitsCount[t]
+      print(paste("((observedCount[rr] - fitsCount[t])^2)/fitsCount[t])", ((observedCount[rr] - fitsCount[t])^2)/fitsCount[t]), sep = " ")
+      chiSqTemporary <- chiSqTemporary + (((observedCount[rr] - fitsCount[t])^2)/fitsCount[t])
       rr <- rr+1
     } else {
       chiSqTemporary <- chiSqTemporary + fitsCount[t]
     }
+    print(paste("chiSqTemporary in loop: ", chiSqTemporary, sep = " "))
   }
   sumFit <- sum(fitsCount)
+  print(paste("fitsCount[1]: ", fitsCount[1], sep = " "))
+  #is this just a temp fix for LOGTWLR? do we even need this...
+  sumFit <- sumFit - fitsCount[1]
+  print(paste("sumFit: ", sumFit, sep = " "))
 
   if(modelNumber<6) {
+    print("hey there")
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
   }
   
-  #print(paste("chiSqTemporary: ", chiSqTemporary))
+  print(paste("chiSqTemporary: ", chiSqTemporary))
   chiSqTemporary
 }
 

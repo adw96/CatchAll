@@ -6,6 +6,7 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
   bigChiSq <- 1000000000
   numParams <- 2
   maxGOF <- 10
+  modelNumber <- 6
   fits <- LogTWLRFits(lnW, lnY, r, n, s, frequency, observedCount)
   fitsCheck <- ifelse(min(fits$fitsCount) < 0, 0, 1)
   if (fitsCheck == 1) {
@@ -19,7 +20,19 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
     
     sHatTotal <- sHatSubset + (s[maximumObservation] - s[r])
     #wrong chiSqAll here
-    chiSqAll <- ChiSqFunction(r, fitsCount, numParams, frequency, observedCount, s)
+    print(paste("r: ", r, sep = " "))
+    print("fitsCount")
+    print(fitsCount)
+    #print(paste("numParams: ", numParams, sep = " "))
+    #print(paste("frequency: ", frequency, sep = " "))
+    print("frequency")
+    print(frequency)
+    print("observedCount")
+    print(observedCount)
+    #print(paste("observedCount: ", observedCount, sep = " "))
+    print("s")
+    print(s)
+    chiSqAll <- ChiSqFunction(r, fitsCount, modelNumber, frequency, observedCount, s)
     
     df <- frequency[r] - numParams
     flag <- 1
@@ -29,7 +42,7 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
     if (test < maxGOF & chiSqAll < bigChiSq) {
       print(paste("chiSqAll: ", chiSqAll, sep = " "))
       print(paste("df: ", df, sep = " "))
-      GOF0 <- GoodnessOfFit(chiSqAll, df)
+      GOF0 <- GoodnessOfFit(chiSqAll, df) #nothing?
     } else {
       flag <- 0
     }
@@ -42,9 +55,12 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
   varGamma <- sum((1:r) * (1:r) * lnW[1:r])
   varGamma <- varGamma * MSE / k
   
+  
+  print(paste(""))
   se <- (s[r] * fitsCount[0] / sHatSubset) + (exp(-2.0 * gamma) *
                                                 observedCount[frequency[1]] * (varGamma * observedCount[frequency[1]] + 1.0))
   
+  print(paste("se: ", se, sep = "  "))
   SEFlag <- 0
   if (se > 0) {
     se <- sqrt(se)
@@ -94,7 +110,6 @@ LogTWLRFits <- function(lnW, lnY, r, n, s, frequency, observedCount) {
   
   ## k should be 2173644.92868474
   ## calculate k
-  print("hello world")
   for(j in 1:(r-1)) {
     tmp <- 0.0
     for(i in 1:(r-1)) {
@@ -142,12 +157,8 @@ LogTWLRFits <- function(lnW, lnY, r, n, s, frequency, observedCount) {
   fitsCount[2] = observedCount[frequency[1]]
   ##fitsCount[0] = fitsCount[1] * exp(-gamma)
   ##fitsCount[0] = 2
-  print("ding dong ding")
   # print(fitsCount[0])
   # print(fitsCount[1])
-  print(paste("fitsCount[0]: ", fitsCount[1], sep = "  "))
-  print(paste("fitsCount[1]: ", fitsCount[2], sep = "  "))
-  print(paste("r: ", r, sep = " "))
   ## ohh i know off by 1 error
   for(t in 3:(r + 1)) {
     fitsCount[t] = fitsCount[t - 1] *
