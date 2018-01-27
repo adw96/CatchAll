@@ -2,11 +2,11 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
                                    s0Init, frequency, 
                                    lnSFactorial, sumlnFFactorial, 
                                    maximumObservation) {
-  
   bigChiSq <- 1000000000
   numParams <- 2
   maxGOF <- 10
   modelNumber <- 6
+  print(paste("R IN ITERATION: ", r, sep = " "))
   fits <- LogTWLRFits(lnW, lnY, r, n, s, frequency, observedCount)
   fitsCheck <- ifelse(min(fits$fitsCount) < 0, 0, 1)
   if (fitsCheck == 1) {
@@ -39,8 +39,6 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
     GOF0 <- 0
 
     if (test < maxGOF & chiSqAll < bigChiSq) {
-      # print(paste("chiSqAll: ", chiSqAll, sep = " "))
-      # print(paste("df: ", df, sep = " "))
       GOF0 <- GoodnessOfFit(chiSqAll, df) #nothing?
     } else {
       flag <- 0
@@ -49,11 +47,21 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
   
   GOF0Check <- flag
   print("printing GOF0")
-  print(GOF0)
+  print(GOF0) #doesn't work when r is 10
   print("printing WLRMGOF0")
   print(WLRMGOF0)
   print(paste("frequency[r]: ", frequency[r], sep = " "))
-  WLRMGOF0[frequency[r]] <- GOF0$gof #is it ok for switch and GOF0 to be the same?
+  ##print(GOF0)
+  #print(paste("GOF0$gof: ", GOF0$gof, sep = " "))
+
+  gofOutput <- 0
+  # check the flags to set the correct gof0
+  if (flag != 0) {
+    gofOutput <- GOF0$flag
+  } else {
+    gofOutput <- GOF0
+  }
+  #is it ok for switch and GOF0 to be the same?
 
   # C# is 0 based while R is 1 based
   varGamma <- sum((2:r-1) * (2:r-1) * lnW[2:r-1])
@@ -67,10 +75,10 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
   # print(paste("(varGamma * observedCount[frequency[1]] + 1.0): ", (varGamma * observedCount[frequency[1]] + 1.0), sep = " "))
   se <- (s[r] * fitsCount[1] / sHatSubset) + (exp(-2.0 * gamma) *
                                                 observedCount[frequency[1]] * (varGamma * observedCount[frequency[1]] + 1.0))
-  print(paste("varGamma: ", varGamma, sep = " ")) #wrong
-  print(paste("observedCount[frequency[1]]: ", observedCount[frequency[1]], sep = " "))
-  print(paste("freq[1]: ", frequency[1], sep = " "))
-  print(paste("se: ", se, sep = "  "))
+  # print(paste("varGamma: ", varGamma, sep = " ")) #wrong
+  # print(paste("observedCount[frequency[1]]: ", observedCount[frequency[1]], sep = " "))
+  # print(paste("freq[1]: ", frequency[1], sep = " "))
+  # print(paste("se: ", se, sep = "  "))
   SEFlag <- 0
   if (se > 0) {
     se <- sqrt(se)
@@ -79,11 +87,9 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
   print(paste("se now", se, sep = " "))
   boundsCheck <- 0
   if(seFlag == 1) {
-    # function(r, se, sHatSubset, s, observationMaximum) {
     boundsCheck <- GetConfidenceBounds(r, se, sHatSubset, s, maximumObservation)
   }
   
-  #            CheckOutput(GOF0)  
   output <- data.frame("Model" = "LogTransfWLR", 
                        "Cutoff" = r, 
                        "Estimate" = CheckOutput(sHatTotal), 
@@ -93,7 +99,7 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
                        "chiSq" = CheckOutput(chiSqAll),
                        "AIC" = CheckOutput(0), 
                        "AICc" = CheckOutput(0), 
-                       "GOF0" = CheckOutput(GOF0$gof), #should be checkoutput, don't know why it's angry
+                       "GOF0" = CheckOutput(gofOutput), #should be checkoutput, don't know why it's angry
                        "GOF5" = CheckOutput(0),
                        "T1"=CheckOutput(gamma),
                        "T2"=CheckOutput(delta),
@@ -102,6 +108,7 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
                        "T5"=NA,
                        "T6"=NA,
                        "T7"=NA)
+  
 }
 
 

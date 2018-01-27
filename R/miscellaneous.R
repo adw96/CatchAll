@@ -53,16 +53,16 @@ CalculateAnalysisVariables <- function(part1, part2,
 
 ChiSqFunction <- function(r, fitsCount, modelNumber,
                   frequency, observedCount, s) {
-  print("IN CHI SQ FUNCTION")
-  print(paste("r: ", r, sep = " "))
-  print("fitsCount")
-  print(fitsCount)
-  print(paste("modelNumber: ", modelNumber, sep = " "))
-  print(frequency)
-  print("observedCount")
-  print(observedCount)
-  print("s")
-  print(s)
+  # print("IN CHI SQ FUNCTION")
+  # print(paste("r: ", r, sep = " "))
+  # print("fitsCount")
+  # print(fitsCount)
+  # print(paste("modelNumber: ", modelNumber, sep = " "))
+  # print(frequency)
+  # print("observedCount")
+  # print(observedCount)
+  # print("s")
+  # print(s)
   #why is this diff if original is same
   print(paste("smFitsCount: ", sum(fitsCount), sep = " "))
   chiSqTemporary <- 0
