@@ -74,13 +74,13 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
   
   print(paste("freq[r]: ", frequency[r]))
   # this bizarre looking flow adjusts for non-contiguous frequencies
-  for (t in (1:frequency[r]-1)) {
+  for (t in (1:frequency[r])) {
     if (t == frequency[rr]) {
-      print(paste("fitsCount[t]: ", fitsCount[t + 1], sep = " "))
-      print(paste("observedCount[rr]: ", observedCount[rr], sep = " "))
-      print(paste("observedCount[rr] - fitsCount[t]: ",observedCount[rr] - fitsCount[t+1], sep = " " ))
-      print(paste("(observedCount[rr] - fitsCount[t])^2): ", (observedCount[rr] - fitsCount[t+1])^2, sep = "  "))
-      print(paste("((observedCount[rr] - fitsCount[t])^2)/fitsCount[t])", ((observedCount[rr] - fitsCount[t+1])^2)/fitsCount[t + 1]), sep = " ")
+      # print(paste("fitsCount[t]: ", fitsCount[t + 1], sep = " "))
+      # print(paste("observedCount[rr]: ", observedCount[rr], sep = " "))
+      # print(paste("observedCount[rr] - fitsCount[t]: ",observedCount[rr] - fitsCount[t+1], sep = " " ))
+      # print(paste("(observedCount[rr] - fitsCount[t])^2): ", (observedCount[rr] - fitsCount[t+1])^2, sep = "  "))
+      # print(paste("((observedCount[rr] - fitsCount[t])^2)/fitsCount[t])", ((observedCount[rr] - fitsCount[t+1])^2)/fitsCount[t + 1]), sep = " ")
       chiSqTemporary <- chiSqTemporary + (((observedCount[rr] - fitsCount[t + 1])^2)/fitsCount[t + 1])
       rr <- rr+1
     } else {

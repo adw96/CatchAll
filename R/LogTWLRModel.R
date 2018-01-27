@@ -55,8 +55,6 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
   varGamma <- sum((1:r) * (1:r) * lnW[1:r])
   varGamma <- varGamma * MSE / k
   
-  
-  print(paste(""))
   se <- (s[r] * fitsCount[0] / sHatSubset) + (exp(-2.0 * gamma) *
                                                 observedCount[frequency[1]] * (varGamma * observedCount[frequency[1]] + 1.0))
   
