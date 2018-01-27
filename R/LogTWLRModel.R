@@ -2,6 +2,7 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
                                    s0Init, frequency, 
                                    lnSFactorial, sumlnFFactorial, 
                                    maximumObservation) {
+  if (r == 12) {
   bigChiSq <- 1000000000
   numParams <- 2
   maxGOF <- 10
@@ -108,13 +109,18 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
                        "T5"=NA,
                        "T6"=NA,
                        "T7"=NA)
+  }
   
 }
 
 
 #want to return gamma, delta, MSE, k, fitsCheck, fitsCount
 LogTWLRFits <- function(lnW, lnY, r, n, s, frequency, observedCount) {
-  
+  #ok i know what's wrong
+  # size of lnW and lnY are both 10 
+  # but for r = 12, r - 1 = 11, it's trying to access the 11th thing
+  # but it works for all the others so make sure to double check between the
+  # r iterations
   k <- 0
   MSE <- 0
   gamma <- 0
@@ -122,17 +128,23 @@ LogTWLRFits <- function(lnW, lnY, r, n, s, frequency, observedCount) {
   print(paste("frequency[r] + 1"), frequency[r] + 1, sep = " ")
   print(frequency[r] + 1)
   fitsCount <- rep(NA, frequency[r] + 1)
-  
-  ## k should be 2173644.92868474
+  print("lnW")
+  print(lnW)
+  print("lnY")
+  print(lnY)
   ## calculate k
   for(j in 1:(r-1)) {
     tmp <- 0.0
     for(i in 1:(r-1)) {
       tmp <- tmp + i * lnW[i] * (i-j)
+      print(paste("tmp: ", tmp, sep = " "))
     }
     k <- k + lnW[j] * tmp
-   
+    print(paste("k in loop: ", k, sep = " "))
+    #print(j)
   }
+  
+  print(paste("helloo any k here for 12? ", k, sep = " "))
   ## calculate gamma
   for(j in 1:(r-1)) {
     tmp <- 0.0
