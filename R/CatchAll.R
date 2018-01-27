@@ -228,6 +228,8 @@ CatchAll <- function(frequency_table) {
                                                             s0Init, frequency,
                                                             lnSFactorial, sumlnFFactorial,
                                                             maximumObservation)
+       print(head(output))
+       print(head(log_transfWLR_results))
        output <- rbind(output, log_transfWLR_results)
      }
    }
