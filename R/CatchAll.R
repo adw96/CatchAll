@@ -179,18 +179,18 @@ CatchAll <- function(frequency_table) {
   ################################
   ## Triple Exponential 
   ################################
-  modelNumber <- 4
-  if (fMinFlag[modelNumber]==1) {
-    frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-    #maximumObservation <- frequencyMinimum
-  for (r in frequencyMinimum:maximumObservation) {
-      triple_exponential_results <- TripleExponentialModel(s, r, observedCount, n,
-                                                           s0Init, frequency,
-                                                           lnSFactorial, sumlnFFactorial,
-                                                           maximumObservation)
-      output <- rbind(output, triple_exponential_results)
-    }
-  }
+  # modelNumber <- 4
+  # if (fMinFlag[modelNumber]==1) {
+  #   frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+  #   #maximumObservation <- frequencyMinimum
+  # for (r in frequencyMinimum:maximumObservation) {
+  #     triple_exponential_results <- TripleExponentialModel(s, r, observedCount, n,
+  #                                                          s0Init, frequency,
+  #                                                          lnSFactorial, sumlnFFactorial,
+  #                                                          maximumObservation)
+  #     output <- rbind(output, triple_exponential_results)
+  #   }
+  # }
 
   
   ################################
@@ -220,17 +220,19 @@ CatchAll <- function(frequency_table) {
  ################################
  ## LogTransfWLR
  ################################
- # modelNumber <- 6
- #  if (fMinFlag[modelNumber]==1) {
- #     frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
- #     for (r in frequencyMinimum:maximumObservation) {
- #       log_transfWLR_results <- LogTWLRModel(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
- #                                                            s0Init, frequency,
- #                                                            lnSFactorial, sumlnFFactorial,
- #                                                            maximumObservation)
- #       output <- rbind(output, log_transfWLR_results)
- #     }
- #   }
+ modelNumber <- 6
+  if (fMinFlag[modelNumber]==1) {
+     frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+     for (r in frequencyMinimum:maximumObservation) {
+       log_transfWLR_results <- LogTWLRModel(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
+                                                            s0Init, frequency,
+                                                            lnSFactorial, sumlnFFactorial,
+                                                            maximumObservation)
+       head(output)
+       output <- rbind(output, log_transfWLR_results)
+       
+     }
+   }
  #  output
  output
  

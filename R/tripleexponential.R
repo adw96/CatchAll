@@ -75,6 +75,13 @@ TripleExponentialModel <-  function(s, r, observedCount, n,
   calculate_analysis_variables_result <- CalculateAnalysisVariables(part1, part2, numParams, r, fits$fitsCount, 
                                                                     fitsExtended, 
                                                                     s, 4, frequency, observedCount) 
+  
+  print(paste("mle1: ", mle1, sep = " "))
+  print(paste("mle2: ", mle2, sep = " "))
+  print(paste("mle3: ", mle3, sep = " "))
+  print(paste("mle4: ", mle4, sep = " "))
+  print(paste("mle5: ", mle5, sep = " "))
+  print(paste("sHatSubset: ", sHatSubset, sep = " "))
   se <- TripleExponentialStandardError(mle1, mle2, mle3, mle4, mle5, sHatSubset)
   # s is lower class bound
   # maximumObservation is upper class bound
@@ -150,35 +157,47 @@ MLETripleExponential <- function(r, n, s, frequency, observedCount) {
   u1 <- 0.33
   u2 <- 0.33
   
-  #ks, rs, k1s not correct
   k <- round(frequency[r]*0.5)
   #subtracted -1 from max for r1..r3
   #made the k1...k3 <= instead of <
   r1 <- max(which(frequency <= k))
-  k1 <- max(which(frequency <= frequency[r1]))
-  # print(paste("k", k, sep="   "))
-  # print(paste("r1", r1, sep="   "))
-  # print(paste("k1", k1, sep="   "))
+  k1 <- max(which(frequency < frequency[r1])) + 1
+  
+  print(paste("k", k, sep="   "))
+  print(paste("r1", r1, sep="   "))
+  print(paste("k1", k1, sep="   "))
+  
   # 
   k <- round(frequency[r]*0.25)
   r2 <- max(which(frequency <= k))
-  #not sure I understand this fully or why it's different than above
   k2 <- ifelse(sum((frequency < frequency[r2])) > 0, max(which(frequency <= frequency[r2])), 1)
-  # print(paste("k", k, sep="   "))
-  # print(paste("r2", r2, sep="   "))
-  # print(paste("k2", k2, sep="   "))
+  
+  print(paste("k", k, sep="   "))
+  print(paste("r2", r2, sep="   "))
+  print(paste("k2", k2, sep="   "))
+  
   
   k <- round(frequency[r]*0.75)
   r3 <- max(which(frequency <= k))
   k3 <- max(which(frequency <= frequency[r3]))
-  # print(paste("k", k, sep="   "))
-  # print(paste("r3", r3, sep="   "))
-  # print(paste("k3", k3, sep="   "))
+  print(paste("k", k, sep="   "))
+  print(paste("r3", r3, sep="   "))
+  print(paste("k3", k3, sep="   "))
+
+  print(paste("k1: ", k1, sep = " ")) #5 is 6
+  print(paste("k2: ", k2, sep = " ")) #8 is 3
+  print(paste("k3: ", k3, sep = " ")) #8 is 9
+  print(paste("r: ", r, sep = " ")) #10 is 12
   
   if (n[k1] != s[k1] & (s[k3] != s[k2])) {
     t1 <- n[k1]/s[k1]-1
     t2 <- ((n[k3] - n[k2]) / (s[k3] - s[k2])) - 1;
     t3 <- ((n[r] - n[k1]) / (s[r] - s[k1])) - 1;
+    
+    #incorrect values
+    print(paste("t1 in here: ", t1, sep = " "))
+    print(paste("t2 in here: ", t2, sep = " "))
+    print(paste("t3 in here: ", t3, sep = " "))
     
     part2 <- sum(observedCount[1:r] * log((u1 * ((1.0 / t1) * pow((t1 / (1.0 + t1)), frequency[1:r]))) +
           (u2 * ((1.0 / t2) * pow((t2 / (1.0 + t2)), frequency[1:r]))) +
@@ -427,7 +446,7 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
                                                 t3P + t3P * t2 + t3P * t1 + t3P * t1 * t2 -
                                                 t3P * t4 - t3P * t4 * t2 - t3P * t4 * t1 -
                                                 t3P * t4 * t1 * t2 - t3P * t5 - t3P * t5 * t2 -
-                                                t3P * t5 * t1 - t3P * t5 * t1 * t2) / t1 / (1 + t1) 
+                                                t3P * t5 * t1 - t3P * t5 * t1 * t2) / t1 / (1 + t1)
     if (k > 0) test <- abs(a14/a[1,4])
     a[1,4] <- a[1,4] + a14
     k <- k+1
@@ -803,8 +822,6 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
     break
   }
   
-  print("reached a45")
-  
   ## a55
   test <- 100
   k <- 0
@@ -840,10 +857,13 @@ TripleExponentialStandardError <- function(t1, t2, t3, t4, t5, sHatSubset) {
   }
   # print("reached a55")
   # 
-  # print("hellooooo")
-  print(paste("a: ", a, sep = " "))
+  print("now printing a")
+  print(a)
+  #print(paste("a: ", a, sep = " "))
   print(paste("a00: ", a00, sep = " "))
-  print(paste("a0: ", a0, sep = " "))
+  print("a0")
+  print(a0)
+  #print(paste("a0: ", a0, sep = " "))
   ## invert
   MatrixInversion(sHatSubset, a00, a0, a)
   
