@@ -2,6 +2,11 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
                                    s0Init, frequency, 
                                    lnSFactorial, sumlnFFactorial, 
                                    maximumObservation) {
+  #lnW missing another value for r == 12 (probably for other iterations too)
+  # last value should be 1
+  
+  ## lnY missing another value for r == 12
+  ## last value should be 2.484
   if (r == 12) {
   bigChiSq <- 1000000000
   numParams <- 2

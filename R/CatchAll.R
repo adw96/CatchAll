@@ -117,10 +117,23 @@ CatchAll <- function(frequency_table) {
        observedCount[c(2:(frequencyMaximum))] * 
        (observedCount[c(1:(frequencyMaximum-1))] + 
           observedCount[c(2:(frequencyMaximum))]))
-  lnW <- (observedCount[c(1:(frequencyMaximum-1))] * 
+  #c(1:(frequencyMaximum)) -1 
+  
+  print(observedCount[1])
+  print("frequencyMaximum")
+  
+  print(frequencyMaximum)
+  lnW <- (observedCount[c(1:(frequencyMaximum - 1))] * 
             observedCount[c(2:(frequencyMaximum))]) /
-    (observedCount[c(1:(frequencyMaximum-1))] + 
+    (observedCount[c(1:(frequencyMaximum - 1))] + 
        observedCount[c(2:(frequencyMaximum))])
+  # for (int i = 1; i < freqMax; i++)
+  # (observedCount[i] * observedCount[i + 1]) /
+  #   (observedCount[i] + observedCount[i + 1]);
+  for (i in 1:frequencyMaximum) {
+    lnW[i] = (observedCount[i] * observedCount[i + 1]) /
+        (observedCount[i] + observedCount[i + 1])
+  }
   WLRMSwitch <- rep(0, frequencyMaximum-1)
   WLRMGOF0 <- rep(0, frequencyMaximum-1)
   
