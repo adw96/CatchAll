@@ -23,6 +23,8 @@ CalculateAnalysisVariables <- function(part1, part2,
 
   df <- frequency[r] - numberParameters 
   test <- (chiSqAll - df)/sqrt(2*df)
+  print(paste("test: ", test, sep = " "))
+  print(paste("chiSqAll: ", chiSqAll, sep = " "))
   GOF0 <- list()
   #bigChisq is a global variable
   if (test < maxGoodnessOfFit  & chiSqAll < BigChiSq){
@@ -53,18 +55,17 @@ CalculateAnalysisVariables <- function(part1, part2,
 
 ChiSqFunction <- function(r, fitsCount, modelNumber,
                   frequency, observedCount, s) {
-  # print("IN CHI SQ FUNCTION")
-  # print(paste("r: ", r, sep = " "))
-  # print("fitsCount")
-  # print(fitsCount)
-  # print(paste("modelNumber: ", modelNumber, sep = " "))
-  # print(frequency)
-  # print("observedCount")
-  # print(observedCount)
-  # print("s")
-  # print(s)
+  print("IN CHI SQ FUNCTION")
+  print(paste("r: ", r, sep = " "))
+  print("fitsCount")
+  print(fitsCount)
+  print(paste("modelNumber: ", modelNumber, sep = " "))
+  print(frequency)
+  print("observedCount")
+  print(observedCount)
+  print("s")
+  print(s)
   #why is this diff if original is same
-  print(paste("smFitsCount: ", sum(fitsCount), sep = " "))
   chiSqTemporary <- 0
   sumFit <- 0
   rr <- 1
@@ -81,7 +82,11 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
       # print(paste("observedCount[rr] - fitsCount[t]: ",observedCount[rr] - fitsCount[t+1], sep = " " ))
       # print(paste("(observedCount[rr] - fitsCount[t])^2): ", (observedCount[rr] - fitsCount[t+1])^2, sep = "  "))
       # print(paste("((observedCount[rr] - fitsCount[t])^2)/fitsCount[t])", ((observedCount[rr] - fitsCount[t+1])^2)/fitsCount[t + 1]), sep = " ")
-      chiSqTemporary <- chiSqTemporary + (((observedCount[rr] - fitsCount[t + 1])^2)/fitsCount[t + 1])
+      if (modelNumber < 6) {
+        chiSqTemporary <- chiSqTemporary + ((observedCount)[rr] - fitsCount[t])^2/fitsCount[t]
+      } else {
+        chiSqTemporary <- chiSqTemporary + (((observedCount[rr] - fitsCount[t + 1])^2)/fitsCount[t + 1])
+      }
       rr <- rr+1
     } else {
       chiSqTemporary <- chiSqTemporary + fitsCount[t]
@@ -91,15 +96,15 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
   sumFit <- sum(fitsCount)
   print(paste("fitsCount[1]: ", fitsCount[1], sep = " "))
   #is this just a temp fix for LOGTWLR? do we even need this...
-  sumFit <- sumFit - fitsCount[1]
+  #sumFit <- sumFit - fitsCount[1]
   print(paste("sumFit: ", sumFit, sep = " "))
-
+  print(paste("chiSqTemporary before if check: ", sep = " "))
+  print(paste("s[r]: ", s[r], sep = " "))
   if(modelNumber<6) {
-    print("hey there")
+    print("hi there")
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
+    print(paste("chiSqTemporary: ", chiSqTemporary, sep = " "))
   }
-  
-  print(paste("chiSqTemporary: ", chiSqTemporary))
   chiSqTemporary
 }
 
