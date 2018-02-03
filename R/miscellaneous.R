@@ -55,16 +55,16 @@ CalculateAnalysisVariables <- function(part1, part2,
 
 ChiSqFunction <- function(r, fitsCount, modelNumber,
                   frequency, observedCount, s) {
-  # print("IN CHI SQ FUNCTION")
-  # print(paste("r: ", r, sep = " "))
-  # print("fitsCount")
-  # print(fitsCount)
-  # print(paste("modelNumber: ", modelNumber, sep = " "))
-  # print(frequency)
-  # print("observedCount")
-  # print(observedCount)
-  # print("s")
-  # print(s)
+  print("IN CHI SQ FUNCTION")
+  print(paste("r: ", r, sep = " "))
+  print("fitsCount")
+  print(fitsCount)
+  print(paste("modelNumber: ", modelNumber, sep = " "))
+  print(frequency)
+  print("observedCount")
+  print(observedCount)
+  print("s")
+  print(s)
   #why is this diff if original is same
   chiSqTemporary <- 0
   sumFit <- 0
@@ -82,20 +82,28 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
       # print(paste("observedCount[rr] - fitsCount[t]: ",observedCount[rr] - fitsCount[t+1], sep = " " ))
       # print(paste("(observedCount[rr] - fitsCount[t])^2): ", (observedCount[rr] - fitsCount[t+1])^2, sep = "  "))
       # print(paste("((observedCount[rr] - fitsCount[t])^2)/fitsCount[t])", ((observedCount[rr] - fitsCount[t+1])^2)/fitsCount[t + 1]), sep = " ")
-      chiSqTemporary <- chiSqTemporary + (((observedCount[rr] - fitsCount[t + 1])^2)/fitsCount[t + 1])
+      if (modelNumber < 6) {
+        chiSqTemporary <- chiSqTemporary + ((observedCount)[rr] - fitsCount[t])^2/fitsCount[t]
+      } else {
+        chiSqTemporary <- chiSqTemporary + (((observedCount[rr] - fitsCount[t + 1])^2)/fitsCount[t + 1])
+      }
       rr <- rr+1
     } else {
       chiSqTemporary <- chiSqTemporary + fitsCount[t]
     }
+    print(paste("chiSqTemporary in loop: ", chiSqTemporary, sep = " "))
   }
   sumFit <- sum(fitsCount)
   print(paste("fitsCount[1]: ", fitsCount[1], sep = " "))
   #is this just a temp fix for LOGTWLR? do we even need this...
-  sumFit <- sumFit - fitsCount[1]
+  #sumFit <- sumFit - fitsCount[1]
   print(paste("sumFit: ", sumFit, sep = " "))
-
+  print(paste("chiSqTemporary before if check: ", sep = " "))
+  print(paste("s[r]: ", s[r], sep = " "))
   if(modelNumber<6) {
+    print("hi there")
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
+    print(paste("chiSqTemporary: ", chiSqTemporary, sep = " "))
   }
   chiSqTemporary
 }
