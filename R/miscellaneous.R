@@ -23,6 +23,8 @@ CalculateAnalysisVariables <- function(part1, part2,
 
   df <- frequency[r] - numberParameters 
   test <- (chiSqAll - df)/sqrt(2*df)
+  print(paste("test: ", test, sep = " "))
+  print(paste("chiSqAll: ", chiSqAll, sep = " "))
   GOF0 <- list()
   #bigChisq is a global variable
   if (test < maxGoodnessOfFit  & chiSqAll < BigChiSq){
@@ -64,7 +66,6 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
   # print("s")
   # print(s)
   #why is this diff if original is same
-  print(paste("smFitsCount: ", sum(fitsCount), sep = " "))
   chiSqTemporary <- 0
   sumFit <- 0
   rr <- 1
@@ -86,7 +87,6 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     } else {
       chiSqTemporary <- chiSqTemporary + fitsCount[t]
     }
-    print(paste("chiSqTemporary in loop: ", chiSqTemporary, sep = " "))
   }
   sumFit <- sum(fitsCount)
   print(paste("fitsCount[1]: ", fitsCount[1], sep = " "))
@@ -95,11 +95,8 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
   print(paste("sumFit: ", sumFit, sep = " "))
 
   if(modelNumber<6) {
-    print("hey there")
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
   }
-  
-  print(paste("chiSqTemporary: ", chiSqTemporary))
   chiSqTemporary
 }
 
