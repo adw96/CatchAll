@@ -8,7 +8,10 @@ WLRModel <- function(w, y,  WLRMGOF0, WLRMSwitch, s, r, observedCount, n,
   maxGOF <- 10
   modelNumber <- 7
   
-  fits <- WLRFits(w, r, n, s, frequency, observedCount)
+  print("WLRMSwitch")
+  print(WLRMSwitch)
+                # (w, y, r, n, s, frequency, observedCount) {
+  fits <- WLRFits(w, y, r, n, s, frequency, observedCount)
   fitsCheck <- ifelse(min(fits$fitsCount) < 0, 0, 1)
   
   if (fitsCheck == 1) {
@@ -44,17 +47,17 @@ WLRModel <- function(w, y,  WLRMGOF0, WLRMSwitch, s, r, observedCount, n,
     }
     
     ## WLRM switch
-    if (gamma > 0.0 & (delta > 0.0 & delta < 1.0) &
-        GOF0 > WLRMGOF0[freq[r]])
-      WLRMSwitch[freq[r]] <- 1
+    ifelse (gamma > 0.0 & (delta > 0.0 & delta < 1.0) & GOF0 > WLRMGOF0[frequency[r]], 
+            WLRMSwitch[frequency[r]] <- 1, WLRMSwitch[frequency[r]] <- WLRMSwitch[frequency[r]]) 
+     
     
     # C# is 0 based while R is 1 based
     varGamma <- sum((2:r-1) * (2:r-1) * w[2:r-1])
     varGamma <- varGamma * MSE / k
     
     se <- (s[r] * fitsCount[1] / sHatSubset) +
-    ((observedCount[freq[2]] / gamma) * (observedCount[freq[1]] / gamma) *
-        ((varGamma / (pow(gamma,2))) + (1.0 / observedCount[freq[2]])))
+    ((observedCount[frequency[2]] / gamma) * (observedCount[frequency[1]] / gamma) *
+        ((varGamma / (pow(gamma,2))) + (1.0 / observedCount[frequency[2]])))
     SEFlag <- 0
     if (se > 0) {
       se <- sqrt(se)
@@ -95,7 +98,8 @@ WLRFits <- function(w, y, r, n, s, frequency, observedCount) {
   MSE <- 0
   gamma <- 0
   delta <- 0
-  
+
+  print(paste("frequency[r]: ", frequency[r], sep = " "))  
   fitsCount <- rep(NA, frequency[r] + 1)
   
   ## calculate k
