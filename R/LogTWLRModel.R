@@ -83,14 +83,7 @@ LogTWLRModel <- function(lnW, lnY,  WLRMGOF0, s, r, observedCount, n,
   
 }
 
-
-#want to return gamma, delta, MSE, k, fitsCheck, fitsCount
 LogTWLRFits <- function(lnW, lnY, r, n, s, frequency, observedCount) {
-  #ok i know what's wrong
-  # size of lnW and lnY are both 10 
-  # but for r = 12, r - 1 = 11, it's trying to access the 11th thing
-  # but it works for all the others so make sure to double check between the
-  # r iterations
   k <- 0
   MSE <- 0
   gamma <- 0

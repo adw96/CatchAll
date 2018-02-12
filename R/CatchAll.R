@@ -71,12 +71,7 @@ CatchAll <- function(frequency_table) {
   
   frequency <- positive_frequency_table[, 1]
   observedCount <- positive_frequency_table[, 2]
-  # print("frequency")
-  # print(frequency)
-  #
-  # print("POSITIVE FRQUENCY TABLE")
-  # print(positive_frequency_table)
-  
+ 
   frequencyTau10 <-
     max(which(frequency <= 10 & observedCount > 0)) + 1
   
@@ -150,10 +145,27 @@ CatchAll <- function(frequency_table) {
   #  ACE1Tau10Rule <- ACE1Tau10()
   
   bestCount <- rep(NA, 4)
+  
+  ################################
+  ## Non-Parametric Statistics
+  ################################
   singletons <- 0.0
   if (frequency[1] == 1) {
     singletons <- observedCount[1]
   }
+  
+  GTEstimate <- rep(NA, maximumObservation + 1)
+  gammaSqRare <- rep(NA, maximumObservation + 1)
+  G <- rep(NA, maximumObservation + 1)
+  cvRare <- rep(NA, maximumObservation + 1)
+  
+  
+  
+  #these could be put in the funtion too for both ACE and ACE1
+  # but then you would calculate it twice? seems kinda weird to put it here
+  # though
+  
+  
   ################################
   ## Poisson -works now
   # ################################
@@ -219,13 +231,6 @@ CatchAll <- function(frequency_table) {
   
   
   ################################
-  ## TODO: the rest
-  # {"None", "Poisson", "SingleExp",
-  #   "TwoMixedExp", "ThreeMixedExp", "FourMixedExp", "LogTransfWLR",
-  #   "UnTransfWLR", "Chao1", "ACE", "ACE1"};
-  ################################
-  
-  ################################
   ## Four Exponential
   ################################
   # modelNumber <- 5
@@ -284,12 +289,23 @@ CatchAll <- function(frequency_table) {
   ## NonParametric: Chao1
   ################################
   modelNumber <- 8
+  # frequencyMinimum <- 1 + max(which(frequency < fMin[1]))
+  # for (r in frequencyMinimum:maximumObservation) {
+  #   Chao_results <- Chao1Model(s, r, observedCount, n, frequency, singletons, maximumObservation)
+  #   output <- rbind(output, Chao_results)
+  # }
+  # output
+  
+  
+  ################################
+  ## NonParametric: ACE
+  ################################
   frequencyMinimum <- 1 + max(which(frequency < fMin[1]))
   for (r in frequencyMinimum:maximumObservation) {
-    Chao_results <- Chao1Model(s, r, observedCount, n, frequency, singletons, maximumObservation)
-    output <- rbind(output, Chao_results)
+    ACE_results <- ACEModel(s, r, observedCount, n, frequency, singletons, maximumObservation,
+                              GTEstimate, G, gammaSqRare, cvRare)
+    output <- rbind(output, ACE_results)
   }
   output
-
 
 }
