@@ -99,9 +99,7 @@ CatchAll <- function(frequency_table) {
              c(rep(FALSE, 5), rep(TRUE, 2))] <- 1
   
   observedCount
-  # print("OBSERVED COUNT")
-  
-  print(observedCount)
+
   s <- cumsum(observedCount)
   n <- cumsum(frequency * observedCount)
   
@@ -152,7 +150,10 @@ CatchAll <- function(frequency_table) {
   #  ACE1Tau10Rule <- ACE1Tau10()
   
   bestCount <- rep(NA, 4)
-  
+  singletons <- 0.0
+  if (frequency[1] == 1) {
+    singletons <- observedCount[1]
+  }
   ################################
   ## Poisson -works now
   # ################################
@@ -263,20 +264,32 @@ CatchAll <- function(frequency_table) {
 ################################
 ## WLR
 ################################
- modelNumber <- 7
- if (fMinFlag[modelNumber]==1) {
-   frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-   for (r in frequencyMinimum:maximumObservation) {
-     WLR_results <- WLRModel(w, y,  WLRMGOF0, WLRMSwitch, s, r, observedCount, n,
-                                           s0Init, frequency,
-                                           lnSFactorial, sumlnFFactorial,
-                                           maximumObservation)
-     head(output)
-     output <- rbind(output, WLR_results)
-
-   }
- }
-output
+#  modelNumber <- 7
+#  if (fMinFlag[modelNumber]==1) {
+#    frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+#    for (r in frequencyMinimum:maximumObservation) {
+#      WLR_results <- WLRModel(w, y,  WLRMGOF0, WLRMSwitch, s, r, observedCount, n,
+#                                            s0Init, frequency,
+#                                            lnSFactorial, sumlnFFactorial,
+#                                            maximumObservation)
+#      head(output)
+#      output <- rbind(output, WLR_results)
+# 
+#    }
+#  }
+# output
+  
+  
+  ################################
+  ## NonParametric: Chao1
+  ################################
+  modelNumber <- 8
+  frequencyMinimum <- 1 + max(which(frequency < fMin[1]))
+  for (r in frequencyMinimum:maximumObservation) {
+    Chao_results <- Chao1Model(s, r, observedCount, n, frequency, singletons, maximumObservation)
+    output <- rbind(output, Chao_results)
+  }
+  output
 
 
 }
