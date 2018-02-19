@@ -1,6 +1,6 @@
-Best_Models <- function(bestCount, maximumObservation, cvrare) {
-  ## how to get best count, bestAiCc, GOF5Test, bestModelTau
-  
+Best_Models <- function(bestCount, maximumObservation, frequencyTau10, bestGOF0, 
+                        bestAICc, GOFTest, cvrare) {
+  ## how to get best count...
   bestModel <- rep(NA, maximumObservation + 1)
   bestModelTau <- matrix(NA, nrow=10, ncol=2)
   
@@ -65,7 +65,7 @@ Best_Models <- function(bestCount, maximumObservation, cvrare) {
         }
       }
     }
-    maxGOF0 <- bestGOF0[flag, bestModel[freqTau10], freqTau10]
+    maxGOF0 <- bestGOF0[flag, bestModel[frequencyTau10], frequencyTau10]
     
     for(r in 1:maximumObservation) {
       if (bestModel[r] > 0) {
@@ -93,12 +93,12 @@ Best_Models <- function(bestCount, maximumObservation, cvrare) {
     }
     
     ##Find Good Model 3--tau closest to 10 with data
-    if (bestGOF0[flag, bestModel[freqTau10], freqTau10] > 0) {
-      bestModelTau[3, 0] <- bestModel[freqTau10]
-      bestModelTau[3, 1] <- freqTau10
+    if (bestGOF0[flag, bestModel[frequencyTau10], frequencyTau10] > 0) {
+      bestModelTau[3, 0] <- bestModel[frequencyTau10]
+      bestModelTau[3, 1] <- frequencyTau10
     } else {
       ##look > tau10
-      t <- freqTau10 + 1; ##how to get freqTau10
+      t <- frequencyTau10 + 1  ##how to get frequencyTau10
       while (bestModelTau[3, 1] == 0 & t <= obsMax)
       {
         if (bestModel[t] > 0)
@@ -114,7 +114,7 @@ Best_Models <- function(bestCount, maximumObservation, cvrare) {
       }
       
       ##look < tau10
-      t = freqTau10 - 1;
+      t = frequencyTau10 - 1 
       while (bestModelTau[3, 1] == 0 & t > 0)
       {
         if (bestModel[t] > 0)
@@ -133,6 +133,102 @@ Best_Models <- function(bestCount, maximumObservation, cvrare) {
     
     
   }
+  
+  ##Find Good Model 4--best WLRM
+  ##if there are taus with G0FO >= 0.01, find the max tau
+  if (freqMax > 0) {
+  
+    bestModelTau[4, 0] <- 6 
+    maxGOF0WLRM <- 0.01
+    bestModelTau[4, 1] <- 0
+    for (r in 1:frequencyMaximum) {
+      ##determine whether to use logged (6) or unlogged(7) version
+      if (WLRMSwitch[r] == 0) {
+      
+        if (bestGOF0[0, 6, r] >= maxGOF0WLRM) {
+          bestModelTau[4, 0] <- 6
+          bestModelTau[4, 1] <- r
+        }
+      }
+      else if (WLRMSwitch[r] == 1) {
+        if (bestGOF0[0, 7, r] >= maxGOF0WLRM) {
+          bestModelTau[4, 0] <- 7 
+          bestModelTau[4, 1] <- r 
+        }
+      }
+    }
+    
+    ##if there are no taus with GOF0 >= 0.01
+    ##use tau with highest GOF0
+    if (bestModelTau[4, 1] == 0) {
+      if (WLRMSwitch[1] == 0) {
+        maxGOF0WLRM <- bestGOF0[0, 6, 1]
+      } else if (WLRMSwitch[1] == 1)
+        maxGOF0WLRM <- bestGOF0[0, 7, 1] 
+      
+      for (r in 2:maximumFrequency) {
+        if (WLRMSwitch[r] == 0)
+        {
+          if (bestGOF0[0, 6, r] >= maxGOF0WLRM)
+          {
+            bestModelTau[4, 0] <- 6 
+            bestModelTau[4, 1] <- r 
+            maxGOF0WLRM <- bestGOF0[0, 6, r] 
+          }
+        }
+        else if (WLRMSwitch[r] == 1) {
+          if (bestGOF0[0, 7, r] >= maxGOF0WLRM) {
+            bestModelTau[4, 0] <- 7 
+            bestModelTau[4, 1] <- r 
+            maxGOF0WLRM <- bestGOF0[0, 7, r] 
+          }
+        }
+      }
+    }
+  }
+  
+  ##if there are none, leave blank
+  if (bestModelTau[4, 1] == 0) {
+    bestModelTau[4, 0] <- 0 
+  }
+  
+  ##Find Chao1 Model--all taus give the  same answer
+  bestModelTau[5, 0] <- 8 
+  bestModelTau[5, 1] <- freqTau10 
+  
+  ##Find ACE/ACE1 Model closest to tau = 10
+  if (cvrare <= 0.8) {
+    bestModelTau[6, 0] <- 9 
+  } else {
+    bestModelTau[6, 0] <- 10 
+  }
+  bestModelTau[6, 1] = freqTau10 
+  
+  ##Max Tau for Best Model
+  if (flag >= 0) {
+    bestModelTau[7, 0] <- bestModelTau[0, 0] 
+    bestModelTau[7, 1] <- maximumObservation
+  }
+  
+  ##Max Tau for WLRM Model
+  if (WLRMSwitch[freqMax] == 0) {
+    bestModelTau[8, 0] <- 6 
+  } else if (WLRMSwitch[freqMax] == 1) {
+    bestModelTau[8, 0] <- 7 
+  }
+  
+  ##if there are none
+  if (bestModelTau[4, 0] == 0) {
+    bestModelTau[8, 0] <- 0 
+  }
+  bestModelTau[8, 1] <- freqMax 
+  
+  ##ACE Model at tau = 10 or < 10 if necessary
+  bestModelTau[9, 0] <- 9 
+  bestModelTau[9, 1] <- frequencyTau10 
+  
+  
+  ## some output thing
   
  
   
