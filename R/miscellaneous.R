@@ -337,3 +337,17 @@ MatrixInversion <- function(sHat, a00, a0, A) {
   }
   result
 }
+
+GetConfidenceBoundsDiscounted <- function(r, SE,
+                                            sHatSubset, cStar,excess, LCB,
+                                          UCB) {
+  ## Confidence Bounds
+  if (sHatSubset != s[r])
+  {
+    dTemp <- exp(1.96 * (sqrt(log(1.0 + (SE * SE / (((sHatSubset - cStar) * (sHatSubset - cStar))))))))
+    LCB <- (cStar + excess) + ((sHatSubset - cStar) / dTemp)
+    UCB <- (cStar + excess) + ((sHatSubset - cStar) * dTemp)
+  }
+  
+  list("cStar"=cStar, "SE"=SE, "LCB"=LCB, "UCB"=ucb)
+}

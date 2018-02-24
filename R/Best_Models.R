@@ -229,7 +229,34 @@ Best_Models <- function(bestCount, maximumObservation, frequencyTau10, bestGOF0,
   
   
   ## some output thing
-  
+  ## OutputBestModelsAnalysis , need to pass in all the results?
+}
+
+#not sure if this will work...how to get the input as what's already been
+# output and not really sure how to format 
+OutputBestModelsAnalysis <- function(poisson_results, single_exponential_results, 
+                                     double_exponential_results, triple_exponential_results  ) {
  
+  foundAnalysis <- rep(NA, 10)
+  bestAnalysis <- rep(NA, 10) #string, not sure how used
+  
+  #reads in data from all of the outputs of the models output
+  for(bm in 0:10) {
+    ## what is data?
+    
+    while(foundAnalysis[bm] == 0) {
+      
+    }
+  }
+  output <- data.frame("Total Number of Observed Species" = "Chao1", 
+                       "Model" = r, 
+                       "Tau" = CheckOutput(sHatTotal), 
+                       "Observed Sp" = CheckOutput(se), 
+                       "Estimated Total Sp"= CheckOutput(boundsCheck$lcb), 
+                       "SE" = CheckOutput(boundsCheck$ucb), 
+                       "Lower CB" = NA,
+                       "Upper CB" = NA, 
+                       "GOF0" = NA, 
+                       "GOF5" = NA)
   
 }

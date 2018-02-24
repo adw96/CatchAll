@@ -169,17 +169,17 @@ CatchAll <- function(frequency_table) {
   ################################
   ## Poisson -works now
   # ################################
-  # modelNumber <- 1
-  # if (fMinFlag[modelNumber]==1) {
-  #   frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-  #   for (r in frequencyMinimum:maximumObservation) {
-  #     poisson_results <- PoissonModel(s, r, observedCount, n,
-  #                                  s0Init, frequency,
-  #                                  lnSFactorial, sumlnFFactorial, sumFlnFFactorial,
-  #                                  maximumObservation)
-  #     output <- rbind(output, poisson_results)
-  #   }
-  # }
+  modelNumber <- 1
+  if (fMinFlag[modelNumber]==1) {
+    frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+    for (r in frequencyMinimum:maximumObservation) {
+      poisson_results <- PoissonModel(s, r, observedCount, n,
+                                   s0Init, frequency,
+                                   lnSFactorial, sumlnFFactorial, sumFlnFFactorial,
+                                   maximumObservation)
+      output <- rbind(output, poisson_results)
+    }
+  }
   
   ################################
   ## Single Exponential -works now
@@ -300,12 +300,16 @@ CatchAll <- function(frequency_table) {
   ################################
   ## NonParametric: ACE
   ################################
-  frequencyMinimum <- 1 + max(which(frequency < fMin[1]))
-  for (r in frequencyMinimum:maximumObservation) {
-    ACE_results <- ACEModel(s, r, observedCount, n, frequency, singletons, maximumObservation,
-                              GTEstimate, G, gammaSqRare, cvRare)
-    output <- rbind(output, ACE_results)
-  }
+  # frequencyMinimum <- 1 + max(which(frequency < fMin[1]))
+  # for (r in frequencyMinimum:maximumObservation) {
+  #   ACE_results <- ACEModel(s, r, observedCount, n, frequency, singletons, maximumObservation,
+  #                             GTEstimate, G, gammaSqRare, cvRare)
+  #   output <- rbind(output, ACE_results)
+  # }
+  
+  #test
+  print("print poisson results")
+  print(poisson_results[1, 4]) 
   output
 
 }

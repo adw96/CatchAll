@@ -25,6 +25,7 @@ library(breakaway)
 library(tidyverse)
 
 
+print("Hi")
 rm(list = ls(all = T))
 
 # to run CatchAll on the apples dataset from the package breakaway
