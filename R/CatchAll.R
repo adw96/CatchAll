@@ -184,17 +184,17 @@ CatchAll <- function(frequency_table) {
   ################################
   ## Single Exponential -works now
   ################################
-  # modelNumber <- 2
-  # if (fMinFlag[modelNumber]==1) {
-  #     frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
-  #   for (r in frequencyMinimum:maximumObservation) {
-  #     single_exponential_results <- SingleExponentialModel(s, r, observedCount, n,
-  #                                   s0Init, frequency,
-  #                                   lnSFactorial, sumlnFFactorial,
-  #                                   maximumObservation)
-  #     output <- rbind(output, single_exponential_results)
-  #   }
-  # }
+  modelNumber <- 2
+  if (fMinFlag[modelNumber]==1) {
+      frequencyMinimum <- 1 + max(which(frequency < fMin[modelNumber]))
+    for (r in frequencyMinimum:maximumObservation) {
+      single_exponential_results <- SingleExponentialModel(s, r, observedCount, n,
+                                    s0Init, frequency,
+                                    lnSFactorial, sumlnFFactorial,
+                                    maximumObservation)
+      output <- rbind(output, single_exponential_results)
+    }
+  }
   
   
   ################################
@@ -309,6 +309,7 @@ CatchAll <- function(frequency_table) {
   
   #test
   print("print poisson results")
+  #output <- rbind(poisson_results, single_exponential_results)
   print(poisson_results[1, 4]) 
   output
 

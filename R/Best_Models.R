@@ -232,31 +232,104 @@ Best_Models <- function(bestCount, maximumObservation, frequencyTau10, bestGOF0,
   ## OutputBestModelsAnalysis , need to pass in all the results?
 }
 
-#not sure if this will work...how to get the input as what's already been
-# output and not really sure how to format 
-OutputBestModelsAnalysis <- function(poisson_results, single_exponential_results, 
-                                     double_exponential_results, triple_exponential_results  ) {
+# pass in what's already been outputted
+OutputBestModelsAnalysis <- function(output) {
  
   foundAnalysis <- rep(NA, 10)
   bestAnalysis <- rep(NA, 10) #string, not sure how used
   
+  
+  #output
+  bestModels <- list()
   #reads in data from all of the outputs of the models output
+  numRows <- nrows(output)
+  
+  currRow <- 0
+
+  ## read the output
   for(bm in 0:10) {
-    ## what is data?
-    
-    while(foundAnalysis[bm] == 0) {
-      
+    ## look at the entire row 
+    data <- output[currRow,]
+    while(foundAnalysis[bm] == 0 && currRow < numRows) {
+      ##strcmp? is it a string
+      if(output[currRow,0] == aConditionHere && output[currRow, 1] == frequency[bestModelTau[bm,1]]) {
+        foundAnalysis[bm] <- 1
+        bestAnalysis[bm] <- data
+      }
+      currRow <- currRow + 1
     }
   }
-  output <- data.frame("Total Number of Observed Species" = "Chao1", 
-                       "Model" = r, 
-                       "Tau" = CheckOutput(sHatTotal), 
-                       "Observed Sp" = CheckOutput(se), 
-                       "Estimated Total Sp"= CheckOutput(boundsCheck$lcb), 
-                       "SE" = CheckOutput(boundsCheck$ucb), 
-                       "Lower CB" = NA,
-                       "Upper CB" = NA, 
-                       "GOF0" = NA, 
-                       "GOF5" = NA)
+
+  
+  #remember index starts at 1
+  bestDescription <- list("Best Parm Model", "Parm Model 2a  ", "Parm Model 2b  ", "Parm Model 2c  ",
+                          "WLRM           ", "Non-P 1        ",
+                          "Non-P 2        ", "Parm Max Tau   ",
+                          "WLRM Max Tau   ", "Non-P 3        ",
+                          "Best Discounted")
+  
+  ## for non-parametric?
+  T <- rep(NA, 7)
+  sHatTotal <- 0
+  SE <- 0
+  
+  ##Write out best analysis data for parametric models
+  
+  for(bm in 0:10) {
+    if (bm < 5 || bm == 7 || bm == 8) {
+      #for each column in the row
+      analysis <- output[bm, ]
+      print(bestDescription[bm + 1])
+      if(foundAnalysis[bm] == 1) {
+        if(bm == 5) {
+          # do something
+          #analysis[1] = "2";
+        }
+        #wrong but print to output
+        print(analysis[0:2])
+        if(!is.isNull(analysis[3:6])){
+          bestModels <- c(bestModels, analysis[3:6])
+        }
+        
+        ##certain stats not available for non parametric models
+        if(!is.isNull(analysis[8:9])){
+          bestModels <- c(bestModels, analysis[8:9])
+        }
+        
+        ## save shatsubset and t's for best model
+        if(bm == 0) {
+          sHatTotal <- analysis[3]
+          SE <- analysis[4]
+        }
+      }
+    }
+  }
+  
+  ##Discounted Model for Best Model
+  if(foundAnalysis[0] == 1 && bm == 9) {
+    ##Step down from Four Mixed to Three Mixed
+    if (bestModelTau[0, 0] == 5) {
+      #how to get these
+      cStar <- DiscountedTFourToThreeExponentialModel(r, s, t, obsMax, sHatTotal, se, lcb, ucb)$cStar
+      
+    }
+    
+    ##Step down from Three Mixed to Two Mixed
+    if (bestModelTau[0, 0] == 4) {
+      cStar <- DiscountedThreeToTwoExponentialModel(r, s, t, obsMax, sHatTotal, se, lcb, ucb)$cStar
+    }
+  }
+  
+  bestModels
+  # output <- data.frame("Total Number of Observed Species" = "dummy", 
+  #                      "Model" = "dummy", 
+  #                      "Tau" = "dummy", 
+  #                      "Observed Sp" = "dummy", 
+  #                      "Estimated Total Sp"= "dummy", 
+  #                      "SE" = "dummy", 
+  #                      "Lower CB" = "dummy",
+  #                      "Upper CB" = "dummy", 
+  #                      "GOF0" = "dummy", 
+  #                      "GOF5" = "dummy")
   
 }
