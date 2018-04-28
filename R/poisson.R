@@ -1,7 +1,55 @@
-PoissonModel <- function(s, r, observedCount, n, 
-                        s0Init, frequency, 
-                        lnSFactorial, sumlnFFactorial, sumFlnFFactorial,
-                        maximumObservation) {
+#' @importFrom magrittr  "%>%"
+#' 
+#' @examples 
+#' library(breakaway)
+#' data(apples)
+#' PoissonModel(apples, 4)
+#' 
+#' @export
+PoissonModel <- function(frequency_count, 
+                         cutoff = NULL) {
+  
+  if (is.null(cutoff)) {
+    cutoff <- Inf
+  }
+  
+  frequency_count <- CheckInput(frequency_count)
+  included <- frequency_count[frequency_count$j <= cutoff, ]
+  excluded <- frequency_count[frequency_count$j > cutoff, ]
+  
+  # s = sum f_j
+  cc <- included$f %>% sum
+  cc_excluded  <- excluded$f %>% sum
+  
+  # n = sum j f_j
+  nn <- crossprod(included$j, included$f)
+  
+  ## MLE for lambda is solution to 
+  ## (1-exp(-lambda))/lambda = c/n
+  poisson_fn <- function(lambda) {
+    (1-exp(-lambda))/lambda - cc/nn
+  }
+  
+  # eqn nonlinear; so use Newton's method
+  lambda_hat <- uniroot(poisson_fn, c(0.0001, 1000000))$root
+  
+  ccc_subset <- cc / (1-exp(-lambda_hat)) 
+  ccc_hat <- ccc_subset + cc_excluded
+  
+  ccc_se <- sqrt(ccc_subset/(exp(lambda_hat)-1-lambda_hat))
+  
+  data.frame("Model" = "Poisson", 
+             "Cutoff" = cutoff, 
+             "Estimate" = ccc_hat, 
+             "SE" = ccc_se,
+             "lambda_hat"= lambda_hat)
+}
+
+#' @export
+PoissonModel0 <- function(s, r, observedCount, n, 
+                          s0Init, frequency, 
+                          lnSFactorial, sumlnFFactorial, sumFlnFFactorial,
+                          maximumObservation) {
   ################################
   ## Poisson Fits
   ################################
