@@ -7,6 +7,7 @@ CalculateAnalysisVariables <- function(part1, part2,
   maxGoodnessOfFit <- 10
   return_variable <- list()
   return_variable$AIC <- 2 * numberParameters - 2*(part1 + part2)
+
   if (s[r] - numberParameters - 1 > 0) {
     return_variable$AICc <- return_variable$AIC + (2*numberParameters*(numberParameters+1)/(s[r]-numberParameters-1))
     return_variable$AICcFlag <- 1
@@ -19,8 +20,11 @@ CalculateAnalysisVariables <- function(part1, part2,
   return_variable$chiSq <- chiSqAll
   
   ## calculate Goodness of Fit
-  df <- frequency[r] - numberParameters
+
+  df <- frequency[r] - numberParameters 
   test <- (chiSqAll - df)/sqrt(2*df)
+  print(paste("test: ", test, sep = " "))
+  print(paste("chiSqAll: ", chiSqAll, sep = " "))
   GOF0 <- list()
   #bigChisq is a global variable
   if (test < maxGoodnessOfFit  & chiSqAll < BigChiSq){
@@ -34,9 +38,10 @@ CalculateAnalysisVariables <- function(part1, part2,
   ## calculate ChiSq, bin 5
   chiSq5 <- ChiSqBin(r, fitsExtended, 5, df, numberParameters, frequency, s, observedCount)
   
+  df <- chiSq5$df
   GOF5Check <- chiSq5$flag
   chiSq5 <- chiSq5$chiSq
-  
+ 
   ## calculate goodness of fit
   test <- (chiSq5 - df)/sqrt(2*df)
   if (test < maxGoodnessOfFit & GOF5Check == 1 & chiSq5 < BigChiSq) {
@@ -47,8 +52,20 @@ CalculateAnalysisVariables <- function(part1, part2,
   return_variable
 }
 
+
 ChiSqFunction <- function(r, fitsCount, modelNumber,
                   frequency, observedCount, s) {
+  print("IN CHI SQ FUNCTION")
+  print(paste("r: ", r, sep = " "))
+  print("fitsCount")
+  print(fitsCount)
+  print(paste("modelNumber: ", modelNumber, sep = " "))
+  print(frequency)
+  print("observedCount")
+  print(observedCount)
+  print("s")
+  print(s)
+  #why is this diff if original is same
   chiSqTemporary <- 0
   sumFit <- 0
   rr <- 1
@@ -56,21 +73,38 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     stop("first frequency is 0?")
   }
   
+  print(paste("freq[r]: ", frequency[r]))
   # this bizarre looking flow adjusts for non-contiguous frequencies
-  for (t in 1:frequency[r]) {
+  for (t in (1:frequency[r])) {
     if (t == frequency[rr]) {
-      chiSqTemporary <- chiSqTemporary + ((observedCount)[rr] - fitsCount[t])^2/fitsCount[t]
+      # print(paste("fitsCount[t]: ", fitsCount[t + 1], sep = " "))
+      # print(paste("observedCount[rr]: ", observedCount[rr], sep = " "))
+      # print(paste("observedCount[rr] - fitsCount[t]: ",observedCount[rr] - fitsCount[t+1], sep = " " ))
+      # print(paste("(observedCount[rr] - fitsCount[t])^2): ", (observedCount[rr] - fitsCount[t+1])^2, sep = "  "))
+      # print(paste("((observedCount[rr] - fitsCount[t])^2)/fitsCount[t])", ((observedCount[rr] - fitsCount[t+1])^2)/fitsCount[t + 1]), sep = " ")
+      if (modelNumber < 6) {
+        chiSqTemporary <- chiSqTemporary + ((observedCount)[rr] - fitsCount[t])^2/fitsCount[t]
+      } else {
+        chiSqTemporary <- chiSqTemporary + (((observedCount[rr] - fitsCount[t + 1])^2)/fitsCount[t + 1])
+      }
       rr <- rr+1
     } else {
       chiSqTemporary <- chiSqTemporary + fitsCount[t]
     }
+    print(paste("chiSqTemporary in loop: ", chiSqTemporary, sep = " "))
   }
   sumFit <- sum(fitsCount)
-  
+  print(paste("fitsCount[1]: ", fitsCount[1], sep = " "))
+  #is this just a temp fix for LOGTWLR? do we even need this...
+  #sumFit <- sumFit - fitsCount[1]
+  print(paste("sumFit: ", sumFit, sep = " "))
+  print(paste("chiSqTemporary before if check: ", sep = " "))
+  print(paste("s[r]: ", s[r], sep = " "))
   if(modelNumber<6) {
+    print("hi there")
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
+    print(paste("chiSqTemporary: ", chiSqTemporary, sep = " "))
   }
-  #list("chiSq"=chiSqTemporary, "sumFit"=sumFit)
   chiSqTemporary
 }
 
@@ -79,70 +113,42 @@ ChiSqBin <- function(r, fitsExtended, bin,
                      frequency, s, observedCount) {
   extendedTau <- frequency[r] * 4
   
-  if (r == 6 || r == 5) {
-    print("FITSEXTENDED")
-    print(fitsExtended)
-  }
-  # fits extended breaks here
-  # actual supposed fitsExtended[t] is 1/2
-  # expected:  155.5416317008
-  # actual: 311.0833
-  
   ## find terminal indices of binned cells
-  check <- rep(NA, extendedTau) #don't understand why this
-  # makes 3 different tables?? I thought it was only called
-  # once
-  # print("print check")
-  # print(check)
+  check <- rep(NA, extendedTau) 
   accumulatedFit <- 0
   df <- 0
   stop <- 0
   t <- 1
 
-  #something wrong in this loop when extendedTau is 24
-  # counter is 5, but it should also be 24
-  # so problem is in the while loop condition?
-  
-  #print("extendedTau")
-  #print(extendedTau)
-  #print("t NOW")
-  #print(t)
+# 
+  # print("extendedTau")
+  # print(extendedTau)
+  # print("check")
+  # print(check)
+  # print("r")
+  # print(r)
+  # print("frequency")
+  # print(frequency)
+  # print("bin")
+  # print(bin)
+  # print("s")
+  # print(s)
+  # print("fitsExtended")
+  # print(fitsExtended)
  
-  #is s incorrect??
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
     check[t] <- 0
-    if (r == 6) {
-      print("fitsExtended[t]")
-      print(fitsExtended[t])
-    }
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
     
-    #breaking at 
-    # is it r?? or s? r doesn't seem to change
-    # Ok I undersand where it's breaking but not sure how to fix it'
-    # breaking at s[r] - condition, does not reset accumulatedFit back to 0
-    # since s[r] is 716 and accumulatedFit is 847.1435 which is not greater
-    # than 5
-    # what is it SUPPOSED to be?? need to run C# code
-    if (r == 6) { #why only 6 does it break
-      print("r")
-      print(r)
-      print("s[r]")
-      print(s[r])
-      print("accumulatedFit")
-      print(accumulatedFit)
-      print("bin")
-      print(bin)
-      print("s[r] - accumulatedFit")
-      print(s[r]-accumulatedFit)
-      print("t")
-      print(t)
-      print("extended tau")
-      print(extendedTau)
-      print("+------------------------------+")
-    }
-
-    
+    # print("t")
+    # print(t)
+    # print("fitsExtended[t]")
+    # print(fitsExtended[t])
+    # print("accumulatedFit")
+    # print(accumulatedFit)
+    # print("extended tau")
+    # print(extendedTau)
+    # print("+------------------------------+")
     if (accumulatedFit >= bin  & (s[r] - accumulatedFit) >= bin) {
       check[t] <- 1
       df <- df + 1
@@ -150,28 +156,12 @@ ChiSqBin <- function(r, fitsExtended, bin,
       accumulatedFit <- 0
     }
     t <- t + 1
-    #print("accumulatedFit")
-    #print(accumulatedFit)
-    #print("bin")
-    #print(bin)
-    #print("accumulatedFit < bin") #BREAKS BUT WHY
-    #accumulated fit randomly goes from 0 -> 847.1435, could
-    # it be fitsExtended?
-    # print(accumulatedFit < bin)
   }
   
-  print("t")
-  print(t)
-  
-  #print("DONE")
-  #print("counter")
-  #print(counter)
-  #print("extendedTau")
-  #print(extendedTau)
- 
   ## todo: fix
  # check[t-1]<-0
   
+
   ## check for enough data for bininng and positive df
   chiSqTemporary <- 0
   df <- df - numberParameters
@@ -186,9 +176,6 @@ ChiSqBin <- function(r, fitsExtended, bin,
         rr <- rr + 1
       } 
       cellFit <- cellFit + fitsExtended[t]
-      #print("t")
-      #print(t)
-      #print(check[t]) # null value here?
       if (check[t] == 1) {
         chiSqTemporary <- chiSqTemporary + (cellObservation-cellFit)^2/cellFit
         cellObservation <- 0
@@ -202,7 +189,7 @@ ChiSqBin <- function(r, fitsExtended, bin,
   } else {
     flag <- 0
   }
-  list("chiSq"=chiSqTemporary, "flag"=flag)
+  list("chiSq"=chiSqTemporary, "flag"=flag, "df"=df)
 }
 
 GoodnessOfFit <- function(chiSqAll, df) {
@@ -233,11 +220,12 @@ GoodnessOfFit <- function(chiSqAll, df) {
   flag <- 1
   if (is.nan(f)) flag <- 0
   gof  <- 1-f*(chiSqAll/2)^(df/2)
-  
+
   if (is.nan(gof)) flag <- 0
   
   list("gof"=gof, "flag"=flag)
 }
+
 
 GetConfidenceBounds <- function(r, se, sHatSubset, s, observationMaximum) {
   answer <- list()
@@ -295,25 +283,46 @@ BracetRoot <- function(poissonConstant, momentsInit) {
   result
 }
 
-Math.Pow <- function(a, b) a^b
 
-# x should be an array
-# is this correct?? 
+pow <- function(a, b) {
+  a^b
+}
+
+#really dumb, delete later, still not understanding the apply family
+matrix_apply <- function(m, f) {
+  m2 <- m
+  for (r in seq(nrow(m2)))
+    for (c in seq(ncol(m2)))
+      m2[[r, c]] <- f(m2[[r,c]], c)
+    return(m2)
+}
+
+# DOESN'T WORK FOR LNFACTORIAL 
 logFactorial <- function(x) {
   cumsum(log(x))
 }
 
+# precision
 MatrixInversion <- function(sHat, a00, a0, A) {
   result <- list()
   # complete the symmetric matrix
   A <- A + t(A)
+  # print("new A")
+  # print(A)
+  # after dividing diag / 2, we get the same answer given by C#
+  
   diag(A) <- diag(A)/2
-  
+  # print("A diag")
+  # print(A)
+  # 
+  #tol = 1e-17
+  #5.04722e-22
   aInverse <- try(solve(A), silent = TRUE)
-  
+  # print("AInverse after multiplication")
+  # print(aInverse)
+
   if (class(aInverse) != "try-error") {
     answer <- a0 %*% aInverse %*% a0
-    
     if (a00>answer) {
       result$answer <- sqrt(a00-answer)
       result$se <- sqrt(sHat)/answer
@@ -327,4 +336,18 @@ MatrixInversion <- function(sHat, a00, a0, A) {
     result$flag <- 0
   }
   result
+}
+
+GetConfidenceBoundsDiscounted <- function(r, SE,
+                                            sHatSubset, cStar,excess, LCB,
+                                          UCB) {
+  ## Confidence Bounds
+  if (sHatSubset != s[r])
+  {
+    dTemp <- exp(1.96 * (sqrt(log(1.0 + (SE * SE / (((sHatSubset - cStar) * (sHatSubset - cStar))))))))
+    LCB <- (cStar + excess) + ((sHatSubset - cStar) / dTemp)
+    UCB <- (cStar + excess) + ((sHatSubset - cStar) * dTemp)
+  }
+  
+  list("cStar"=cStar, "SE"=SE, "LCB"=LCB, "UCB"=ucb)
 }
