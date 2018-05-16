@@ -1,5 +1,6 @@
 
-CatchAll
+# CatchAll <img src="man/figures/logo.png" align="right" />
+
 =========
 
 [![Build Status](https://travis-ci.org/adw96/CatchAll.svg?branch=master)](https://travis-ci.org/adw96/CatchAll)
