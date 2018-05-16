@@ -1,3 +1,7 @@
+#' PoissonModel
+#' 
+#' A model to estimate the number of missing taxa under a Poisson Model
+#' 
 #' @importFrom magrittr  "%>%"
 #' 
 #' @examples 
@@ -38,11 +42,41 @@ PoissonModel <- function(frequency_count,
   
   ccc_se <- sqrt(ccc_subset/(exp(lambda_hat)-1-lambda_hat))
   
-  data.frame("Model" = "Poisson", 
-             "Cutoff" = cutoff, 
-             "Estimate" = ccc_hat, 
-             "SE" = ccc_se,
-             "lambda_hat"= lambda_hat)
+  out <- list("model" = "Poisson", 
+              "cutoff" = cutoff, 
+              "estimate" = ccc_hat, 
+              "se" = ccc_se,
+              "lambda_hat"= lambda_hat)
+  class(out) <- c("richnessEstimate", class(out))
+  out
+}
+
+#' @export
+print.richnessEstimate <- function(est) {
+  print(data.frame("Model" = est$model, 
+                   "Cutoff" = est$cutoff, 
+                   "Estimate" = est$estimate, 
+                   "Standard Error" = est$se))
+}
+
+#' @export
+CheckInput <- function(frequency_count) {
+  
+  
+  if(!(class(frequency_count) %in% c("matrix", "data.frame"))) stop("Input should be a matrix or a data frame")
+  
+  if(length(dim(frequency_count)) != 2) stop("Input should have 2 columns")
+  
+  if(any(frequency_count[,2] %% 1 != 0)) stop("Second input column not integer-valued; should be counts")
+  
+  if(!all(rank(frequency_count[,1]) == 1:length(frequency_count[,1]))) warning("Frequency count format, right?")
+  
+  if (frequency_count[,1] %>% class == "factor") {
+    frequency_count[,1] %<>% as.character %>% as.integer
+  }
+  
+  colnames(frequency_count)  <- c("j", "f")
+  frequency_count
 }
 
 #' @export
@@ -95,7 +129,7 @@ PoissonModel0 <- function(s, r, observedCount, n,
   # this is after calling the getPoissonModel
   if (fitsCheck == 1) {
     mlesPoissonExponential <- exp(-mlesPoisson)
-
+    
     lnFactorial <- 0.0
     #sanity check to make lnFactorial again
     
@@ -105,7 +139,7 @@ PoissonModel0 <- function(s, r, observedCount, n,
       fitsCount[t] <- log(s[r]) + log(mlesPoissonExponential) +
         ((t)*log(mlesPoisson)) - log(1-mlesPoissonExponential) -
         lnFactorial
-
+      
       fitsCount[t] <- exp(fitsCount[t])
     }
     
@@ -132,7 +166,7 @@ PoissonModel0 <- function(s, r, observedCount, n,
               log(1-mlesPoissonExponential) - log(factorial((frequency[r]+1):extendedTau)))
       
       #check frequency
-
+      
       sHatSubset <- s[r]*mlesPoissonExponential/(1-mlesPoissonExponential) + s[r]
       sHatTotal <- sHatSubset + (s[maximumObservation] - s[r])
       

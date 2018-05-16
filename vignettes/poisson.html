@@ -12,7 +12,7 @@
 
 <meta name="author" content="Amy Willis" />
 
-<meta name="date" content="2018-04-28" />
+<meta name="date" content="2018-05-16" />
 
 <title>Getting started with CatchAll</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Getting started with CatchAll</h1>
 <h4 class="author"><em>Amy Willis</em></h4>
-<h4 class="date"><em>2018-04-28</em></h4>
+<h4 class="date"><em>2018-05-16</em></h4>
 
 
 
@@ -96,12 +96,14 @@ x</code></pre></div>
 ## 7      7   15
 ## 8      8    2
 ## 9      9    2</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">PoissonModel</span>(x, <span class="dt">cutoff =</span> <span class="dv">10</span>)</code></pre></div>
+<pre><code>##     Model Cutoff Estimate Standard.Error
+## 1 Poisson     10 4924.848       32.85165</code></pre>
+<p>Not too bad, given that the true richness is 5000!</p>
+<p>Let’s try another cutoff:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">PoissonModel</span>(x)</code></pre></div>
-<pre><code>##     Model Cutoff Estimate       SE lambda_hat
-## 1 Poisson    Inf 4924.848 32.85165    2.02685</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">PoissonModel</span>(x, <span class="dt">cutoff =</span> <span class="dv">3</span>)</code></pre></div>
-<pre><code>##     Model Cutoff Estimate       SE lambda_hat
-## 1 Poisson      3 5425.107 53.06286   1.399839</code></pre>
+<pre><code>##     Model Cutoff Estimate Standard.Error
+## 1 Poisson    Inf 4924.848       32.85165</code></pre>
 
 
 

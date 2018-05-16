@@ -24,6 +24,11 @@ counts <- rpois(5000, 2)
 counts <- counts[counts>0] 
 x <- data.frame(table(counts))
 x
+PoissonModel(x, cutoff = 10)
+```
+Not too bad, given that the true richness is 5000!
+
+Let's try another cutoff:
+```{r}
 PoissonModel(x)
-PoissonModel(x, cutoff = 3)
 ```
