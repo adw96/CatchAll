@@ -16,7 +16,8 @@ Depends:
 Imports: MASS,
     stats,
     utils,
-    graphics
+    graphics,
+    magrittr
 Suggests: knitr,
     rmarkdown,
     testthat
