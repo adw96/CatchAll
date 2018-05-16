@@ -33,6 +33,13 @@ x <- PoissonModel(apples)
 x
 x <- PoissonModel(apples, 10) 
 x
+
+install_github("adw96/breakaway")
+library(breakaway)
+install_github("adw96/CatchAll")
+library(CatchAll)
+data(apples)
+PoissonModel(apples)
 #################################################################################################
 ###################################################################################
 ####################################

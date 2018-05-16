@@ -1,5 +1,5 @@
 
-# CatchAll <img src="man/figures/logo.png" align="right" />
+# <img src="man/figures/logo.png" align="right" />
 
 =========
 
