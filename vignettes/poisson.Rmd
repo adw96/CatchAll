@@ -1,6 +1,6 @@
 ---
 title: "Getting started with CatchAll"
-author: Amy Willis 
+author: Amy Willis
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -8,7 +8,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-  
+
 `CatchAll` is a package for species richness estimation and modelling. It is based off the original CatchAll software program by Bunge et. al, but now coded into R and updated to reflect new use cases.
 
 At this point, only the Poisson model is available to use. Here is an example of its use
@@ -21,9 +21,9 @@ library(CatchAll)
 library(magrittr)
 set.seed(1)
 counts <- rpois(5000, 2)
-counts <- counts[counts>0] 
+counts <- counts[counts>0]
 x <- data.frame(table(counts))
-x
+x[,1] <- as.numeric(x[,1])
 PoissonModel(x, cutoff = 10)
 ```
 Not too bad, given that the true richness is 5000!
@@ -31,4 +31,10 @@ Not too bad, given that the true richness is 5000!
 Let's try another cutoff:
 ```{r}
 PoissonModel(x)
+```
+
+Now run all models!
+```{r}
+suppressMessages({y <- CatchAll(x)})
+head(y)
 ```

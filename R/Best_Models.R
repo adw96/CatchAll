@@ -4,6 +4,7 @@ Best_Models <- function(bestCount, maximumObservation, frequencyTau10, bestGOF0,
   bestModel <- rep(NA, maximumObservation + 1)
   bestModelTau <- matrix(NA, nrow=10, ncol=2)
   
+  obsMax <- maximumObservation 
   flag <- -1
   
   if (bestCount[1] > 0) {
@@ -30,7 +31,7 @@ Best_Models <- function(bestCount, maximumObservation, frequencyTau10, bestGOF0,
             minAICc <- bestAICc[flag, m, r] 
         }
       }
-      testValue[r] <- GOf5Test[bestModel[r], r]
+      testValue[r] <- GOF5Test[bestModel[r], r]
       order[r] <- r
     }
     #sort the arrays based on K-V pairings

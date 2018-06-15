@@ -23,8 +23,8 @@ CalculateAnalysisVariables <- function(part1, part2,
 
   df <- frequency[r] - numberParameters 
   test <- (chiSqAll - df)/sqrt(2*df)
-  print(paste("test: ", test, sep = " "))
-  print(paste("chiSqAll: ", chiSqAll, sep = " "))
+  message(paste("test: ", test, sep = " "))
+  message(paste("chiSqAll: ", chiSqAll, sep = " "))
   GOF0 <- list()
   #bigChisq is a global variable
   if (test < maxGoodnessOfFit  & chiSqAll < BigChiSq){
@@ -55,16 +55,16 @@ CalculateAnalysisVariables <- function(part1, part2,
 
 ChiSqFunction <- function(r, fitsCount, modelNumber,
                   frequency, observedCount, s) {
-  print("IN CHI SQ FUNCTION")
-  print(paste("r: ", r, sep = " "))
-  print("fitsCount")
-  print(fitsCount)
-  print(paste("modelNumber: ", modelNumber, sep = " "))
-  print(frequency)
-  print("observedCount")
-  print(observedCount)
-  print("s")
-  print(s)
+  message("IN CHI SQ FUNCTION")
+  message(paste("r: ", r, sep = " "))
+  message("fitsCount")
+  message(fitsCount)
+  message(paste("modelNumber: ", modelNumber, sep = " "))
+  message(frequency)
+  message("observedCount")
+  message(observedCount)
+  message("s")
+  message(s)
   #why is this diff if original is same
   chiSqTemporary <- 0
   sumFit <- 0
@@ -73,15 +73,15 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     stop("first frequency is 0?")
   }
   
-  print(paste("freq[r]: ", frequency[r]))
+  message(paste("freq[r]: ", frequency[r]))
   # this bizarre looking flow adjusts for non-contiguous frequencies
   for (t in (1:frequency[r])) {
     if (t == frequency[rr]) {
-      # print(paste("fitsCount[t]: ", fitsCount[t + 1], sep = " "))
-      # print(paste("observedCount[rr]: ", observedCount[rr], sep = " "))
-      # print(paste("observedCount[rr] - fitsCount[t]: ",observedCount[rr] - fitsCount[t+1], sep = " " ))
-      # print(paste("(observedCount[rr] - fitsCount[t])^2): ", (observedCount[rr] - fitsCount[t+1])^2, sep = "  "))
-      # print(paste("((observedCount[rr] - fitsCount[t])^2)/fitsCount[t])", ((observedCount[rr] - fitsCount[t+1])^2)/fitsCount[t + 1]), sep = " ")
+      # message(paste("fitsCount[t]: ", fitsCount[t + 1], sep = " "))
+      # message(paste("observedCount[rr]: ", observedCount[rr], sep = " "))
+      # message(paste("observedCount[rr] - fitsCount[t]: ",observedCount[rr] - fitsCount[t+1], sep = " " ))
+      # message(paste("(observedCount[rr] - fitsCount[t])^2): ", (observedCount[rr] - fitsCount[t+1])^2, sep = "  "))
+      # message(paste("((observedCount[rr] - fitsCount[t])^2)/fitsCount[t])", ((observedCount[rr] - fitsCount[t+1])^2)/fitsCount[t + 1]), sep = " ")
       if (modelNumber < 6) {
         chiSqTemporary <- chiSqTemporary + ((observedCount)[rr] - fitsCount[t])^2/fitsCount[t]
       } else {
@@ -91,19 +91,19 @@ ChiSqFunction <- function(r, fitsCount, modelNumber,
     } else {
       chiSqTemporary <- chiSqTemporary + fitsCount[t]
     }
-    print(paste("chiSqTemporary in loop: ", chiSqTemporary, sep = " "))
+    message(paste("chiSqTemporary in loop: ", chiSqTemporary, sep = " "))
   }
   sumFit <- sum(fitsCount)
-  print(paste("fitsCount[1]: ", fitsCount[1], sep = " "))
+  message(paste("fitsCount[1]: ", fitsCount[1], sep = " "))
   #is this just a temp fix for LOGTWLR? do we even need this...
   #sumFit <- sumFit - fitsCount[1]
-  print(paste("sumFit: ", sumFit, sep = " "))
-  print(paste("chiSqTemporary before if check: ", sep = " "))
-  print(paste("s[r]: ", s[r], sep = " "))
+  message(paste("sumFit: ", sumFit, sep = " "))
+  message(paste("chiSqTemporary before if check: ", sep = " "))
+  message(paste("s[r]: ", s[r], sep = " "))
   if(modelNumber<6) {
-    print("hi there")
+    message("hi there")
     chiSqTemporary <- chiSqTemporary + s[r] - sumFit
-    print(paste("chiSqTemporary: ", chiSqTemporary, sep = " "))
+    message(paste("chiSqTemporary: ", chiSqTemporary, sep = " "))
   }
   chiSqTemporary
 }
@@ -121,34 +121,34 @@ ChiSqBin <- function(r, fitsExtended, bin,
   t <- 1
 
 # 
-  # print("extendedTau")
-  # print(extendedTau)
-  # print("check")
-  # print(check)
-  # print("r")
-  # print(r)
-  # print("frequency")
-  # print(frequency)
-  # print("bin")
-  # print(bin)
-  # print("s")
-  # print(s)
-  # print("fitsExtended")
-  # print(fitsExtended)
+  # message("extendedTau")
+  # message(extendedTau)
+  # message("check")
+  # message(check)
+  # message("r")
+  # message(r)
+  # message("frequency")
+  # message(frequency)
+  # message("bin")
+  # message(bin)
+  # message("s")
+  # message(s)
+  # message("fitsExtended")
+  # message(fitsExtended)
  
   while(t <= extendedTau  &  accumulatedFit < bin & (s[r]-accumulatedFit) >= bin) {
     check[t] <- 0
     accumulatedFit  <- accumulatedFit + fitsExtended[t]
     
-    # print("t")
-    # print(t)
-    # print("fitsExtended[t]")
-    # print(fitsExtended[t])
-    # print("accumulatedFit")
-    # print(accumulatedFit)
-    # print("extended tau")
-    # print(extendedTau)
-    # print("+------------------------------+")
+    # message("t")
+    # message(t)
+    # message("fitsExtended[t]")
+    # message(fitsExtended[t])
+    # message("accumulatedFit")
+    # message(accumulatedFit)
+    # message("extended tau")
+    # message(extendedTau)
+    # message("+------------------------------+")
     if (accumulatedFit >= bin  & (s[r] - accumulatedFit) >= bin) {
       check[t] <- 1
       df <- df + 1
@@ -307,19 +307,19 @@ MatrixInversion <- function(sHat, a00, a0, A) {
   result <- list()
   # complete the symmetric matrix
   A <- A + t(A)
-  # print("new A")
-  # print(A)
+  # message("new A")
+  # message(A)
   # after dividing diag / 2, we get the same answer given by C#
   
   diag(A) <- diag(A)/2
-  # print("A diag")
-  # print(A)
+  # message("A diag")
+  # message(A)
   # 
   #tol = 1e-17
   #5.04722e-22
   aInverse <- try(solve(A), silent = TRUE)
-  # print("AInverse after multiplication")
-  # print(aInverse)
+  # message("AInverse after multiplication")
+  # message(aInverse)
 
   if (class(aInverse) != "try-error") {
     answer <- a0 %*% aInverse %*% a0

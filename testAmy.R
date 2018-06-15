@@ -6,40 +6,44 @@
 
 ## Create and set the working directory
 #directory <- "/Users/teres/Documents/GitHub/Catch All REAL/CatchAll" ## your local copy here
-directory <- "/Users/adwillis/software/CatchAll" ## your local copy here
+directory <- "/Users/amy/Documents/software/CatchAll" ## your local copy here
 setwd(directory)
 
 # Download some required packages
-require(devtools)
-require(roxygen2)
-require(testthat)
-require(knitr)
-require(rstudioapi)
-require(Rd2roxygen)
+library(devtools)
+library(roxygen2)
+library(testthat)
+library(knitr)
+library(rstudioapi)
+library(Rd2roxygen)
 devtools::install_github("hadley/pkgdown")
 library(pkgdown)
 library(breakaway)
+data(apples)
+
+
 
 #### TODO: Fix CatchAll
 roxygenise(directory)
 document(directory)
+load_all()
 build(directory)
-test(directory)
-
 install(pkg = directory)
 library(CatchAll)
+data("butterfly")
+suppressMessages({CatchAll(butterfly)})
 
-x <- PoissonModel(apples) 
-x
-x <- PoissonModel(apples, 10) 
-x
+check()
+test(directory)
 
-install_github("adw96/breakaway")
-library(breakaway)
-install_github("adw96/CatchAll")
-library(CatchAll)
-data(apples)
-PoissonModel(apples)
+PoissonModel(apples) 
+PoissonModel(apples, 10) 
+source("R/CatchAll.R")
+x <- CatchAll(apples)
+x[,1]
+
+rm(CatchAll)
+
 #################################################################################################
 ###################################################################################
 ####################################
@@ -58,7 +62,7 @@ CatchAll(apples)
 # unsource
 rm(list =ls(all = T))
 rm(list =ls())
-CatchAll
+CatchAll)
 
 ## another test set
 

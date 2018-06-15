@@ -31,16 +31,16 @@ ACEModel <- function (s, r, observedCount, n, frequency, singletons, maximumObse
        ((s[r] / (n[r] - f1)) * (G[r] / (n[r] - 1.0)) - 1.0)) + ((n[r] * f1 * G[r] * (n[r] - 1.0 - s[r])) /
        (((n[r] - f1) * (n[r] - f1) * (n[r] - 1.0) * (n[r] - 1.0))))
   
-  a <- pow(derCHat1, 2) * f1 * (1.0 - (f1 / sHatSubset))
+  A <- pow(derCHat1, 2) * f1 * (1.0 - (f1 / sHatSubset))
   
   derCHati <- rep(NA, frequency[r] + 1)
   
   #should either be 1:freq[r] or 2:freq[r]
   derCHati <- (((n[r] * n[r]) - (f1 * n[r]) -
-                  (f1 * s[r] * (2:freq[r]))) / ((n[r] - f1) * (n[r] - f1))) - (((f1 * f1 * (2:freq[r])) / ((n[r] - f1) * (n[r] - f1))) *
+                  (f1 * s[r] * (2:frequency[r]))) / ((n[r] - f1) * (n[r] - f1))) - (((f1 * f1 * (2:frequency[r])) / ((n[r] - f1) * (n[r] - f1))) *
        ((s[r] / (n[r] - f1)) * (G[r] / (n[r] - 1.0)) - 1.0)) + (((n[r] * f1) / (n[r] - f1)) *
-       (((n[r] - f1 - s[r] * (2:freq[r])) / ((n[r] - f1) * (n[r] - f1))) * (G[r] / (n[r] - 1.0)) +
-          (((s[r] / (n[r] - f1)) * (((n[r] - 1.0) * (2:freq[r]) * ((2:freq[r]) - 1.0)) - G[r] * (2:freq[r])) / ((n[r] - 1.0) * (n[r] - 1.0))))))
+       (((n[r] - f1 - s[r] * (2:frequency[r])) / ((n[r] - f1) * (n[r] - f1))) * (G[r] / (n[r] - 1.0)) +
+          (((s[r] / (n[r] - f1)) * (((n[r] - 1.0) * (2:frequency[r]) * ((2:frequency[r]) - 1.0)) - G[r] * (2:frequency[r])) / ((n[r] - 1.0) * (n[r] - 1.0))))))
   
   B <- 0.0
   C <- 0.0
@@ -49,8 +49,8 @@ ACEModel <- function (s, r, observedCount, n, frequency, singletons, maximumObse
   rr <- 1
   rr <- max(which(frequency[rr] < 2))
   
-  for(i in 2:freq[r]) {
-    if (i == freq[rr]) {
+  for(i in 2:frequency[r]) {
+    if (i == frequency[rr]) {
       B <- B + (derCHati[i] * derCHati[i] * observedCount[rr] *
               (1.0 - (observedCount[rr] / sHatSubset)))
       
@@ -60,7 +60,7 @@ ACEModel <- function (s, r, observedCount, n, frequency, singletons, maximumObse
       rj <- max(which(frequency[rj] < i & rj < r))
       
       for (j in (i+1):frequency[r]) {
-        if (j == freq[rj]) {
+        if (j == frequency[rj]) {
           D <- D + (derCHati[i] * derCHati[j] * (-observedCount[rr] * observedCount[rj] / sHatSubset))
           rj <- rj + 1
         }

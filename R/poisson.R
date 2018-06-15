@@ -2,12 +2,16 @@
 #' 
 #' A model to estimate the number of missing taxa under a Poisson Model
 #' 
+#' @param frequency_count A frequency count table
+#' @param cutoff The largest frequency to use for predicting f0 
+#' 
 #' @importFrom magrittr  "%>%"
+#' @importFrom magrittr  "%<>%"
+#' @importFrom stats uniroot
 #' 
 #' @examples 
-#' library(breakaway)
-#' data(apples)
-#' PoissonModel(apples, 4)
+#' data(butterfly)
+#' PoissonModel(butterfly, 4)
 #' 
 #' @export
 PoissonModel <- function(frequency_count, 
@@ -59,6 +63,13 @@ print.richnessEstimate <- function(est) {
                    "Standard Error" = est$se))
 }
 
+#' CheckInput
+#' 
+#' Check and fix the formatting of a frequency count table
+#' 
+#' @param frequency_count The frequency count table to check
+#' @return  The checked and fixed frequency count table 
+#' 
 #' @export
 CheckInput <- function(frequency_count) {
   
@@ -79,7 +90,6 @@ CheckInput <- function(frequency_count) {
   frequency_count
 }
 
-#' @export
 PoissonModel0 <- function(s, r, observedCount, n, 
                           s0Init, frequency, 
                           lnSFactorial, sumlnFFactorial, sumFlnFFactorial,
@@ -143,8 +153,8 @@ PoissonModel0 <- function(s, r, observedCount, n,
       fitsCount[t] <- exp(fitsCount[t])
     }
     
-    print("lnFactorial after method")
-    print(lnFactorial)
+    message("lnFactorial after method")
+    message(lnFactorial)
     # correct lnFactorial
     
     # fitsCount <- log(s[r]) + log(mlesPoissonExponential) + 

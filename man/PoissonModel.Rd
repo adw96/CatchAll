@@ -6,12 +6,16 @@
 \usage{
 PoissonModel(frequency_count, cutoff = NULL)
 }
+\arguments{
+\item{frequency_count}{A frequency count table}
+
+\item{cutoff}{The largest frequency to use for predicting f0}
+}
 \description{
 A model to estimate the number of missing taxa under a Poisson Model
 }
 \examples{
-library(breakaway)
-data(apples)
-PoissonModel(apples, 4)
+data(butterfly)
+PoissonModel(butterfly, 4)
 
 }
