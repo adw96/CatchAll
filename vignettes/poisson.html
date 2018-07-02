@@ -81,7 +81,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="co"># devtools::install_github(&quot;adw96/CatchAll&quot;)</span>
 <span class="kw">library</span>(CatchAll)
 <span class="kw">library</span>(magrittr)
-<span class="kw">library</span>(breakaway)
+devtools::<span class="kw">install_github</span>(<span class="st">&quot;adw96/breakaway&quot;</span>)</code></pre></div>
+<pre><code>## Skipping install of 'breakaway' from a github remote, the SHA1 (00966ecc) has not changed since last install.
+##   Use `force = TRUE` to force installation</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(breakaway)
 <span class="kw">set.seed</span>(<span class="dv">1</span>)
 counts &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">5000</span>, <span class="dv">2</span>)
 <span class="kw">PoissonModel</span>(counts, <span class="dt">cutoff =</span> <span class="dv">10</span>)</code></pre></div>

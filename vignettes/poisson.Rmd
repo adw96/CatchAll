@@ -19,6 +19,7 @@ At this point, only the Poisson model is available to use. Here is an example of
 # devtools::install_github("adw96/CatchAll")
 library(CatchAll)
 library(magrittr)
+devtools::install_github("adw96/breakaway")
 library(breakaway)
 set.seed(1)
 counts <- rpois(5000, 2)
