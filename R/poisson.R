@@ -5,8 +5,8 @@
 #' @param frequency_count A frequency count table
 #' @param cutoff The largest frequency to use for predicting f0 
 #' 
-#' @importFrom magrittr  "%>%"
-#' @importFrom magrittr  "%<>%"
+#' @import breakaway 
+#' @import magrittr 
 #' @importFrom stats uniroot
 #' 
 #' @examples 
@@ -15,22 +15,18 @@
 #' 
 #' @export
 PoissonModel <- function(frequency_count, 
-                         cutoff = NULL) {
+                         cutoff = Inf) {
   
-  if (is.null(cutoff)) {
-    cutoff <- Inf
-  }
-  
-  frequency_count <- CheckInput(frequency_count)
-  included <- frequency_count[frequency_count$j <= cutoff, ]
-  excluded <- frequency_count[frequency_count$j > cutoff, ]
+  frequency_count <- breakaway::convert(frequency_count)
+  included <- frequency_count[frequency_count$index <= cutoff, ]
+  excluded <- frequency_count[frequency_count$index > cutoff, ]
   
   # s = sum f_j
-  cc <- included$f %>% sum
-  cc_excluded  <- excluded$f %>% sum
+  cc <- included$frequency %>% sum
+  cc_excluded  <- excluded$frequency %>% sum
   
   # n = sum j f_j
-  nn <- crossprod(included$j, included$f)
+  nn <- crossprod(included$index, included$frequency)
   
   ## MLE for lambda is solution to 
   ## (1-exp(-lambda))/lambda = c/n
@@ -46,24 +42,33 @@ PoissonModel <- function(frequency_count,
   
   ccc_se <- sqrt(ccc_subset/(exp(lambda_hat)-1-lambda_hat))
   
-  out <- list("model" = "Poisson", 
-              "cutoff" = cutoff, 
-              "estimate" = ccc_hat, 
-              "se" = ccc_se,
-              "lambda_hat"= lambda_hat)
-  class(out) <- c("richnessEstimate", class(out))
-  out
+  # out <- list("model" = "Poisson", 
+  #             "cutoff" = cutoff, 
+  #             "estimate" = ccc_hat, 
+  #             "se" = ccc_se,
+  #             "lambda_hat"= lambda_hat)
+  # class(out) <- c("richnessEstimate", class(out))
+  # out
+  
+  alpha_estimate(estimate = ccc_hat,
+                 error = ccc_se,
+                 estimand = "richness",
+                 name = "PoissonModel",
+                 # interval = c(n + f0/d, n + f0*d), # TODO
+                 type = "parametric",
+                 model = "Poisson",
+                 frequentist = TRUE,
+                 parametric = TRUE,
+                 reasonable = FALSE,
+                 interval_type = "Approximate: log-normal",
+                 other = list("lambda_hat" = lambda_hat,
+                              "cutoff" = cutoff))
 }
 
-#' @export
-print.richnessEstimate <- function(est) {
-  print(data.frame("Model" = est$model, 
-                   "Cutoff" = est$cutoff, 
-                   "Estimate" = est$estimate, 
-                   "Standard Error" = est$se))
-}
 
-#' CheckInput
+# CheckInput <- function(frequency_count) {
+#   
+#   #' CheckInput
 #' 
 #' Check and fix the formatting of a frequency count table
 #' 
@@ -71,24 +76,21 @@ print.richnessEstimate <- function(est) {
 #' @return  The checked and fixed frequency count table 
 #' 
 #' @export
-CheckInput <- function(frequency_count) {
-  
-  
-  if(!(class(frequency_count) %in% c("matrix", "data.frame"))) stop("Input should be a matrix or a data frame")
-  
-  if(length(dim(frequency_count)) != 2) stop("Input should have 2 columns")
-  
-  if(any(frequency_count[,2] %% 1 != 0)) stop("Second input column not integer-valued; should be counts")
-  
-  if(!all(rank(frequency_count[,1]) == 1:length(frequency_count[,1]))) warning("Frequency count format, right?")
-  
-  if (frequency_count[,1] %>% class == "factor") {
-    frequency_count[,1] %<>% as.character %>% as.integer
-  }
-  
-  colnames(frequency_count)  <- c("j", "f")
-  frequency_count
-}
+#   if(!(class(frequency_count) %in% c("matrix", "data.frame"))) stop("Input should be a matrix or a data frame")
+#   
+#   if(length(dim(frequency_count)) != 2) stop("Input should have 2 columns")
+#   
+#   if(any(frequency_count[,2] %% 1 != 0)) stop("Second input column not integer-valued; should be counts")
+#   
+#   if(!all(rank(frequency_count[,1]) == 1:length(frequency_count[,1]))) warning("Frequency count format, right?")
+#   
+#   if (frequency_count[,1] %>% class == "factor") {
+#     frequency_count[,1] %<>% as.character %>% as.integer
+#   }
+#   
+#   colnames(frequency_count)  <- c("j", "f")
+#   frequency_count
+# }
 
 PoissonModel0 <- function(s, r, observedCount, n, 
                           s0Init, frequency, 

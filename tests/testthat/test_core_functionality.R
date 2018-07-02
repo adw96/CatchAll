@@ -15,15 +15,15 @@ test_that("Tests are working", {
 
 test_that("Class is richnessEstimate", {
   expect_true(TRUE)  
-  expect_is(PoissonModel(x), "richnessEstimate")
-  expect_is(PoissonModel(x, cutoff = 3), "richnessEstimate")
+  expect_is(PoissonModel(x), "alpha_estimate")
+  expect_is(PoissonModel(x, cutoff = 3), "alpha_estimate")
 })
 
 test_that("Cutoffs are implemented", {
-  expect_equal(PoissonModel(x, cutoff = 3)$cutoff, 3)
+  expect_equal(PoissonModel(x, cutoff = 3)$other$cutoff, 3)
 })
 
 test_that("Catches weird data structres", {
-  expect_error(PoissonModel(c(1,2,4)))
   expect_error(PoissonModel(y))
 })
+

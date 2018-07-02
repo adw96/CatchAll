@@ -4,7 +4,7 @@
 \alias{PoissonModel}
 \title{PoissonModel}
 \usage{
-PoissonModel(frequency_count, cutoff = NULL)
+PoissonModel(frequency_count, cutoff = Inf)
 }
 \arguments{
 \item{frequency_count}{A frequency count table}

@@ -6,7 +6,8 @@
 
 ## Create and set the working directory
 #directory <- "/Users/teres/Documents/GitHub/Catch All REAL/CatchAll" ## your local copy here
-directory <- "/Users/amy/Documents/software/CatchAll" ## your local copy here
+# directory <- "/Users/amy/Documents/software/CatchAll" ## your local copy here
+directory <- "/Users/adwillis/software/CatchAll" ## your local copy here
 setwd(directory)
 
 # Download some required packages
@@ -16,7 +17,7 @@ library(testthat)
 library(knitr)
 library(rstudioapi)
 library(Rd2roxygen)
-devtools::install_github("hadley/pkgdown")
+# devtools::install_github("hadley/pkgdown")
 library(pkgdown)
 library(breakaway)
 data(apples)
