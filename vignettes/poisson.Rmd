@@ -28,11 +28,11 @@ Not too bad, given that the true richness is 5000!
 
 Let's try another cutoff:
 ```{r}
-PoissonModel(x)
+PoissonModel(counts)
 ```
 
 Now run all models!
 ```{r}
-suppressMessages({y <- CatchAll(x)})
-head(y)
+# suppressMessages({y <- CatchAll(counts)})
+# head(y)
 ```

@@ -12,7 +12,7 @@
 
 <meta name="author" content="Amy Willis" />
 
-<meta name="date" content="2018-06-15" />
+<meta name="date" content="2018-07-02" />
 
 <title>Getting started with CatchAll</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Getting started with CatchAll</h1>
 <h4 class="author"><em>Amy Willis</em></h4>
-<h4 class="date"><em>2018-06-15</em></h4>
+<h4 class="date"><em>2018-07-02</em></h4>
 
 
 
@@ -81,36 +81,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="co"># devtools::install_github(&quot;adw96/CatchAll&quot;)</span>
 <span class="kw">library</span>(CatchAll)
 <span class="kw">library</span>(magrittr)
+<span class="kw">library</span>(breakaway)
 <span class="kw">set.seed</span>(<span class="dv">1</span>)
 counts &lt;-<span class="st"> </span><span class="kw">rpois</span>(<span class="dv">5000</span>, <span class="dv">2</span>)
-counts &lt;-<span class="st"> </span>counts[counts&gt;<span class="dv">0</span>]
-x &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="kw">table</span>(counts))
-x[,<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(x[,<span class="dv">1</span>])
-<span class="kw">PoissonModel</span>(x, <span class="dt">cutoff =</span> <span class="dv">10</span>)</code></pre></div>
-<pre><code>##     Model Cutoff Estimate Standard.Error
-## 1 Poisson     10 4924.848       32.85165</code></pre>
+<span class="kw">PoissonModel</span>(counts, <span class="dt">cutoff =</span> <span class="dv">10</span>)</code></pre></div>
+<pre><code>## Estimate of richness from method PoissonModel:
+##   Estimate is 4925 with standard error 32.85</code></pre>
 <p>Not too bad, given that the true richness is 5000!</p>
 <p>Let’s try another cutoff:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">PoissonModel</span>(x)</code></pre></div>
-<pre><code>##     Model Cutoff Estimate Standard.Error
-## 1 Poisson    Inf 4924.848       32.85165</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">PoissonModel</span>(counts)</code></pre></div>
+<pre><code>## Estimate of richness from method PoissonModel:
+##   Estimate is 4925 with standard error 32.85</code></pre>
 <p>Now run all models!</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">suppressMessages</span>({y &lt;-<span class="st"> </span><span class="kw">CatchAll</span>(x)})
-<span class="kw">head</span>(y)</code></pre></div>
-<pre><code>##     Model Cutoff Estimate       SE      LCB      UCB     chiSq       AIC
-## 1 Poisson      4 5117.379 40.16338 5042.269 5199.850 258.37329 433.20235
-## 2 Poisson      5 4992.979 35.37959 4926.921 5065.741  94.62297 195.21040
-## 3 Poisson      6 4943.115 33.52080 4880.583 5012.114  33.27913  95.01058
-## 4 Poisson      7 4929.658 33.02632 4868.066 4997.658  15.31870  65.24373
-## 5 Poisson      8 4927.459 32.94621 4866.019 4995.297  12.14575  60.60477
-## 6 Poisson      9 4924.833 32.85112 4863.573 4992.479  11.99725  61.89013
-##        AICc GOF0         GOF5       T1 T2 T3 T4 T5 T6 T7
-## 1 433.20335    0           NA 1.748259 NA NA NA NA NA NA
-## 2 195.21135    0           NA 1.923163 NA NA NA NA NA NA
-## 3  95.01152   NA 2.348787e-05 1.998938 NA NA NA NA NA NA
-## 4  65.24467   NA 3.212441e-02 2.019628 NA NA NA NA NA NA
-## 5  60.60570   NA 1.010943e-01 2.022958 NA NA NA NA NA NA
-## 6  61.89107   NA 1.830476e-01 2.026871 NA NA NA NA NA NA</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># suppressMessages({y &lt;- CatchAll(counts)})</span>
+<span class="co"># head(y)</span></code></pre></div>
 
 
 
